@@ -71,10 +71,17 @@ export class CommonPager implements OnInit {
     @Input() company: string = '';
     @Input() department: string = '';
     @Input() post: string = '';
+    @Input() Role: string = '';
+    @Input() approvalProcess: string = '';
+    @Input()JobTitle:string='';
+    @Input()fromNumber:any=null;
+    @Input()toNumber:any=null;
     //vm cmn parameter
 
     @Output() setPage: EventEmitter<any> = new EventEmitter();
     @Output() sendList: EventEmitter<any> = new EventEmitter();
+
+
 
     constructor(public appSettings:AppSettings, private _http: HttpClient, @Inject(DOCUMENT) private document: any) {
         this._dataservice = new DataService(_http, document);
@@ -94,7 +101,11 @@ export class CommonPager implements OnInit {
             this.pageStart = 1;
             if (this.totalRowsInList < this.pageSize) {
                 this.pageEnd = this.totalRowsInList;
-            } else {
+            }
+              else if(Number.isNaN(this.pageSize)){
+             this.pageEnd = recordsTotal;
+            }
+            else {
                 this.pageEnd = this.pageSize;
             }
         } else {
@@ -172,6 +183,11 @@ export class CommonPager implements OnInit {
             , company: this.company
             , department: this.department
             , post: this.post
+            ,Role:this.Role
+            ,JobTitle:this.JobTitle
+            ,fromNumber:this.fromNumber
+            ,toNumber:this.toNumber
+            ,approvalProcess:this.approvalProcess
         };
         console.log("this.param is ",param)
         this._dataservice.getWithMultipleModel_Sync(this.apiUrl, param)

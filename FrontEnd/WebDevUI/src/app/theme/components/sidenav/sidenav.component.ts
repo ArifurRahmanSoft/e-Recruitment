@@ -25,6 +25,7 @@ export class SidenavComponent implements OnInit {
     this._pathValidation.validateLoggedUser();
     this.cmnEntity = this._pathValidation.rowEntities();
     this.loggedUser = JSON.parse(sessionStorage.getItem('loggedUser'));
+
   }
 
 
@@ -43,6 +44,7 @@ export class SidenavComponent implements OnInit {
     this.userID = sessionStorage.getItem('userID');
     this.password = sessionStorage.getItem('password');
     this.loadEmployeeDetails();
+    this.getParofileInfoByuserID(this.loggedUser)
   }
 
   public _getUrl: string = 'jobusers/loggeduserdetails';
@@ -55,6 +57,7 @@ export class SidenavComponent implements OnInit {
         this.res = response;
         if (this.res.resdata.data.length > 0 && this.res.resdata.resstate) {
           var datas = JSON.parse(this.res.resdata.data);
+          console.log("employee photo detials is ", datas)
           this.my_employee = datas as Employee;
           this.exployeeName = this.my_employee.EMP_NAME;
           this.employeeDesignation = this.my_employee.EMP_DSIG;
@@ -67,4 +70,58 @@ export class SidenavComponent implements OnInit {
       }
       );
   }
+
+
+  //added later
+
+  public _getUserInUrl: string = 'ereqdropdown/getProfileInfoById';
+  getParofileInfoByuserID(id: any) {
+    debugger
+    var list: Array<{ id, text }> = [{ id: 0, text: "Please Select" }];
+    var apiUrl = this._getUserInUrl;
+    var param = id.userId;
+    this._dataservice.getbyid(apiUrl, param)
+      .subscribe(
+        response => {
+          this.res = response;
+          if (this.res.resdata.listuserInfo.length > 0) {
+            console.log("this.res is detils ny id  ssssss=====+>", this.res)
+            var oid = this.res.resdata.listuserInfo[0].oid
+            this.getUserDetail(oid)
+          }
+
+
+        }, error => {
+          console.log(error);
+        });
+  }
+
+
+
+  public imageUrl: string = '';
+  public _geteditUrl: string = 'reqform/getcandidatedetailsbyid';
+  getUserDetail(userid: any) {
+    var param = { strId: userid };
+    var apiUrl = this._geteditUrl
+    this._dataservice.getWithMultipleModel(apiUrl, param)
+      .subscribe(response => {
+        this.res = response;
+        if (this.res) {
+          var detals = JSON.parse(this.res.resdata.regApplicantMaster)
+          var image = detals[0].docPhotoVPath
+          this.imageUrl = image
+        }
+      }, error => {
+        console.log(error);
+      });
+  }
+
+
+
+
+
+
+
+
+
 }

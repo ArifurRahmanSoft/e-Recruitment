@@ -1,62 +1,17 @@
-<div style="height: 100%;">
+ <div style="height: 100%;">
     <mat-sidenav-container class="h-100 overlay"
         style="background: url(./assets/img/eRequirement/E-Req1.png); background-repeat: no-repeat; background-size: 100% 100%;">
  
 
-
-         <!-- <div class="form-group clearfix">
-            <label class="control-label col-sm-2 ml-4 p-0 m-0 pt-1" for="userID" style="float: left;">
-              Client:
-            </label>
-            <div class="col-sm-9 p-0 m-0" style="float: left;">
-              <div style="padding: 0px; width: 100%; font-size: 13px; float: left;">
-                <ng-select2
-                  [options]="options"
-                  [allowClear]="true"
-                  [data]="quotationList"
-                  [placeholder]="'Select Client'"
-                  id="testId"
-                
-                 
-                   (valueChanged)="testId=$event;   onScrolls(testId) "
-                 
-                 
-                 >
-                </ng-select2>
-              </div>
-            </div>
-          </div>  -->
-
-        
-
-
-  
-
-
-<!-- app.component.html -->
-<!-- app.component.html -->
-
-
-          
-
-
-        
- 
-           <!-- <select class="form-control" (mouseenter)="onScroll($event)" >
-            <option *ngFor="let quotation of quotationList" [value]="quotation.text"  (mouseenter)="onScroll($event)" >
-              {{ quotation.text }}
-            </option>
-          </select>   -->
           
 
         <div fxLayout="row" fxLayoutAlign="center center" style="margin-top: 25vh; margin-bottom: 25vh;">
 
-            <!-- <div class="col-md-3 mat-elevation-z6"
-                style="text-align: center;margin-left:25%;margin-right:25%; padding-top: 10px; padding-left: 2%; padding-right: 2%; border-radius: 25px; background-image: linear-gradient( 89.4deg,  rgba(190,0,39,1) 0.8%, rgba(10,35,104,1) 99.4% );"> -->
-            <div class="col-md-3  mat-elevation-z6"
-                style="text-align: center;margin-left:25%;margin-right:25%; padding-top: 10px; padding-left: 2%; padding-right: 2%; border-radius: 25px; background-image: radial-gradient( circle farthest-corner at 50.4% 50.5%,  rgba(251,32,86,1) 0%, rgba(135,2,35,1) 90% );">
+            
+            <div class="col-md-3 col-sm-10  mat-elevation-z6 contentBody"
+                style="text-align: center; padding-top: 10px;  border-radius: 25px; background-image: radial-gradient( circle farthest-corner at 50.4% 50.5%,  rgba(251,32,86,1) 0%, rgba(135,2,35,1) 90% );">
 
-                <div class="col-md-12" style="display: inline-block; padding: 0px; margin: 0px;">
+                <div class="col-md-12 col-sm-10" style="display: inline-block; padding: 0px; margin: 0px;">
                     <div class="">
                         <div class="" style="color: #ffffff; font-weight: bold; text-align: center; font-size: 25px;">
                             <i class="fa fa-align-justify"></i>
@@ -71,10 +26,10 @@
 
                                     <form #userForm="ngForm" [formGroup]="form" (ngSubmit)="onLogin()">
 
-
+                                         <div style="" class="formInput">
                                         <div class="form-group">
-                                            <div class="input-group input-group-sm mb-3"
-                                                style="width: 75%; margin-left: 12.5%;">
+                                            <div class="input-group input-group-sm mb-3 inputField"
+                                                style=" ">
 
                                                 <input id="userid" type="text" aria-label="Small"
                                                     aria-describedby="inputGroup-sizing-sm" autofocus
@@ -98,8 +53,8 @@
                                         
 
                                         <div class="form-group">
-                                            <div class="input-group input-group-sm mb-3"
-                                                style="width: 75%; margin-left: 12.5%;">
+                                            <div class="input-group input-group-sm mb-3 inputField"
+                                                style=" ">
 
                                                 <input [type]="showPassword ? 'text' : 'password'"
                                                     id="password" type="password" class="form-control"
@@ -113,7 +68,7 @@
                                                                     (click)="togglePassword()"
                                                                     tabindex="-1"
                                                                     >
-                                                            <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye'"></i>
+                                                            <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
                                                             </button>
                                                         </div>
 
@@ -128,13 +83,16 @@
                                                     Password must be at least 4 digits</small> 
 
                                             </div>
-
-                                            
-
                                         </div>
+
+
+                                       
+
+
+
                                         <div class="form-group">
-                                            <div class="input-group input-group-sm"
-                                                style="width: 75%; margin-left: 12.5%;">
+                                            <div class="input-group input-group-sm inputField"
+                                                style="">
                                                 <button class="btn mat-elevation-z6 w-100"
                                                     [disabled]="userForm.form.invalid"
                                                     style="background-image: linear-gradient( 179.7deg,  rgba(197,214,227,1) 2.9%, rgba(144,175,202,1) 97.1% ); color:darkblue; font-weight:bold;"
@@ -153,9 +111,9 @@
                                                          <br>  
                                                 <div class="p-2">
                                                          <a id="Register" routerLink="/forgotpassword"
-                                                        style="color: green; ;"
+                                                        style="color: rgb(139, 216, 139); ;"
                                                         onmouseover="this.style.color='blue'"
-                                                        onmouseout="this.style.color='green'">
+                                                        onmouseout="this.style.color=' rgb(139, 216, 139)'">
                                                         Forgot Password?
                                                         </a>
                                                 </div> 
@@ -172,7 +130,7 @@
                                             </div>
                                         </div>
 
-
+                                         </div>
 
 
 
@@ -193,10 +151,89 @@
 
   
 
+</div> 
 
-    <!-- <mat-toolbar color="primary" class="footer full-width"
-        style="background: url(./assets/img/citygroup/Footer_N0_CityGroup.png); background-repeat: no-repeat; background-size: 100% 100%;"> -->
-    <!-- <p style="font-size: 12px; text-align: right; font-size: 20px; font-weight: bold; background: #e5345e75;">
-            Powered by City Group @IT all rights reserved</p> -->
-    <!-- </mat-toolbar> -->
-</div>
+
+
+
+
+
+
+<!-- <div style="height: 100%;">
+  <mat-sidenav-container class="h-100 overlay"
+    style="background: url(./assets/img/eRequirement/E-Req1.png); background-repeat: no-repeat; background-size: cover;">
+    
+    <div class="container h-100 d-flex align-items-center justify-content-center">
+      <div class="row w-100 justify-content-center">
+        <div class="col-12 col-sm-10 col-md-6 col-lg-4 mat-elevation-z6 p-3"
+          style="border-radius: 25px; background-image: radial-gradient(circle farthest-corner at 50.4% 50.5%, rgba(251,32,86,1) 0%, rgba(135,2,35,1) 90%); text-align: center; color: white;">
+          
+          <h4><i class="fa fa-align-justify"></i> e-Recruitment</h4>
+
+          <form #userForm="ngForm" [formGroup]="form" (ngSubmit)="onLogin()">
+            
+          
+            <div class="form-group input-group input-group-sm">
+              <input id="userid" type="text" [(ngModel)]="userModel.user_id"
+                name="userid" formControlName="userid"
+                class="form-control form-control-sm w-100"
+                placeholder="{{usrPlaceHolder}}" required autofocus>
+              <small class="text-danger d-block"
+                *ngIf="form.controls['userid'].touched && form.controls['userid'].errors?.required">
+                {{usrPlaceMsgs}} ID is required
+              </small>
+              <small class="text-danger d-block"
+                *ngIf="form.controls['userid'].hasError('minlength')">
+                Employee ID must be 5 digits
+              </small>
+            </div>
+
+            <div class="form-group input-group input-group-sm">
+              <input [type]="showPassword ? 'text' : 'password'" id="password"
+                [(ngModel)]="userModel.user_password"
+                name="password" formControlName="password"
+                class="form-control" placeholder="Password" required>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" (click)="togglePassword()">
+                  <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+                </button>
+              </div>
+            </div>
+            <small class="text-danger d-block"
+              *ngIf="form.controls['password'].touched && form.controls['password'].errors?.required">
+              Password is required
+            </small>
+            <small class="text-danger d-block"
+              *ngIf="form.controls['password'].hasError('minlength')">
+              Password must be at least 4 digits
+            </small>
+
+
+            <div class="form-group">
+              <button type="submit"
+                class="btn w-100 mat-elevation-z6"
+                [disabled]="userForm.form.invalid"
+                style="background-image: linear-gradient(179.7deg, rgba(197,214,227,1) 2.9%, rgba(144,175,202,1) 97.1%); color:darkblue; font-weight:bold;">
+                Login
+              </button>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a routerLink="/register" style="color: white;"
+                onmouseover="this.style.color='yellow'"
+                onmouseout="this.style.color='white'">
+                Not Registered? Register
+              </a>
+              <a routerLink="/forgotpassword" style="color: rgb(139, 216, 139);"
+                onmouseover="this.style.color='blue'"
+                onmouseout="this.style.color='rgb(139, 216, 139)'">
+                Forgot Password?
+              </a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav-container>
+</div> -->

@@ -25,6 +25,17 @@ export class CmnDocModal implements OnInit {
     public docSize: any;
     public attachedFile: any = null;
     public IsDocAddDisabled: boolean = true;
+    fileTypeList: Array<{ value: string, label: string }> = [
+  { value: '1', label: 'Photo' },
+  { value: '2', label: 'Signature' },
+  { value: '3', label: 'NID (Front)' },
+  { value: '4', label: 'NID (Back)' },
+  { value: '5', label: 'Tin' },
+  { value: '6', label: 'CV' },
+];
+
+  public fileType:any;
+
 
     docSubmit: EventEmitter<any> = new EventEmitter();
 
@@ -39,10 +50,18 @@ export class CmnDocModal implements OnInit {
 
     ngOnInit() { }
 
+     setfileType(value: string): void {
+        debugger
+          this.fileType=value;
+        console.log("file type is ",this.fileType)
+ 
+    }
+
     public fileTypes: any = ["jpg", "jpeg", "png", "gif", "pdf", "doc", "docx", "txt", "csv", "xls", "xlsx", "ppt", "pptx"];
 
     onFileChange() {
         debugger;
+       
         this.IsDocAddDisabled = true;
         this.docHoldList = [];
         //var fileInfo=this._fileInput;
@@ -57,12 +76,15 @@ export class CmnDocModal implements OnInit {
                 var extlwr = ext.toLowerCase();
                 var fileIndex = this.fileTypes.indexOf(extlwr);
                 var fileSize = file.size / 1024 / 1024; // in MB
+               
                 //var fileType = file.type;
                 if (fileSize > 5) {
                     this.toastr.error('File size exceeds 5 MB', 'File Upload Error!');
                 } else if (fileIndex === -1) {
                     this.toastr.error('File type not supported. Valid file types are ' + this.fileTypes, 'File Type Error!');
-                } else {
+                } 
+              
+                else {
 
                     this.docHoldList.push({
                         documentId: 0,
@@ -78,12 +100,14 @@ export class CmnDocModal implements OnInit {
                         virtualPath: '',
                         isActive: true,
                         isDelete: false,
-                        createBy: this.docEntity.userId
+                        createBy: this.docEntity.userId,
+                        fileType:this.fileType
                     });
 
                     //this.IsDocAddDisabled = false;
                 }
             };
+            console.log(" this.docHoldList", this.docHoldList)
 
             this.IsDocAddDisabled = this.docHoldList.length > 0 ? false : true;
         }
@@ -91,6 +115,12 @@ export class CmnDocModal implements OnInit {
     }
 
     addDocumnet() {
+          const fileTypeExists = this.docList.some(doc => doc.fileType == this.fileType);
+               if (fileTypeExists) {
+                alert('This file type already exists.');
+                return
+                }
+        debugger
         this.docHoldList.forEach(item => {
             this.docList.push({
                 documentId: item.documentId,
@@ -106,7 +136,8 @@ export class CmnDocModal implements OnInit {
                 virtualPath: item.virtualPath,
                 isActive: item.isActive,
                 isDelete: item.isDelete,
-                createBy: item.createBy
+                createBy: item.createBy,
+                fileType:item.fileType
             });
         });
 
@@ -137,6 +168,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DataService } from '../../../api/api.dataservice.service';
 import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Options } from 'ngx-bootstrap/positioning/models';
 @Component({
     selector: 'doc-up',
     template: '<button mat-button style="color:#4a4a4a; font-weight:bold; width:55%" color="primary" class="mat-focus-indicator mat-stroked-button mat-button-base mat-primary" (click)="openDocModalialog()"><mat-icon class="menu-icon">attach_file</mat-icon><span class="menu-title">Attachment</span><span *ngIf="documentList.length>0"> ({{documentList.length}})</span></button>'
@@ -148,6 +180,10 @@ export class DocUpload {
     public res: any;
     public resState: boolean = false;
     @Input() documentList: any;
+   
+      public options: Options;
+ 
+
     private _dataservice: any;
     private _dialogRefDoc: MatDialogRef<any>;
     constructor(private _http: HttpClient, @Inject(DOCUMENT) private document: any, public dialog: MatDialog) {
@@ -155,6 +191,7 @@ export class DocUpload {
     }
 
     openDocModalialog() {
+        debugger
         const _config = new MatDialogConfig();
         _config.restoreFocus = false;
         _config.autoFocus = false;
@@ -174,7 +211,7 @@ export class DocUpload {
     }
 
 
-    public _saveFormUrl: string = 'documentUpload/saveupdateform';
+    public _saveFormUrl: string = 'documentUpload/saveupdateform--';
     onSubmitDoc() {
         var formData = new FormData();
         this.documentList.forEach(item => {

@@ -9,15 +9,21 @@
 
 
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 1200px;
-  margin: 0;
-  box-sizing: border-box;
+// body {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 1200px;
+//   margin: 0;
+//   box-sizing: border-box;
   
-}
+// }
+
+// #subForm {
+//   height: 1200px;  
+//   overflow-y: auto; 
+//   overflow-x: hidden; 
+// }
 
 .first-column{
   width: 120px;
@@ -587,12 +593,14 @@ margin-left: 24px;
     .accInputWorkExp {
       width: 95%; /* Full width for small devices */
     }
+ 
   }
   
   @media (min-width: 768px) { 
     .accInputWorkExp {
       width: 260px; /* 80% width for large devices */
     }
+ 
    
   }
 
@@ -602,11 +610,17 @@ margin-left: 24px;
     .workexperienceDetails {
       //width: 200%; /* Full width for small devices */
     }
+    .fixedMainHeader{
+     padding-bottom: 35%;
+    }
   }
   
   @media (min-width: 768px) { 
    .workexperienceDetails {
      margin-left: 150px; /* 80% width for large devices */
+    }
+    .fixedMainHeader{
+    padding-bottom: 6%;
     }
   }
   /* Optional: for custom apps not using Bootstrap */
@@ -671,3 +685,208 @@ margin-left: 24px;
 // }
 
 
+// ADD LETER FOR FIXED  start fixed head
+.fixedHeader {
+  position: fixed;
+  top: 8%;             
+  left: 17.75%;
+  width: 69.25%;
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+@media (max-width: 1501px) {
+  .fixedHeader {
+    left: 25%;
+    width: 62%;
+  }
+}
+
+@media (max-width: 1201px) {
+  .fixedHeader {
+    left: 10%;
+    width: 76%;
+  }
+}
+
+
+
+
+@media (max-width: 767px) {
+  .fixedHeader {
+    top: 12%; 
+    left: 4.5%;
+    width: 83%; 
+    display: flex;
+  justify-content: space-between;         
+ 
+    padding: 10px;
+  }
+}
+//fiseed header change ja 
+
+
+   @media (max-width: 767px) { 
+    .address-plane {
+     width: 97.5%;
+    }
+    .input-right{
+    width: 94.5%;
+    }
+    .input-right-drop{
+      width: 98.5%;
+    }
+  }
+  
+  @media (min-width: 768px) { 
+   .address-plane {
+     width: 90.5%;
+    }
+    .input-right{
+      width: 90.5%;
+    }
+    .input-right-drop{
+      width: 94.5%;
+    }
+  }
+
+
+
+
+
+
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* Ensure the input's width is truly fixed regardless of validation state */
+.col-lg-2 .form-control.is-invalid,
+.col-11 .form-control.is-invalid,
+.col-md-5 .form-control.is-invalid {
+  /* Set box-sizing explicitly to ensure padding/border are included in the width */
+  box-sizing: border-box;
+
+  /* If Bootstrap adds a border-width, ensure it doesn't cause expansion */
+  /* This often isn't needed if box-sizing is correct, but can be a fallback */
+  border-width: 1px; /* Ensure a consistent border width */
+  border-color: #dc3545; /* Bootstrap's invalid red color */
+
+  /* Remove any extra padding/margin that might be implicitly added by Bootstrap's invalid state */
+  /* Often, the issue is with box-shadow or an outline, not direct padding. */
+  padding-right: var(--bs-gutter-x, 0.75rem); /* Example: If Bootstrap's invalid adds icon padding */
+  background-image: none; /* Remove validation icon if it affects width */
+}
+
+/* Ensure consistent width for the specific input */
+input[id^="instution"] {
+  width: 90.5% !important; /* Use !important if Bootstrap's default is overriding */
+  box-sizing: border-box; /* Crucial for consistent sizing */
+}
+
+/* This helps if the validation icon is causing the issue */
+.form-control.is-invalid {
+    background-image: none !important; /* Remove the background SVG icon */
+    padding-right: var(--bs-border-width, 1px) !important; /* Reset padding used for the icon */
+}
+
+/* Optional: To maintain vertical alignment if validation icons were present */
+.form-control.is-invalid ~ .invalid-feedback {
+    /* Adjust as needed if the feedback message shifts due to icon removal */
+}
+
+
+
+
+
+//card
+.job-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.job-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+
+
+
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  color: red;
+  animation: marquee 10s linear infinite;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(510%); }
+}
+
+/* Adjust marquee for small devices */
+@media (max-width: 768px) {
+  .marquee {
+    font-size: 14px; /* smaller text */
+    animation: marquee-small 15s linear infinite; /* slower scroll */
+  }
+
+  @keyframes marquee-small {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}
+
+.academic-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease-in-out;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+}
+
+.academic-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+
+
+
+.scroll-area {
+  height: 850px;
+  overflow-y: scroll; /* allow vertical scrolling */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.scroll-area::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
+
+
+
+
+
+#main {
+  height: 100%;   /* or fixed height like 400px */
+  overflow: hidden; /* perfectScrollbar handles scroll inside */
+}

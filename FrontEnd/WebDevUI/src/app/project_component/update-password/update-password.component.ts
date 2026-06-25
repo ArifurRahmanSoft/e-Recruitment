@@ -106,7 +106,7 @@ export class UpdatePasswordComponent implements OnInit {
     
   }
 
-  public updatePassUrl:string='users/updatepassword';
+  public updatePassUrl:string='users/updatepassword---';
   public onSubmit(values:any):void {    
     
     this.newPassword = values.confPassword;

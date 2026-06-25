@@ -212,6 +212,7 @@ export class UserRoleComponent implements OnInit {
   //Get by ID
   public _getbyIdUrl: string = 'jobuserRole/getbyid';
   edit(modelEvnt) {
+    debugger
     modelEvnt.event.preventDefault();
     var param = { id: modelEvnt.model.userRoleId };
     var apiUrl = this._getbyIdUrl

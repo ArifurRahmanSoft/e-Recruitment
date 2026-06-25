@@ -15,8 +15,8 @@
         <div fxLayout="row" fxLayoutAlign="center center" style="margin-top: 25vh; margin-bottom: 25vh;">
 
            
-            <div class="col-md-3 mat-elevation-z6"
-                style="text-align: center;margin-left:25%;margin-right:25%; padding-top: 10px; padding-left: 2%; padding-right: 2%; border-radius: 25px; background-image: radial-gradient( circle farthest-corner at 50.4% 50.5%,  rgba(251,32,86,1) 0%, rgba(135,2,35,1) 90% );">
+            <div class="col-md-3 col-sm-10 mat-elevation-z6 contentBody"
+                style="text-align: center; padding-top: 10px; padding-left: 2%; padding-right: 2%; border-radius: 25px; background-image: radial-gradient( circle farthest-corner at 50.4% 50.5%,  rgba(251,32,86,1) 0%, rgba(135,2,35,1) 90% );">
 
                 <div class="col-md-12" style="display: inline-block; padding: 0px; margin: 0px;">
                     <div class="">
@@ -37,9 +37,9 @@
                                     <form id="subForm" [formGroup]="RegisterForm" #f="ngForm" class="form-horizontal" (ngSubmit) = "onSubmit()">
 
                                         <div class="form-group clearfix">
-                                            <label class="control-label col-sm-2 ml-0 p-0 m-0 pt-1" for="fullName"
+                                            <label class="control-label col-sm-1 ml-0 p-0 m-0 pt-1" for="fullName"
                                                 style="float: left;"> </label>
-                                            <div class="col-sm-9 p-0 m-0" style="float: left;">
+                                            <div class="col-sm-10 p-0 m-0" style="float: left;">
                                                 <div style="padding: 0px; width: 96.5%; font-size: 13px; float: left;">
                                                     <input formControlName="fullName" type="text"
                                                     
@@ -68,9 +68,9 @@
 
 
                                         <div class="form-group clearfix">
-                                            <label class="control-label col-sm-2 ml-0 p-0 m-0 pt-1" for="mobileNumber"
+                                            <label class="control-label col-sm-1 ml-0 p-0 m-0 pt-1" for="mobileNumber"
                                                 style="float: left;"> </label>
-                                            <div class="col-sm-9 p-0 m-0" style="float: left;">
+                                            <div class="col-sm-10 p-0 m-0" style="float: left;">
                                                 <div style="padding: 0px; width: 96.5%; font-size: 13px; float: left;">
                                                     <input formControlName="mobileNumber" type="text"
                                                         class="form-control form-control-sm input-sm input-sm-*" id="mobileNumber"
@@ -95,9 +95,9 @@
 
 
                                         <div class="form-group clearfix">
-                                            <label class="control-label col-sm-2 ml-0 p-0 m-0 pt-1" for="email"
+                                            <label class="control-label col-sm-1 ml-0 p-0 m-0 pt-1" for="email"
                                                 style="float: left;"> </label>
-                                            <div class="col-sm-9 p-0 m-0" style="float: left;">
+                                            <div class="col-sm-10 p-0 m-0" style="float: left;">
                                                 <div style="padding: 0px; width: 96.5%; font-size: 13px; float: left;">
                                                     <input formControlName="email" type="text"
                                                    
@@ -129,13 +129,16 @@
 
 
                                          <div class="form-group clearfix">
-                                            <label class="control-label col-sm-2 ml-0 p-0 m-0 pt-1" for="password"
+                                            <label class="control-label col-sm-1 ml-0 p-0 m-0 pt-1" for="password"
                                                 style="float: left;"> </label>
-                                            <div class="col-sm-9 p-0 m-0" style="float: left;">
+                                            <div  class="col-sm-10 p-0 m-0" style="float: left;">
                                                 <div style="padding: 0px; width: 96.5%; font-size: 13px; float: left;">
-                                                    <input formControlName="password" type="password"
+                                            
+                                                    <input formControlName="password" type="text"
                                                         class="form-control form-control-sm input-sm input-sm-*" id="password"
-                                                        placeholder="Enter password " name="password">
+                                                        placeholder="Enter password " name="password" >
+
+                                                         
 
                                                         <small style="width: 100%; color: #ffffff !important;"
                                                         class="text-danger"
@@ -145,7 +148,7 @@
                                                  <small style="width: 100%; color: #ffffff !important;"
                                                         class="text-danger"
                                                         *ngIf="RegisterForm.controls['password'].hasError('minlength')">
-                                                        password  must be 5 Character</small>
+                                                       Minimum 5 characters required for your password</small>
                                                 </div>
                                                 <!-- <span class="ml-1 mt-2 text-danger pull-left">*</span> -->
                                                  <span style="position: absolute; right: 10px; top: 8px;" class="text-danger">*</span>
@@ -153,11 +156,59 @@
                                         </div> 
 
 
+
+                                            <!-- <div class="form-group">
+                                            <div class="input-group input-group-sm mb-3"
+                                                style="width: 77%; margin-left: 16.5%;">
+
+                                                <input [type]="showPassword ? 'text' : 'password'"
+                                                    id="password" type="password" class="form-control"
+                                                    aria-label="Small" aria-describedby="inputGroup-sizing-sm"
+                                                    [(ngModel)]="userModel.user_password" #password required
+                                                    name="password" placeholder="Password" formControlName="password">
+                                                    
+
+                                                       <div style="background-color: #E8F0FE;" class="input-group-append">
+                                                            <button  type="button"
+                                                                    class="btn "
+                                                                    (click)="togglePassword()"
+                                                                    tabindex="-1"
+                                                                    >
+                                                            <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+                                                            </button>
+                                                        </div>
+
+                                              <small style="width: 100%; color: #ffffff !important;"
+                                                    class="text-danger"
+                                                    *ngIf="form.controls['password'].touched && form.controls['password'].errors?.required">
+                                                    Password is required</small>
+
+                                                <small style="width: 100%; color: #ffffff !important;"
+                                                    class="text-danger"
+                                                    *ngIf="form.controls['password'].hasError('minlength')">
+                                                    Password must be at least 4 digits</small> 
+
+                                            </div>
+                                             <span style="position: absolute; left: 20px; top: 8px;" class="text-danger">*</span>
+                                        </div> -->
+                                        
+
+
+                                   
+                                                     <!-- <button  style="background-color: #E8F0FE;" type=""
+                                                                    class="btn "
+                                                                    (click)="togglePassword()"
+                                                                    tabindex="-1"
+                                                                    >
+                                                            <i [class]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"></i>
+                                                            </button> -->
+                                                        
+
                                         <div class="form-group clearfix">
-                                        <label class="control-label col-sm-2 ml-0 p-0 m-0 pt-1" for="confirmPassword" style="float: left;"></label>
-                                        <div class="col-sm-9 p-0 m-0" style="float: left;">
+                                        <label class="control-label col-sm-1 ml-0 p-0 m-0 pt-1" for="confirmPassword" style="float: left;"></label>
+                                        <div class="col-sm-10 p-0 m-0" style="float: left;">
                                             <div style="padding: 0px; width: 96.5%; font-size: 13px; float: left;">
-                                            <input formControlName="confirmPassword" type="password"
+                                            <input formControlName="confirmPassword" type="text"
                                                 class="form-control form-control-sm input-sm" id="confirmPassword"
                                                 placeholder="Confirm password" name="confirmPassword">
 
@@ -186,9 +237,9 @@
 
                                         <div class="form-group">
                                             <div class="input-group input-group-sm">
-                                            <label class="control-label col-sm-2 ml-0 p-0 m-0 pt-1" for="password"
+                                            <label class="control-label col-sm-1 ml-0 p-0 m-0 pt-1" for="password"
                                                 style="float: left;"> </label>
-                                            <div class="col-sm-9 p-0 m-0" style="float: left;">
+                                            <div class="col-sm-10 p-0 m-0" style="float: left;">
                                                 <div style="padding: 0px; width: 102.0%; font-size: 13px; float: left;">
                                                     <button class="btn mat-elevation-z6 w-100" 
                                                     [disabled]="f.form.invalid"
@@ -207,6 +258,15 @@
                                                 
                                             </div>
                                         </div>
+
+
+
+
+
+
+
+
+                                        
 
 <!-- 
                                         [disabled]="f.RegisterForm.invalid" -->

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, TemplateRef, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, TemplateRef, ElementRef, ViewChildren, QueryList, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, NgForm, FormArray } from '@angular/forms';
 import { DOCUMENT, formatDate, ViewportScroller } from '@angular/common';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
@@ -6,7 +6,7 @@ import { Options } from 'select2';
 import { fontModel } from './fontModel';
 import { jsPDF } from 'jspdf';
 import { Console, error } from 'console';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ApiService } from 'src/app/api/api.service';
 import { ToastrService } from 'ngx-toastr';
 import { User } from 'src/app/api/user';
@@ -23,6 +23,10 @@ import { it } from 'date-fns/locale';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { DocUpload } from '../../theme/components/documentupload/documentupload';
+//import { PerfectScrollbarDirective, PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { NgZone } from '@angular/core';
+import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
 
 declare var $: any;
 
@@ -38,6 +42,13 @@ export class ApplyComponent implements OnInit {
   @ViewChild('cmnsrv', { static: false }) _msg: CommonService;
   @ViewChild('cmnpager', { static: false }) _pg: CommonPager;
   @ViewChild(ReportViewer) _rptViewer: ReportViewer;
+  @ViewChild('cmndoc', { static: false }) _doc: DocUpload;//uncomment
+  @ViewChildren(PerfectScrollbarDirective) pss: QueryList<PerfectScrollbarDirective>;
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  @ViewChild('backToTop') backToTop: any;
+  @ViewChild('sidenav') sidenav: any;
+  @ViewChild(PerfectScrollbarDirective) ps?: PerfectScrollbarDirective;
+
   public settings: Settings;
   public options: Options;
   private userID = sessionStorage.getItem("userID");
@@ -64,11 +75,16 @@ export class ApplyComponent implements OnInit {
   public accQlfList: any;
   public wrkExpList: any;
   public proCirtificateList: any;
+  public hTrainingList: any;
+  public hReferenceList: any
+  public trainingList: any;
+  public referenceList: any;
   public masterDiv: boolean = true;
   public detailDiv: boolean = false;
   public applyForm: boolean = false
   public downloadCvPath: any;
   public downloadNidPath: any;
+  public downloadNidBackPath: any;
   public downloadTinPath: any;
   public updateOidEdit: any;
   public imageId: any;
@@ -78,20 +94,56 @@ export class ApplyComponent implements OnInit {
   public NIDId: any;
 
 
-  bloodGroupList: string[] = ['A+', 'B+', 'O+', "AB+", 'A-', 'B-', 'O-', "AB-"];
+
+  relationList: string[] = ['Professional', 'Relative', 'Family', 'Relative', 'Other']
+  sourceList: string[] = ['BD Jobs', 'LinkedIn', 'Facebook', 'City Group Website', 'Other']
+  bloodGroupList: Array<{ id: string, text: string }> = [
+    { id: '', text: 'Select Blood Group' }, { id: '1', text: 'A+' }, { id: '5', text: 'B+' }, { id: '7', text: 'O+' }, { id: '3', text: 'AB+' },
+    { id: '2', text: 'A-' }, { id: '6', text: 'B-' }, { id: '8', text: 'O-' }, { id: '4', text: 'AB-' }
+  ];
+  genderList: Array<{ id: string, text: string }> = [{ id: 'M', text: 'Male' }, { id: 'F', text: 'Female' }, { id: 'O', text: 'Other' }];
+  maritialStatusList: Array<{ id: string, text: string }> = [{ id: '2', text: 'Single' }, { id: '3', text: 'Married' }, { id: '4', text: 'Divorced' }, { id: '5', text: 'Widow' }];
+  religionList: Array<{ id: string, text: string }> = [{ id: '1', text: 'Islam' }, { id: '2', text: 'Shonaton' }, { id: '3', text: 'Buddhist' }, { id: '4', text: 'Christian' }, { id: '5', text: 'Others' }];
+  public degreeList: any = [];
+   commonList: Array<{ id: string, text: string }> = [{ id: '1', text: 'Yes' }, { id: '2', text: 'No' }];
+
+
+
+
+
+
+  sourceList1: string[] = ['BD Jobs', 'LinkedIn', 'Facebook', 'City Group Website', 'Other']
+
+
+  bloodGroupList1: string[] = ['A+', 'B+', 'O+', "AB+", 'A-', 'B-', 'O-', "AB-"];
   qualificationType: string[] = ['SSC/Equivalent', 'HSC/Deploma', 'Bachelor', 'Masters', 'Other'];
-   degreeList: string[] = ['JSC/Equivalent','SSC/Equivalent', 'HSC/Diploma', 'Bachelor', 'Masters', 'Other'];
+  degreeList1: string[] = ['JSC', 'SSC', 'HSC', 'Diploma', 'Bachelor', 'Masters', 'Other'];
+  relationList1: string[] = ['Professional', 'Relative', 'Family', 'Relative', 'Other']
   WorkOrderStatus: Array<{ value: string, label: string }> = [
     { value: '1', label: 'Work Order InComing' },
     { value: '0', label: 'Work Order  OutGoing' },
   ];
-  genderList: string[] = ['Male', 'Female', 'Other'];
-  maritialStatusList: string[] = ['Married', 'Unmarried'];
-  religionList: string[] = ['Islam', 'Hindu', 'Christianity', 'Buddhism', 'Other'];
+  genderList1: string[] = ['Male', 'Female', 'Other'];
+  maritialStatusList1: string[] = ['Married', 'Unmarried', 'Widow', 'Widower'];
+  religionList1: string[] = ['Islam', 'Hindu', 'Christianity', 'Buddhism', 'Other'];
+
+
+
+
+
+
+
+
+
+
+
+
+
   image: FileList | null = null;
   signature: FileList | null = null;
   cv: FileList | null = null;
   nid: FileList | null = null;
+  nidBack: FileList | null = null;
   tin: FileList | null = null;
   selectedFiles: FileList | null = null;
   binaryString: any
@@ -107,7 +159,14 @@ export class ApplyComponent implements OnInit {
   public isEdit: boolean = false;
   public isShowmstr: any;
   public alApply: boolean = false;
-
+  public fileList: any[] = [];
+  public docId: any;
+  public photoId: any;
+  public sigId: any;
+  public nidFnId: any;
+  public nidBckId: any;
+  public TinId: any;
+  public CVId: any;
 
 
 
@@ -122,6 +181,7 @@ export class ApplyComponent implements OnInit {
     public _apiService: ApiService,
     private toastr: ToastrService,
     private _dataservice: DataService,
+    private ngZone: NgZone,
     @Inject(DOCUMENT) private document: any
   ) {
     //this.options = this._pathValidation.ngSelect2Option();
@@ -150,14 +210,16 @@ export class ApplyComponent implements OnInit {
     this.getListByPage(this.pageSize);
     this.GetJobIdList(this.loggedUserId)
     this.getApplicantProfileById();
-
-
+    this.getAllAcademicQlf();
     this._dataservice.oid$.subscribe(oid => {
       // if (oid) {
       //   this.edit(oid);
       // }
     });
   }
+
+
+
   cmnbtnAction(evmodel) {
     debugger
     this[evmodel.func](evmodel);
@@ -173,9 +235,29 @@ export class ApplyComponent implements OnInit {
     if (divName == 'Master') {
       this.isToggleMaster = this.isToggleMaster ? false : true;
     }
-
-
   }
+
+  public _acqlfUrl: string = 'ereqdropdown/getallaccqlf';
+  getAllAcademicQlf() {
+    debugger
+    var list: Array<{ id, text }> = [{ id: 0, text: "Please Select" }];
+    var apiUrl = this._acqlfUrl;
+    this._dataservice.getall(apiUrl)
+      .subscribe(
+        response => {
+          this.res = response;
+          if (this.res.resdata.listAccQlf.length > 0) {
+            var itemList = this.res.resdata.listAccQlf;
+            itemList.forEach(item => {
+              list.push({ id: item.oid, text: item.degree });
+            });
+            this.degreeList = list;
+          }
+        }, error => {
+          console.log(error);
+        });
+  }
+
 
   //GET DIVISION NAME
   public _divUrl: string = 'jobdropdown/getalldivision';
@@ -378,38 +460,39 @@ export class ApplyComponent implements OnInit {
     }
   }
 
-// isJobRunning(event: Event, index: number) {
-//   debugger
-  
-//   const isChecked = (event.target as HTMLInputElement).checked;
-//   const experience = this.workExperiences.at(index);
+  // isJobRunning(event: Event, index: number) {
+  //   debugger
 
-//   experience.get('isRunning')?.setValue(isChecked);
+  //   const isChecked = (event.target as HTMLInputElement).checked;
+  //   const experience = this.workExperiences.at(index);
 
-//   if (isChecked) {
-//     experience.get('priodToDate')?.disable();
-//     experience.get('priodToDate')?.setValue(null); 
-//     experience.get('isRunning')?.setValue('Continuing');// Optional: clear date
-//   } else {
-//     experience.get('priodToDate')?.enable();
-//   }
-// }
+  //   experience.get('isRunning')?.setValue(isChecked);
+
+  //   if (isChecked) {
+  //     experience.get('priodToDate')?.disable();
+  //     experience.get('priodToDate')?.setValue(null); 
+  //     experience.get('isRunning')?.setValue('Continuing');// Optional: clear date
+  //   } else {
+  //     experience.get('priodToDate')?.enable();
+  //   }
+  // }
 
 
-isJobRunning(event: Event, index: number) {
-  debugger
-  const isChecked = (event.target as HTMLInputElement).checked;
-  const experience = this.workExperiences.at(index);
+  isJobRunning(event: Event, index: number) {
+    debugger
+    const isChecked = (event.target as HTMLInputElement).checked;
+    const experience = this.workExperiences.at(index);
 
-  if (isChecked) {
-    experience.get('isRunning')?.setValue('Continuing');
-    experience.get('priodToDate')?.setValue(null);
-    experience.get('priodToDate')?.disable();
-  } else {
-    experience.get('isRunning')?.setValue(null);
-    experience.get('priodToDate')?.enable();
+    if (isChecked) {
+      experience.get('isRunning')?.setValue('Continuing');
+      experience.get('priodToDate')?.setValue(null);
+      experience.get('priodToDate')?.disable();
+    } else {
+      experience.get('isRunning')?.setValue(null);
+      experience.get('priodToDate')?.enable();
+    }
+    this.calculateTotalDays(index);
   }
-}
 
 
 
@@ -464,7 +547,7 @@ isJobRunning(event: Event, index: number) {
       parAddDetai: new FormControl(null, Validators.required),
 
       expectedSelery: new FormControl(null),
-      appliedBy: new FormControl(null),
+      sourceFrom: new FormControl(null),
 
 
       //companyDeptPost: new FormControl(null),
@@ -475,9 +558,21 @@ isJobRunning(event: Event, index: number) {
       cvPath: null,
       nidPath: null,
       tinPath: null,
+      nidBackPath: null,
+
+      BnName: new FormControl(null, Validators.required),//l
+      BnFatherName: new FormControl(null, Validators.required),//l
+      BnMotherName: new FormControl(null, Validators.required),//l
+      BnSpouseName: null,//l
+      grandTotalDays: 0,
+      anyRelative:new FormControl(null, Validators.required),
+      describeRelative:null,
+
       academicQualifications: this.formBuilder.array([]),
       workExperiences: this.formBuilder.array([]),
       professionalCirtificate: this.formBuilder.array([]),
+      training: this.formBuilder.array([]),
+      reference: this.formBuilder.array([]),
 
 
     });
@@ -499,11 +594,20 @@ isJobRunning(event: Event, index: number) {
   get name() {
     return this.requirementForm.get('name');
   }
-    get fatherName() {
+  get BnName() {
+    return this.requirementForm.get('BnName');
+  }
+  get fatherName() {
     return this.requirementForm.get('fatherName');
+  }
+  get BnFatherName() {
+    return this.requirementForm.get('BnFatherName');
   }
   get motherName() {
     return this.requirementForm.get('motherName');
+  }
+  get BnMotherName() {
+    return this.requirementForm.get('BnMotherName');
   }
   get maritialStatus() {
     return this.requirementForm.get('maritialStatus');
@@ -535,222 +639,200 @@ isJobRunning(event: Event, index: number) {
   get parAddDetai() {
     return this.requirementForm.get('parAddDetai');
   }
-  // get board() {
-  //   return this.requirementForm.get('board');
-  // }
-  // get degree() {
-  //   return this.requirementForm.get('board');
-  // }
-  // get institution() {
-  //   return this.requirementForm.get('institution');
-  // }
-  // get major() {
-  //   return this.requirementForm.get('major');
-  // }
-  // get result() {
-  //   return this.requirementForm.get('result');
-  // }
-  // get passingyear() {
-  //   return this.requirementForm.get('passingyear');
-  // }
+  get anyRelative() {
+  return this.requirementForm.get('anyRelative') as FormControl;
+}
+
+
+public showRelativeDes:string='';
+getAnyRelative(event:any){
+  debugger
+  this.showRelativeDes=event;
+  
+}
 
 
 
 
-  // async onSubmit(): Promise<void> {
-  //   debugger
+
+
+  // async onFormSubmit(): Promise<void> {
+  //   debugger;
+
   //   try {
-  //     await this.uploadImages();
-  //     await this.uploadSignature();
-  //     await this.uploadNID();
-  //     await this.uploadTin();
-  //     await this.uploadCV();
-  //     await this.uploadTin();
-  //     this.onSubmitFileForm();
+  //     try {
+  //       await this.uploadImages();
+  //     } catch (error) {
+  //       console.error("uploadImages failed", error);
+  //       this.toastr.error("Image upload is required.")
+
+  //       return; 
+  //     }
+
+
+
+  //     try {
+  //       await this.uploadSignature();
+  //     } catch (error) {
+  //       console.error("uploadSignature failed", error);
+  //       this.toastr.error("Signature upload is required.")
+
+  //       return;
+  //     }
+
+  //     try {
+  //       await this.uploadNID();
+  //     } catch (error) {
+  //       console.error("upload NID failed", error);
+  //     this.toastr.error("NID Front upload is required.")
+
+  //     return; 
+  //     }
+
+  //     try {
+  //     await this.uploadNIDBack();
   //   } catch (error) {
-  //     console.error("File upload sequence failed.", error);
+  //     console.error("upload NID failed", error);
+  //     this.toastr.error("NID Back upload is required.")
+
+  //     return; 
+  //   }
+
+  //     try {
+  //       await this.uploadTin();
+  //     } catch (error) {
+  //       console.error("uploadTin failed", error);
+  //     }
+
+  //     try {
+  //       await this.uploadCV();
+  //     } catch (error) {
+  //       console.error("uploadCV failed", error);
+  //     }
+
+
+  //     this.onSubmitFileForm();
+
+  //   } catch (error) {
+  //     console.error("Unexpected error in onSubmit", error);
   //   }
   // }
 
-  async onFormSubmit(): Promise<void> {
-    debugger;
+  // async onSubmit(): Promise<void> {
+  //   debugger;
 
-    try {
-      try {
-        await this.uploadImages();
-      } catch (error) {
-        console.error("uploadImages failed", error);
-        this.toastr.error("Image upload is required.")
-        //alert("Image upload is required.");
-        return; // Stop submission
-      }
+  //   try {
+  //     try {
+  //       await this.uploadImages();
+  //     } catch (error) {
+  //       console.error("uploadImages failed", error);
 
 
+  //     }
 
-      try {
-        await this.uploadSignature();
-      } catch (error) {
-        console.error("uploadSignature failed", error);
-        this.toastr.error("Signature upload is required.")
-        //alert("Signature  upload is required.");
-        return; // Stop submission
-      }
+  //     try {
+  //       await this.uploadSignature();
+  //     } catch (error) {
+  //       console.error("uploadSignature failed", error);
 
-      try {
-        await this.uploadNID();
-      } catch (error) {
-        console.error("uploadNID failed", error);
-      }
+  //     }
 
-      try {
-        await this.uploadTin();
-      } catch (error) {
-        console.error("uploadTin failed", error);
-      }
+  //     try {
+  //       await this.uploadNID();
+  //     } catch (error) {
+  //       console.error("uploadNID failed", error);
+  //     }
 
-      try {
-        await this.uploadCV();
-      } catch (error) {
-        console.error("uploadCV failed", error);
-      }
+  //   try {
+  //     await this.uploadNIDBack();
+  //   } catch (error) {
+  //     console.error("uploadNID Back failed", error);
+  //   }
 
-      // Only after all uploads attempted, submit the form
-      this.onSubmitFileForm();
+  //     try {
+  //       await this.uploadTin();
+  //     } catch (error) {
+  //       console.error("uploadTin failed", error);
+  //     }
 
-    } catch (error) {
-      console.error("Unexpected error in onSubmit", error);
-    }
-  }
-
-  async onSubmit(): Promise<void> {
-    debugger;
-
-    try {
-      try {
-        await this.uploadImages();
-      } catch (error) {
-        console.error("uploadImages failed", error);
-        //this.toastr.error("Image upload is required.")
-
-      }
-
-      try {
-        await this.uploadSignature();
-      } catch (error) {
-        console.error("uploadSignature failed", error);
-        //this.toastr.error("Signature upload is required.")
-        //alert("Signature  upload is required.");
-        //return; // Stop submission
-      }
-
-      try {
-        await this.uploadNID();
-      } catch (error) {
-        console.error("uploadNID failed", error);
-      }
-
-      try {
-        await this.uploadTin();
-      } catch (error) {
-        console.error("uploadTin failed", error);
-      }
-
-      try {
-        await this.uploadCV();
-      } catch (error) {
-        console.error("uploadCV failed", error);
-      }
-
-      // Only after all uploads attempted, submit the form
-      this.onSubmitFileForm();
-
-    } catch (error) {
-      console.error("Unexpected error in onSubmit", error);
-    }
-  }
+  //     try {
+  //       await this.uploadCV();
+  //     } catch (error) {
+  //       console.error("uploadCV failed", error);
+  //     }
 
 
+  //     this.onSubmitFileForm();
 
-  // onFileChange(event: any): void {
-  //   this.image = event.target.files;  
+  //   } catch (error) {
+  //     console.error("Unexpected error in onSubmit", error);
+  //   }
   // }
+
+
+
+
+
+
+
+
+
   onFileChange(event: any): void {
-    const files = event.target.files;
-
-    if (files && files.length > 0) {
-      const file: File = files[0];
-
-      const allowedTypes = [
-        'image/png',
-        'image/jpeg',
-        'image/jpg',
-        'image/gif',
-        'image/bmp',
-        'image/x-png'
-      ];
-
-      if (!allowedTypes.includes(file.type)) {
-        alert('Only PNG, JPEG, JPG, GIF, BMP images are allowed.');
-        event.target.value = ''; // clear the file input
-        return;
-      }
-
-      this.image = files; // valid file, store for upload
-    }
+    this.image = event.target.files[0] || null;
+    this.updateFileList();
   }
 
   OnSignatureChange(event: any): void {
-    const files = event.target.files;
-
-    if (files && files.length > 0) {
-      const file: File = files[0];
-
-      const allowedTypes = [
-        'image/png',
-        'image/jpeg',
-        'image/jpg',
-        'image/gif',
-        'image/bmp',
-        'image/x-png'
-      ];
-
-      if (!allowedTypes.includes(file.type)) {
-        alert('Only PNG, JPEG, JPG, GIF, BMP images are allowed.');
-        event.target.value = ''; // clear the file input
-        return;
-      }
-
-      this.signature = files; // valid file, store for upload
-    }
+    this.signature = event.target.files[0] || null;
+    this.updateFileList();
   }
 
-
-
   onTINChange(event: any): void {
-    this.tin = event.target.files;
+    this.tin = event.target.files[0] || null;
+    this.updateFileList();
   }
 
   onNIDChange(event: any): void {
-    this.nid = event.target.files;
+    this.nid = event.target.files[0] || null;
+    this.updateFileList();
   }
 
-  // OnSignatureChange(event: any): void {
-  //   this.signature = event.target.files;  
-  // }
+  onNIDBackChange(event: any): void {
+    this.nidBack = event.target.files[0] || null;
+    this.updateFileList();
+  }
 
   OnCvChange(event: any): void {
-    this.cv = event.target.files;
+    this.cv = event.target.files[0] || null;
+    this.updateFileList();
   }
 
-  // Upload image with async/await
-  public imgUrl: string = 'reqform/dbsinleuploadfile';
-  async uploadImages(): Promise<void> {
+  updateFileList(): void {
+    debugger
+    this.fileList = [];
+    if (this.image) this.fileList.push({ docId: this.photoId, fileType: 'photo', attachedfile: this.image });
+    if (this.signature) this.fileList.push({ docId: this.sigId, fileType: 'signature', attachedfile: this.signature });
+    if (this.nid) this.fileList.push({ docId: this.nidFnId, fileType: 'nidFnt', attachedfile: this.nid });
+    if (this.nidBack) this.fileList.push({ docId: this.nidBckId, fileType: 'nidBck', attachedfile: this.nidBack });
+    if (this.tin) this.fileList.push({ docId: this.TinId, fileType: 'tin', attachedfile: this.tin });
+    if (this.cv) this.fileList.push({ docId: this.CVId, fileType: 'cv', attachedfile: this.cv });
+
+    console.log("Final file list:", this.fileList);
+  }
+
+
+  public fileUrl: string = 'reqform/dbsinleuploadfiles';
+  async uploadfileList(ReferenceId: string, fileList: any,type:string): Promise<void> {
     debugger
     return new Promise((resolve, reject) => {
-      this._dataservice.uploadFile(this.image, this.imgUrl).subscribe(
+      this._dataservice.uploadAllFilez(fileList, this.fileUrl, ReferenceId,type).subscribe(
         response => {
-          this.requirementForm.controls.imagePath.setValue(response.data[0]);
-          console.log(" this.requirementForm.controls.imagePath", this.requirementForm.controls.imagePath)
+          console.log("Upload response:", response);
+          if (response.data && response.data.length > 0) {
+            this.fileList = [];
+            this.photoId = null, this.sigId = null, this.nidFnId = null, this.nidBckId = null, this.TinId = null, this.CVId = null
+            //window.location.reload();
+          }
           resolve();
         },
         error => {
@@ -762,276 +844,149 @@ isJobRunning(event: Event, index: number) {
     });
   }
 
-  // Upload signature with async/await
-  public sigUrl: string = 'reqform/dbsinleuploadfile';
-  async uploadSignature(): Promise<void> {
-    debugger
-    return new Promise((resolve, reject) => {
-      this._dataservice.uploadFile(this.signature, this.sigUrl).subscribe(
-        response => {
-          this.requirementForm.controls.signaturePath.setValue(response.data[0]);
-          resolve();
-        },
-        error => {
-          console.error(error);
-          alert('Signature upload failed. Please try again.');
-          reject(error);
-        }
-      );
-    });
-  }
-
-  // Upload CV with async/await
-  public cvUrl: string = 'reqform/dbsinleuploadfile';
-  async uploadCV(): Promise<void> {
-    debugger
-    return new Promise((resolve, reject) => {
-      if (!this.cv) {
-        console.warn('No TIN file selected.');
-        resolve(); // Or reject() if you want to treat this as a failure
-        return;
-      }
-      this._dataservice.uploadFile(this.cv, this.cvUrl).subscribe(
-        response => {
-          this.requirementForm.controls.cvPath.setValue(response.data[0]);
-          resolve();
-        },
-        error => {
-          console.error(error);
-          alert('CV upload failed. Please try again.');
-          reject(error);
-        }
-      );
-    });
-  }
-
-  // Upload NID with async/await
-  public nidUrl: string = 'reqform/dbsinleuploadfile';
-  async uploadNID(): Promise<void> {
-    debugger
-    return new Promise((resolve, reject) => {
-      if (!this.nid) {
-        console.warn('No TIN file selected.');
-        resolve(); // Or reject() if you want to treat this as a failure
-        return;
-      }
-      this._dataservice.uploadFile(this.nid, this.nidUrl).subscribe(
-        response => {
-          this.requirementForm.controls.nidPath.setValue(response.data[0]);
-          console.log("after update nid is ", this.requirementForm.controls.nidPath);
-          resolve();
-        },
-        error => {
-          console.error(error);
-          alert('CV upload failed. Please try again.');
-          reject(error);
-        }
-      );
-    });
-  }
-
-  // Upload TIN with async/await
-  public tinUrl: string = 'reqform/dbsinleuploadfile';
-  async uploadTin(): Promise<void> {
-    debugger
-    return new Promise((resolve, reject) => {
-      if (!this.tin) {
-        console.warn('No TIN file selected.');
-        resolve(); // Or reject() if you want to treat this as a failure
-        return;
-      }
-
-      this._dataservice.uploadFile(this.tin, this.tinUrl).subscribe(
-        response => {
-          this.requirementForm.controls.tinPath.setValue(response.data[0]);
-          console.log("after update TIN is ", this.requirementForm.controls.tinPath);
-          resolve();
-        },
-        error => {
-          console.error(error);
-          alert('CV upload failed. Please try again.');
-          reject(error);
-        }
-      );
-    });
-  }
-
-
-
-  // Assume this.imageToUpdate is of type File and this.documentId is the ID to update
-  public uImgUrl: string = 'reqform/updateFile';
-  async updateImage(): Promise<void> {
-    debugger
-    if (!this.imageId && this.image) {
-      this.uploadImages();
-      return;
-    }
-    try {
-      const response = await this._dataservice.updateFile(this.imageId, this.image, this.uImgUrl).toPromise();
-
-      if (response.responseCode === 200) {
-        this.requirementForm.controls.imagePath.setValue(response.data?.[0] || null);
-        console.log(" this.requirementForm.controls.imagePath.setValue", this.requirementForm.controls.imagePath.setValue)
-      } else {
-      }
-    } catch (error) {
-      console.error('Update image error:', error);
-    }
-  }
-
-  public uSigUrl: string = 'reqform/updateFile';
-  async updateSignature(): Promise<void> {
-    debugger
-    if (!this.signatureId && this.signature) {
-      this.uploadSignature();
-      return;
-    }
-    try {
-      const response = await this._dataservice.updateFile(this.signatureId, this.signature, this.uSigUrl).toPromise();
-
-      if (response.responseCode === 200) {
-        this.requirementForm.controls.signaturePath.setValue(response.data?.[0] || null);
-      } else {
-      }
-    } catch (error) {
-      console.error('Update image error:', error);
-    }
-  }
-
-  public uCvUrl: string = 'reqform/updateFile';
-  async updateCV(): Promise<void> {
-    debugger
-    if (!this.cvId && this.cv) {
-      this.uploadCV();
-      return;
-    }
-    try {
-      const response = await this._dataservice.updateFile(this.cvId, this.cv, this.uCvUrl).toPromise();
-
-      if (response.responseCode === 200) {
-        this.requirementForm.controls.cvPath.setValue(response.data?.[0] || null);
-      } else {
-      }
-    } catch (error) {
-      console.error('Update image error:', error);
-    }
-  }
-
-  public uTinUrl: string = 'reqform/updateFile';
-  async updateTIN(): Promise<void> {
-    debugger
-    if (!this.tinId && this.tin) {
-      this.uploadTin();
-      return;
-    }
-    try {
-      const response = await this._dataservice.updateFile(this.tinId, this.tin, this.uTinUrl).toPromise();
-
-      if (response.responseCode === 200) {
-        this.requirementForm.controls.tinPath.setValue(response.data?.[0] || null);
-      } else {
-      }
-    } catch (error) {
-      console.error('Update image error:', error);
-    }
-  }
-
-  public uNIDUrl: string = 'reqform/updateFile';
-  async updateNID(): Promise<void> {
-    debugger
-    if (!this.NIDId && this.nid) {
-      this.uploadTin();
-      return;
-    }
-    try {
-      const response = await this._dataservice.updateFile(this.NIDId, this.nid, this.uNIDUrl).toPromise();
-
-      if (response.responseCode === 200) {
-        this.requirementForm.controls.nidPath.setValue(response.data?.[0] || null);
-      } else {
-      }
-    } catch (error) {
-      console.error('Update image error:', error);
-    }
-  }
-
-  // async updateNID(): Promise<void> {
-  //   try {
-  //     // If NIDId is not set, upload first
-  //     if (!this.NIDId && this.nid) {
-  //       await this.uploadNID();  // Wait for upload to finish
-  //     }
-  //     const response = await this._dataservice.updateFile(this.NIDId, this.nid).toPromise();
-
-  //     if (response.responseCode === 200) {
-  //       this.requirementForm.controls.nidPath.setValue(response.data?.[0] || null);
-  //     }
-  //   } catch (error) {
-  //     console.error('Update image error:', error);
-  //   }
-  // }
-
-
-
 
 
   //Save form
+  public ReferenceIds: any;
   public _saveUrl: string = 'reqform/saveupdate';
-  onSubmitFileForm(): void {
-    debugger
+  // onSubmitFileForm(): void {
+  //   debugger
+  //   let formValues = { ...this.requirementForm.value };
+  //   delete formValues.academicQualifications;
+  //   delete formValues.workExperiences;
+  //   delete formValues.professionalCirtificate;
+  //   console.log("formValues", formValues)
+  //   const reqform = formValues;
+  //   const applicaOId = reqform.applicantId
+  //   const acaQlf = this.academicQualifications.value;
+  //   const wrkExp = this.workExperiences.value;
+  //   const profCirtificate = this.professionalCirtificate.value;
+  //   const param = {
+  //     loggedUserId: this.userID,
+  //     strId: this.requirementForm.controls.applicantId.value,
+  //     strId2: this.userID,
+  //     JobOid: this.jobId,
+  //     mstrOid: this.updateOidEdit
+  //   };
+
+  //   if ((!this.image || !this.signature || !this.nid || !this.nidBack) && !applicaOId) {
+  //     this.toastr.error("Please Upload All Document")
+  //     return;
+  //   }
+
+  //   const ModelsArray = [param, [reqform], acaQlf, wrkExp, profCirtificate];
+  //   if (this.requirementForm.invalid) {
+  //     this._msg.error("form is invalid");
+  //     this.requirementForm.markAllAsTouched();
+  //     this.academicQualifications.controls.forEach(control => control.markAllAsTouched());
+  //     this.workExperiences.controls.forEach(control => control.markAllAsTouched());
+  //     this.professionalCirtificate.controls.forEach(control => control.markAllAsTouched());// Highlights all invalid fields
+  //     return;
+  //   } else {
+  //     this._dataservice.postMultipleModel(this._saveUrl, ModelsArray)
+  //       .subscribe(response => {
+  //         this.res = response;
+  //         this.resmessage = this.res.resdata.message;
+  //         if (this.res.resdata.resstate) {
+  //           var ReferenceId = this.res.resdata.mstrId
+  //           this.uploadfileList(ReferenceId)
+  //           this._msg.success(this.resmessage);
+  //           // window.location.reload()
+  //         }
+  //         if (this.requirementForm.controls.applicantId.value) {
+  //           //window.location.reload()
+  //           this.getcandidateDetail(this.profileOid);
+  //           this.updateProfile = 'update';
+  //           this.applyForm = false;
+  //         }
+  //         else {
+  //           window.location.reload()
+  //         }
+
+  //       }
+
+  //         , error => {
+  //           console.log(error);
+  //         }
+  //       );
+  //   }
+  // }
+
+  async onSubmitFileForm(): Promise<void> {
+    debugger;
+    this.scrollContainerTop();
     let formValues = { ...this.requirementForm.value };
     delete formValues.academicQualifications;
     delete formValues.workExperiences;
     delete formValues.professionalCirtificate;
-    console.log("formValues", formValues)
+    delete formValues.training;
+    delete formValues.reference;
+
     const reqform = formValues;
+    const applicaOId = reqform.applicantId;
+
     const acaQlf = this.academicQualifications.value;
     const wrkExp = this.workExperiences.value;
     const profCirtificate = this.professionalCirtificate.value;
+    const training = this.training.value;
+    const reference = this.reference.value;
 
     const param = {
       loggedUserId: this.userID,
       strId: this.requirementForm.controls.applicantId.value,
       strId2: this.userID,
-      JobOid: this.jobId,
-      mstrOid: this.updateOidEdit
+      JobOid: ''
     };
 
-    const ModelsArray = [param, [reqform], acaQlf, wrkExp, profCirtificate];
+    if ((!this.image || !this.signature || !this.nid || !this.nidBack) && !applicaOId) {
+      this.toastr.error("Please Upload All Document");
+      return;
+    }
+    const ModelsArray = [param, [reqform], acaQlf, wrkExp, profCirtificate, training, reference];
     if (this.requirementForm.invalid) {
       this._msg.error("form is invalid");
       this.requirementForm.markAllAsTouched();
       this.academicQualifications.controls.forEach(control => control.markAllAsTouched());
       this.workExperiences.controls.forEach(control => control.markAllAsTouched());
-      this.professionalCirtificate.controls.forEach(control => control.markAllAsTouched());// Highlights all invalid fields
+      this.professionalCirtificate.controls.forEach(control => control.markAllAsTouched());
+      this.training.controls.forEach(control => control.markAllAsTouched());
+      this.reference.controls.forEach(control => control.markAllAsTouched());
       return;
-    } else {
-      this._dataservice.postMultipleModel(this._saveUrl, ModelsArray)
-        .subscribe(response => {
-          this.res = response;
-          this.resmessage = this.res.resdata.message;
-          if (this.res.resdata.resstate) {
-            this._msg.success(this.resmessage);
-            // window.location.reload()
-          }
-          if (this.requirementForm.controls.applicantId.value) {
-            //window.location.reload()
-            this.getcandidateDetail(this.profileOid);
-            this.updateProfile = 'update';
-            this.applyForm = false;
-          }
-          else {
-            window.location.reload()
-          }
+    }
 
+    try {
+      const response: any = await this._dataservice.postMultipleModel(this._saveUrl, ModelsArray).toPromise();
+      this.res = response;
+      this.resmessage = this.res.resdata.message;
+      if (this.res.resdata.resstate) {
+        this.ReferenceIds = this.res.resdata.mstrId;
+        this._msg.success(this.resmessage);
+        if (this.fileList.length > 0) {
+          await this.uploadfileList(this.ReferenceIds, this.fileList,'master');
+        }
+        if (this.accList.length > 0) {
+          await this.uploadfileList(this.ReferenceIds, this.accList,'academic');
+        }
+        if (this.experiencesList.length > 0) {
+          await this.uploadfileList(this.ReferenceIds, this.experiencesList,'experience');
+        }
+        if (this.profCirtificateList.length > 0) {
+          await this.uploadfileList(this.ReferenceIds, this.profCirtificateList,'certificate');
+        }
+        if (this.trangsList.length > 0) {
+          await this.uploadfileList(this.ReferenceIds, this.trangsList,'training');
         }
 
-          , error => {
-            console.log(error);
-          }
-        );
+
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      this._msg.error("Something went wrong, please try again.");
     }
   }
+
+
 
 
   get academicQualifications(): FormArray {
@@ -1047,15 +1002,22 @@ isJobRunning(event: Event, index: number) {
 
   // Add a new academic qualification FormGroup to the FormArray
   addAcademicQualification() {
+    debugger
+    const accName = `acd_${this.academicQualifications.length + 1}`;
     const qualificationGroup = this.formBuilder.group({
       acQlfId: null,
       applicantId: null,
       degree: ['', Validators.required],
+      //degreeType: ['', Validators.required],
       board: ['', Validators.required],
       institution: ['', Validators.required],
       major: ['', Validators.required],
       result: ['', Validators.required],
-      passingyear: ['', [Validators.required, Validators.pattern("^[0-9]{4}$")]]
+      passingyear: ['', [Validators.required, Validators.pattern("^[0-9]{4}$")]],
+      acdqName: [accName],
+      docOid: null,
+      docVPath: null,
+      isLastDegree:['', Validators.required],
     });
 
     this.academicQualifications.push(qualificationGroup);
@@ -1063,10 +1025,74 @@ isJobRunning(event: Event, index: number) {
 
   // Remove an academic qualification from the FormArray
   removeAcademicQualification(index: number) {
-    if (this.academicQualifications.length > 1) { // Ensure at least 1 qualifications remain
+    debugger
+    if (this.academicQualifications.length > 1) {
+      const confirmDelete = confirm("Are you sure you want to remove this item");
+      if (!confirmDelete) {
+        return;
+      }
+      var acqName = this.academicQualifications.at(index).value;
+      this.removedocument(acqName.docOid, acqName.acdqName)
       this.academicQualifications.removeAt(index);
+      console.log("acqName is the mail", acqName)
+      this.removeAccFile(acqName)
+
     }
   }
+
+
+  //DELETE DOCOMENT WHEN REMOVE A ROW
+  public _dltDocUrl: string = 'reqform/removedocument';
+  removedocument(docOid, docSName) {
+    var param = { strId: docOid, strId2: docSName };
+    var apiUrl = this._dltDocUrl
+    this._dataservice.getWithMultipleModel(apiUrl, param)
+      .subscribe(response => {
+        this.res = response;
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  removeAccFile(acqName: any) {
+    this.accList = this.accList.filter(item => item.fileType !== acqName)
+    console.log("this.fileList=>", this.accList);
+  }
+
+  public accList: any[] = [];
+  onAccQlfDoc(event: any, index: number): void {
+    debugger
+    const file = event.target.files[0] || null;
+    const currentRow = this.academicQualifications.at(index).value;
+    console.log("Current Row Data:", currentRow);
+
+    if (file) {
+      this.accList.push({ docId: currentRow.docOid, fileType: currentRow.acdqName, attachedfile: file })
+      this.academicQualifications.at(index).get('document')?.setValue(file);
+      console.log("this.fileList=>", this.fileList);
+    } else {
+      this.accList[index] = null;
+      this.academicQualifications.at(index).get('document')?.setValue(null);
+    }
+  }
+
+
+onLastDegreeChange(index: number) {
+  this.academicQualifications.controls.forEach((ctrl, i) => {
+    ctrl.get('isLastDegree')?.setValue(i === index ? '1' : '0');
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
   get workExperiences(): FormArray {
@@ -1075,52 +1101,285 @@ isJobRunning(event: Event, index: number) {
 
   // Add new work experience form group
   addExperience() {
+    const accName = `exp_${this.workExperiences.length + 1}`;
     const experienceGroup = this.formBuilder.group({
       expId: null,
       applicantId: null,
       companyName: [null, Validators.required],
       companyType: [null, Validators.required],
+      salary: [null, Validators.required],
       priodFromDate: [null, Validators.required],
       priodToDate: null,
       jobDescription: [null, Validators.required],
       department: [null, Validators.required],
       designation: [null, Validators.required],
       jobLocation: [null],
-      isRunning:[null]//add extra
+      isRunning: [null],//add extra
+      acdqName: [accName],
+      docOid: null,
+      docVPath: null,
+      totalDays: null,
+      isLastExperience:['', Validators.required],
     });
 
     this.workExperiences.push(experienceGroup);
   }
 
   // Remove work experience by index
+
   removeExperience(index: number) {
-    this.workExperiences.removeAt(index);
+    debugger
+    if (this.workExperiences.length > 0) {
+      const confirmDelete = confirm("Are you sure you want to remove this item");
+      if (!confirmDelete) {
+        return;
+      }
+      var acqName = this.workExperiences.at(index).value;
+      this.removedocument(acqName.docOid, acqName.acdqName)
+      this.workExperiences.removeAt(index);
+      this.updateGrandTotalDays();
+      console.log("acqName is the mail", acqName)
+      this.removeExperienceFile(acqName)
+    }
   }
 
-  // Add Proffesional Cirtificate
+  //REMOVE FILE SNAME FORM ROW
+  removeExperienceFile(acqName: any) {
+    this.experiencesList = this.experiencesList.filter(item => item.fileType !== acqName)
+    console.log("this.fileList=>", this.experiencesList);
+  }
 
+  //ADD ACADEMIC QULIFICAITON FILE
+  public experiencesList: any[] = [];
+  onExperienceDoc(event: any, index: number): void {
+    debugger
+    const file = event.target.files[0] || null;
+    const currentRow = this.workExperiences.at(index).value;
+    if (file) {
+      this.experiencesList.push({ docId: currentRow.docOid, fileType: currentRow.acdqName, attachedfile: file })
+      this.workExperiences.at(index).get('document')?.setValue(file);
+    } else {
+      this.experiencesList[index] = null;
+      this.workExperiences.at(index).get('document')?.setValue(null);
+    }
+  }
+
+onLastExperience(index: number) {
+  this.workExperiences.controls.forEach((ctrl, i) => {
+    ctrl.get('isLastExperience')?.setValue(i === index ? '1' : '0');
+  });
+
+}
+
+
+
+
+
+
+  // Add Proffesional Cirtificate
   get professionalCirtificate(): FormArray {
     return this.requirementForm.get('professionalCirtificate') as FormArray;
   }
   addProfCirtificate() {
+    const accName = `pcr_${this.professionalCirtificate.length + 1}`;
     const profCirtificateGroup = this.formBuilder.group({
       pCirtificateId: null,
       applicantId: null,
       courseName: [null, Validators.required],
       instution: [null, Validators.required],
-      duration: [null, Validators.required],
-      achievementDate: [null, Validators.required]
-
+      startDate: [null, Validators.required],
+      achievementDate: [null, Validators.required],//extra bottom 
+      acdqName: [accName],
+      docOid: null,
+      docVPath: null
     });
-
     this.professionalCirtificate.push(profCirtificateGroup);
   }
 
   // Remove work experience by index
   removeProfCirtificate(index: number) {
-    this.professionalCirtificate.removeAt(index);
+    debugger
+    if (this.professionalCirtificate.length > 0) {
+      const confirmDelete = confirm("Are you sure you want to remove this item");
+      if (!confirmDelete) {
+        return;
+      }
+      var acqName = this.professionalCirtificate.at(index).value;
+      this.removedocument(acqName.docOid, acqName.acdqName)
+      this.professionalCirtificate.removeAt(index);
+      console.log("acqName is the mail", acqName)
+      this.removeProfCirtificateFile(acqName)
+
+    }
   }
 
+
+  //REMOVE FILE SNAME FORM ROW
+  removeProfCirtificateFile(acqName: any) {
+    this.profCirtificateList = this.profCirtificateList.filter(item => item.fileType !== acqName)
+    console.log("this.fileList=>", this.profCirtificateList);
+  }
+
+  //ADD ACADEMIC QULIFICAITON FILE
+  public profCirtificateList: any[] = [];
+  onProfCirDoc(event: any, index: number): void {
+    debugger
+    const file = event.target.files[0] || null;
+    const currentRow = this.professionalCirtificate.at(index).value;
+    if (file) {
+      this.profCirtificateList.push({ docId: currentRow.docOid, fileType: currentRow.acdqName, attachedfile: file })
+      this.professionalCirtificate.at(index).get('document')?.setValue(file);
+    } else {
+      this.profCirtificateList[index] = null;
+      this.professionalCirtificate.at(index).get('document')?.setValue(null);
+    }
+  }
+
+
+
+
+  //TRAINING START FROM HERE 
+
+  //TRAINING START FROM HERE 
+
+  get training(): FormArray {
+    return this.requirementForm.get('training') as FormArray;
+  }
+
+
+  // Add a new academic qualification FormGroup to the FormArray
+  addTraining() {
+    const accName = `trn_${this.training.length + 1}`;
+    const TrainingGroup = this.formBuilder.group({
+      trainingId: null,
+      applicantId: null,
+      courseName: [null, Validators.required],
+      instution: [null, Validators.required],
+      startDate: [null, Validators.required],
+      achievementDate: [null, Validators.required],
+      acdqName: [accName],
+      docOid: null,
+      docVPath: null
+    });
+
+    this.training.push(TrainingGroup);
+  }
+
+  // Remove an academic qualification from the FormArray AND ALSO DELETE DOCUMENT
+  removeTraining(index: number) {
+    debugger
+    if (this.training.length > 0) {
+      const confirmDelete = confirm("Are you sure you want to remove this item");
+      if (!confirmDelete) {
+        return;
+      }
+      var acqName = this.training.at(index).value;
+      this.removedocument(acqName.docOid, acqName.acdqName)
+      this.training.removeAt(index);
+      console.log("acqName is the mail", acqName)
+      this.removetrainingFile(acqName)
+
+    }
+  }
+
+
+
+
+  //REMOVE FILE SNAME FORM ROW
+  removetrainingFile(acqName: any) {
+    this.trangsList = this.trangsList.filter(item => item.fileType !== acqName)
+    console.log("this.fileList=>", this.trangsList);
+  }
+
+  //ADD ACADEMIC QULIFICAITON FILE
+  public trangsList: any[] = [];
+  onTrainingDoc(event: any, index: number): void {
+    debugger
+    const file = event.target.files[0] || null;
+    const currentRow = this.training.at(index).value;
+    if (file) {
+      this.trangsList.push({ ocId: currentRow.docOid, fileType: currentRow.acdqName, attachedfile: file })
+      this.training.at(index).get('document')?.setValue(file);
+    } else {
+      this.trangsList[index] = null;
+      this.training.at(index).get('document')?.setValue(null);
+    }
+  }
+  //TRAINING PART END HERE 
+
+  //REFERENCE START FROM HERE 
+  get reference(): FormArray {
+    return this.requirementForm.get('reference') as FormArray;
+  }
+  addReference() {
+    const referenceGroup = this.formBuilder.group({
+      referenceId: null,
+      applicantId: null,
+      Name: [null, Validators.required],
+      Organization: [null, Validators.required],
+      designation: [null, Validators.required],
+      email: [null, Validators.required],
+      mobile: [null, Validators.required],
+      relation: null,
+      fatherName: null,
+      address: null
+
+    });
+
+    this.reference.push(referenceGroup);
+  }
+
+  // Remove work experience by index
+  removeReference(index: number) {
+    this.reference.removeAt(index);
+  }
+  //REFERENCE END HERE
+
+  getFromDate(event: any, index: number) {
+    const experience = this.workExperiences.at(index);
+    experience.get('priodFromDate')?.setValue(event.target.value);
+
+    this.calculateTotalDays(index);
+  }
+
+  getToDate(event: any, index: number) {
+    const experience = this.workExperiences.at(index);
+    experience.get('priodToDate')?.setValue(event.target.value);
+
+    this.calculateTotalDays(index);
+  }
+
+  // 🔹 Calculate total days
+  calculateTotalDays(index: number) {
+    const experience = this.workExperiences.at(index);
+    const fromDateStr = experience.get('priodFromDate')?.value;
+    let toDateStr = experience.get('priodToDate')?.value;
+    if (!fromDateStr) {
+      experience.get('totalDays')?.setValue(0);
+      this.updateGrandTotalDays();
+      return;
+    }
+    const fromDate = new Date(fromDateStr);
+    if (experience.get('isRunning')?.value === 'Continuing') {
+      toDateStr = new Date().toISOString().split('T')[0];
+    }
+    if (toDateStr) {
+      const toDate = new Date(toDateStr);
+      const diffInMs = toDate.getTime() - fromDate.getTime();
+      const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+      experience.get('totalDays')?.setValue(diffInDays >= 0 ? diffInDays + 1 : 0);
+    }
+    this.updateGrandTotalDays();
+  }
+
+  updateGrandTotalDays() {
+    let total = 0;
+    this.workExperiences.controls.forEach(exp => {
+      total += exp.get('totalDays')?.value || 0;
+    });
+    console.log("grand total days is ", total)
+    this.requirementForm.get('grandTotalDays')?.setValue(total);
+  }
 
 
 
@@ -1176,6 +1435,17 @@ isJobRunning(event: Event, index: number) {
   public jobId: string;
   public _getbyIdUrl: string = 'jobpost/getbyid';
   showDetails(modelEvnt, isShow) {
+    debugger
+    if (modelEvnt.business) {
+      this.getBusinessTypeById(modelEvnt.business)
+    }
+    this.masterList = [];
+    this.skillList = [];
+    this.benifitList = [];
+    this.requirementList = [];
+    this.experienceList = [];
+    this.otherRequirementList = [];
+    this.responsibilityList = [];
     this.jobId = modelEvnt.jobOid
     this.isShowmstr = isShow;
     debugger;
@@ -1189,25 +1459,49 @@ isJobRunning(event: Event, index: number) {
         this.detailDiv = true;
         this.masterList = JSON.parse(this.res.resdata.jobPostMaster)
         this.masterListDetails = this.masterList[0];
-        console.log("this.Total test test -------------------", (this.masterListDetails))
-        this.skillList = JSON.parse(this.res.resdata.jobSkill)
-        this.benifitList = JSON.parse(this.res.resdata.jobBenefit)
-        this.requirementList = JSON.parse(this.res.resdata.jobRequirement)
-        this.experienceList=JSON.parse(this.res.resdata.jobExperience)
-        this.otherRequirementList = JSON.parse(this.res.resdata.jobOtherRequirement)
-        this.responsibilityList = JSON.parse(this.res.resdata.jobResponsibility)
-        console.log("this.Total data -------------------", (this.masterList))
-        console.log("this.Total skillList ", (this.skillList))
-        console.log("this.Total benifitList ", (this.benifitList))
-        console.log("this.Total requirementList ", (this.requirementList))
-        console.log("this.Total otherRequirementList ", (this.otherRequirementList))
-        console.log("this.Total responsibilityList ", (this.responsibilityList))
 
-
-
+        if (this.res.resdata.jobSkill) {
+          this.skillList = JSON.parse(this.res.resdata.jobSkill)
+        }
+        if (this.res.resdata.jobBenefit) {
+          this.benifitList = JSON.parse(this.res.resdata.jobBenefit)
+        }
+        if (this.res.resdata.jobRequirement) {
+          this.requirementList = JSON.parse(this.res.resdata.jobRequirement)
+        }
+        if (this.res.resdata.jobExperience) {
+          this.experienceList = JSON.parse(this.res.resdata.jobExperience)
+        }
+        if (this.res.resdata.jobOtherRequirement) {
+          this.otherRequirementList = JSON.parse(this.res.resdata.jobOtherRequirement)
+        }
+        if (this.res.resdata.jobResponsibility) {
+          this.responsibilityList = JSON.parse(this.res.resdata.jobResponsibility)
+        }
 
         console.log("this.this.jobPostForm", this.requirementForm)
 
+      }, error => {
+        console.log(error);
+      });
+    this.scrollContainerTop();
+  }
+
+  public _getBusinessIdUrl: string = 'ereqdropdown/getbusinesstypebyid';
+  public businessTypeForm: any = []
+  getBusinessTypeById(modelEvnt) {
+    debugger;
+    var param = modelEvnt;
+    var apiUrl = this._getBusinessIdUrl
+    this._dataservice.getbyid(apiUrl, param)
+      .subscribe(response => {
+        this.res = response;
+        console.log("business edit detials is ", this.res)
+        if (this.res.resdata) {
+          var busness = this.res.resdata.businessType[0];
+          this.businessTypeForm = busness;
+          console.log("this.businessTypeForm", this.businessTypeForm)
+        }
       }, error => {
         console.log(error);
       });
@@ -1227,6 +1521,7 @@ isJobRunning(event: Event, index: number) {
     this.masterDiv = false;
     this.detailDiv = false;
     this.applyForm = true;
+    this.scrollContainerTop();
 
     this.requirementForm.controls.jobTitle.setValue(jobPostDetails.jobTitle)
     this.requirementForm.controls.company.setValue(jobPostDetails.company)
@@ -1267,6 +1562,7 @@ isJobRunning(event: Event, index: number) {
     this._dataservice.getWithMultipleModel(apiUrl, param)
       .subscribe(response => {
         this.res = JSON.parse(response.resdata.userDetails);
+        console.log(" this.res   Applicant profile profileOid  ", this.res)
         //console.log(" this.res   Applicant profile detials  ", this.res)
         this.profileOid = this.res[0].oid
         this.getcandidateDetail(this.profileOid);
@@ -1280,6 +1576,7 @@ isJobRunning(event: Event, index: number) {
 
   public _getapplyUrl: string = 'reqform/applicantjobapply';
   applyJob() {
+
     debugger
     var param = { LoggedUserId: this.loggedUserId, JobOid: this.jobId, strId2: this.profileOid };
     var ModelsArray = [param];
@@ -1300,26 +1597,29 @@ isJobRunning(event: Event, index: number) {
       }
       )
 
-
+    this.scrollContainerTop();
   }
 
   public updateProfile: string = '';
   updateAndApply() {
     debugger
+    this.scrollContainerTop();
     this.masterDiv = false;
     this.detailDiv = false;
     this.applyForm = false;
     this.updateProfile = 'update';
-    console.log("ariffffffffffffffffffffffffffffffffffffffffffff")
+
   }
 
   public editProileSec: boolean = false;
   editProfile(profileOid: any) {
+    debugger
     this.editProileSec = true
     this.applyForm = true;
     this.updateProfile = '';
     const modelEvnt = { model: { oid: profileOid } };
     this.edit(modelEvnt);
+    this.scrollContainerTop();
 
   }
 
@@ -1343,7 +1643,11 @@ isJobRunning(event: Event, index: number) {
     console.log(" this.applicationLists", this.applicationLists)
   }
 
-
+public BGtxt:any;
+getBloodGroupText(id: string) {
+  const bg = this.bloodGroupList.find(item => item.id === id);
+  this.BGtxt=bg?.text;
+}
 
 
 
@@ -1362,6 +1666,8 @@ isJobRunning(event: Event, index: number) {
         this.masterList = JSON.parse(this.res.resdata.regApplicantMaster)
         this.masterListDetails = this.masterList[0];
         this.candidateMaster = this.masterListDetails
+        //for blood group show 
+        if(this.candidateMaster.blood_group){this.getBloodGroupText(this.candidateMaster.blood_group)}
         if (this.res.resdata.accQlfDetail) {
           this.accQlfList = JSON.parse(this.res.resdata.accQlfDetail)
         }
@@ -1371,10 +1677,19 @@ isJobRunning(event: Event, index: number) {
         if (this.res.resdata.profCertificate) {
           this.proCirtificateList = JSON.parse(this.res.resdata.profCertificate)
         }
+        if (this.res.resdata.training) {
+          this.hTrainingList = JSON.parse(this.res.resdata.training)
+
+        }
+        if (this.res.resdata.reference) {
+          this.hReferenceList = JSON.parse(this.res.resdata.reference)
+        }
         console.log("Detalis master------------- ", this.candidateMaster)
         console.log("Detalis accQlfList", this.accQlfList)
         console.log("Detalis wrkExpList", this.wrkExpList)
         console.log("Detalis proCirtificateList", this.proCirtificateList)
+        console.log("Detalis trainingList", this.hTrainingList)
+        console.log("Detalis referenceList", this.hReferenceList)
 
         this.loadImages(this.candidateMaster.imageNo)
         this.loadSignature(this.candidateMaster.signatureNo)
@@ -1500,6 +1815,45 @@ isJobRunning(event: Event, index: number) {
     });
   }
 
+  downloadNIDBack() {
+    debugger
+    if (!this.downloadNidBackPath) {
+      this.toastr.error("No file Found")
+      console.error('No file content received.');
+      return;
+    }
+    this._dataservice.downloadFile(this._fileUrl, this.downloadNidBackPath).subscribe(response => {
+      const blob = response.body;
+      if (!blob) {
+        this.toastr.error("No file Found")
+        console.error('No file content received.');
+        return;
+      }
+
+
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let fileName = "NID_BACK";// name+"-"+jobTitle+".pdf";
+
+      if (contentDisposition) {
+        const matches = /filename="?([^"]+)"?/.exec(contentDisposition);
+        if (matches?.[1]) {
+          fileName = matches[1];
+        }
+      }
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, error => {
+      console.error('Download failed:', error);
+    });
+  }
+
   //DOWNLOAD TIN
   //DOWNLOAD FILE FROM PATH
   downloadTIN() {
@@ -1547,6 +1901,12 @@ isJobRunning(event: Event, index: number) {
   //EDIT UPDATE DATA
   public arifMstr: any
   public jobSkill: any;
+  docPhotoVPath: any;
+  docsignatureVPath: any;
+  docNidFntVPath: any;
+  docNidBckVPath: any;
+  docTinVPath: any;
+  docCVVPath: any;
   public _geteditUrl: string = 'reqform/getcandidatedetailsbyid';
   edit(modelEvnt) {
     this.isEdit = true;
@@ -1572,12 +1932,35 @@ isJobRunning(event: Event, index: number) {
           var mstrData = JSON.parse(this.res.resdata.regApplicantMaster)
           var msrFrm = mstrData[0];
 
-          this.imageId = msrFrm.imageNo;
-          this.signatureId = msrFrm.signatureNo;
-          this.cvId = msrFrm.CvNo;
-          this.tinId = msrFrm.tinNo;
-          this.NIDId = msrFrm.NidNo;
+          //this.imageId = msrFrm.imageNo;
+          //this.signatureId = msrFrm.signatureNo;
+          //this.cvId = msrFrm.CvNo;
+          //.tinId = msrFrm.tinNo;
+          //this.NIDId = msrFrm.NidNo;
           console.log(" this.Edit master File", msrFrm)
+
+
+          this.docPhotoVPath = msrFrm.docPhotoVPath;
+          this.docsignatureVPath = msrFrm.docSignatureVPath;
+          this.docNidFntVPath = msrFrm.docNidFntVPath;
+          this.docNidBckVPath = msrFrm.docNidBckVPath;
+          this.docTinVPath = msrFrm.docTinVPath;
+          this.docCVVPath = msrFrm.docCvVPath;
+
+          this.photoId = msrFrm.docPhotoID
+          this.sigId = msrFrm.docSignatureID
+          this.nidFnId = msrFrm.docNidFntID
+          this.nidBckId = msrFrm.docNidBckID
+          this.TinId = msrFrm.docTinID
+          this.CVId = msrFrm.docCvID;
+
+
+
+
+
+
+
+
           this.updateOidEdit = msrFrm.candidateOid
 
           console.log("this resr posrt ssssssssss", msrFrm)
@@ -1585,9 +1968,8 @@ isJobRunning(event: Event, index: number) {
           this.loadSignature(msrFrm.signatureNo)
           this.downloadCvPath = msrFrm.CvNo;
           this.downloadNidPath = msrFrm.NidNo
+          this.downloadNidBackPath = msrFrm.NidBackNo
           this.downloadTinPath = msrFrm.tinNo
-
-
 
         }
         if (this.res.resdata.accQlfDetail) {
@@ -1606,6 +1988,18 @@ isJobRunning(event: Event, index: number) {
           this.proCirtificateList = JSON.parse(this.res.resdata.profCertificate)
           this.updateProfCirtificate(this.proCirtificateList)
           console.log("this.proCirtificateList Is ", this.proCirtificateList)
+        }
+
+        if (this.res.resdata.training) {
+          this.trainingList = JSON.parse(this.res.resdata.training)
+          this.updateTraining(this.trainingList)
+          console.log("this.proCirtificateList Is ", this.trainingList)
+        }
+        if (this.res.resdata.reference) {
+          this.referenceList = JSON.parse(this.res.resdata.reference)
+          this.updateReference(this.referenceList)
+          console.log("this.updateReference Is ", this.referenceList)
+
         }
 
 
@@ -1651,16 +2045,29 @@ isJobRunning(event: Event, index: number) {
           parAddDetai: msrFrm.par_add_detail,
 
           expectedSelery: msrFrm.expected_selery,
-          appliedBy: msrFrm.applied_by,
+          sourceFrom: msrFrm.sourceFrom,
 
           imagePath: msrFrm.imageNo,
           signaturePath: msrFrm.signatureNo,
           cvPath: msrFrm.CvNo,
           nidPath: msrFrm.NidNo,
           tinPath: msrFrm.tinNo,
+          nidBackPath: msrFrm.NidBackNo,
+
+          BnName: msrFrm.BnName,
+          BnFatherName: msrFrm.BnFatherName,
+          BnMotherName: msrFrm.BnMotherName,
+          BnSpouseName: msrFrm.BnSpouseName,
+          grandTotalDays: msrFrm.grandTotalDays,
+
+          anyRelative: msrFrm.anyRelative,
+          describeRelative: msrFrm.describeRelative,
+
           academicQualifications: this.formBuilder.array([]),
           workExperiences: this.formBuilder.array([]),
           professionalCirtificate: this.formBuilder.array([]),
+          training: this.formBuilder.array([]),
+          reference: this.formBuilder.array([]),
 
         })
 
@@ -1682,13 +2089,18 @@ isJobRunning(event: Event, index: number) {
     acQllf.forEach(qlf => {
       var academicQlfGroup = this.formBuilder.group({
         acQlfId: qlf.accQlfOid,
-        degree: qlf.degree,
-        board: qlf.board,
-        institution: qlf.institution,
-        major: qlf.major,
-        result: qlf.result,
-        passingyear: qlf.passingyear,
+        degree: [qlf.degree, Validators.required],
+        //degreeType:[qlf.degreeType,Validators.required],
+        board: [qlf.board, Validators.required],
+        institution: [qlf.institution, Validators.required],
+        major: [qlf.major, Validators.required],
+        result: [qlf.result, Validators.required],
+        passingyear: [qlf.passingyear, Validators.required],
         applicantId: qlf.applicant_oid,
+        acdqName: [qlf.accQlfDocName],
+        docOid: [qlf.docOid],
+        docVPath: [qlf.docVPath],
+        isLastDegree: [qlf.isLastDegree],
       });
       this.academicQualifications.push(academicQlfGroup);
       console.log("this.academicQualifications For Update", this.academicQualifications)
@@ -1708,15 +2120,23 @@ isJobRunning(event: Event, index: number) {
       var wrkExpGroup = this.formBuilder.group({
         expId: exp.experienceOid,
         applicantId: exp.applicant_oid,
-        companyName: exp.company_name,
-        companyType: exp.company_type,
+        companyName: [exp.company_name, Validators.required],
+        companyType: [exp.company_type, Validators.required],
+        salary: [exp.salary, Validators.required],
         priodFromDate: [this.convertOracleDateToInput(exp.priod_from_date)],// exp.priod_from_date,
         priodToDate: [this.convertOracleDateToInput(exp.priod_to_date)],// exp.priod_to_date,
-        jobDescription: exp.job_description,
-        department: exp.department,
-        designation: exp.designation,
+        jobDescription: [exp.job_description, Validators.required],
+        department: [exp.department, Validators.required],
+        designation: [exp.designation, Validators.required],
         jobLocation: exp.location,
-        isRunning: [exp.isRunning === 'Continuing' ? 'Continuing' : null]//add extra heere 
+        isRunning: [exp.isRunning === 'Continuing' ? 'Continuing' : null],//add extra heere 
+        acdqName: [exp.accQlfDocName],
+        docOid: [exp.docOid],
+        docVPath: [exp.docVPath],
+        totalDays: [exp.totalDays],
+        isLastExperience:[exp.isLastExperience],
+
+        
       });
       this.workExperiences.push(wrkExpGroup);
     });
@@ -1734,10 +2154,14 @@ isJobRunning(event: Event, index: number) {
       var cirtificateGroup = this.formBuilder.group({
         pCirtificateId: cirtificate.ProfCirtificateOid,
         applicantId: cirtificate.applicant_oid,
-        courseName: cirtificate.course_name,
-        instution: cirtificate.institution,
-        duration: cirtificate.duration,
-        achievementDate: cirtificate.achievment_date,
+        courseName: [cirtificate.course_name, Validators.required],
+        instution: [cirtificate.institution, Validators.required],
+        //duration: [cirtificate.duration, Validators.required],
+        startDate: [this.convertOracleDateToInput(cirtificate.start_date)],
+        achievementDate: [cirtificate.achievment_date, Validators.required],
+        acdqName: [cirtificate.accQlfDocName],
+        docOid: [cirtificate.docOid],
+        docVPath: [cirtificate.docVPath]
       });
       this.professionalCirtificate.push(cirtificateGroup);
     });
@@ -1748,14 +2172,58 @@ isJobRunning(event: Event, index: number) {
     }
   }
 
+  updateTraining(train: any[]) {
+    this.clearTraning();
+    debugger;
+    train.forEach(trn => {
+      var trainingGroup = this.formBuilder.group({
+        trainingId: trn.trainingOid,
+        applicantId: trn.applicant_oid,
+        courseName: [trn.training_name, Validators.required],
+        instution: [trn.institution, Validators.required],
+        startDate: [trn.start_date, Validators.required],
+        achievementDate: [trn.achievment_date, Validators.required],
+        acdqName: [trn.accQlfDocName],
+        docOid: [trn.docOid],
+        docVPath: [trn.docVPath]
+      });
+      this.training.push(trainingGroup);
+      console.log("this.training For Update", this.training)
+    });
+  }
+  clearTraning() {
+    while (this.training.length !== 0) {
+      this.training.removeAt(0);
+    }
+  }
+
+  updateReference(refrnc: any[]) {
+    this.clearReference();
+    debugger;
+    refrnc.forEach(ref => {
+      var referenceGroup = this.formBuilder.group({
+        referenceId: ref.referenceOid,
+        applicantId: ref.applicant_oid,
+        Name: [ref.reference_name, Validators.required],
+        Organization: [ref.orgazination, Validators.required],
+        designation: [ref.designation, Validators.required],
+        email: [ref.email, Validators.required],
+        mobile: [ref.mobile, Validators.required],
+        relation: ref.relation,
+        fatherName: ref.fatherNAme,
+        address: ref.address
+      });
+      this.reference.push(referenceGroup);
+    });
+  }
+  clearReference() {
+    while (this.reference.length !== 0) {
+      this.reference.removeAt(0);
+    }
+  }
 
 
-  // scrollToHeader() {
-  //   const header = document.getElementById('headerSection');
-  //   if (header) {
-  //     header.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  //   }
-  // }
+
 
 
 
@@ -1793,6 +2261,7 @@ isJobRunning(event: Event, index: number) {
   BackToJobList() {
     this.detailDiv = false;
     this.masterDiv = true;
+    this.scrollContainerTop();
 
   }
 
@@ -1800,17 +2269,20 @@ isJobRunning(event: Event, index: number) {
   backToJobDetails() {
     this.detailDiv = true;
     this.updateProfile = '';
+    this.scrollContainerTop();
 
   }
 
   backToJobDetailsOnSave() {
     this.detailDiv = true;
     this.applyForm = false;
+    this.scrollContainerTop();
   }
 
   backToProfile() {
     this.applyForm = false;
     this.updateProfile = 'update';
+    this.scrollContainerTop();
   }
 
   btnRedirect() {
@@ -1826,12 +2298,100 @@ isJobRunning(event: Event, index: number) {
     // window.open('' + newRelativeUrl, '_blank');
   }
 
+  scrollContainerTop2() {
+    debugger
+    this.scrollContainer.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+
+  // public scrollContainerTop() {
+  //   console.log("this scrooll top of the button Pages",this.pss)
+  //   debugger
+  //   this.pss.forEach(ps => {
+  //      ps.scrollToTop(0,250);
+  //     if(ps.elementRef.nativeElement.id == 'main'){
+  //       ps.scrollToTop(0,250);
+  //     }
+  //   });
+  // }
+
+
+
+
+  //window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  public scrollContainerTop1() {
+    // console.log(" scrooll top of the ApplyConpomet", this.pss)
+    debugger
+    // setTimeout(() => {
+    //   this.pss.forEach(ps => {
+    //     ps.scrollToTop(0, 250);
+    //     // if(ps.elementRef.nativeElement.id == 'main'){
+    //     //   ps.scrollToTop(0,250);
+    //     // }
+    //   });
+    // }, 1000);
+
+    setTimeout(() => {
+      debugger;
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }, 1000);
+  }
+
+  // public scrollContainerTop() {
+  //   debugger
+  //   setTimeout(() => {
+  //     const currentScroll = window.scrollY || document.documentElement.scrollTop;
+  //     console.log("currentScroll",currentScroll)
+
+  //     if (currentScroll > 0) {
+  //       window.scrollTo({
+  //         top: 0,
+  //         behavior: "smooth"
+  //       });
+  //     }
+  //   }, 1000);
+  // }
 
 
 
 
 
 
+  public onPsScrollY(event) {
+    debugger
+    (event.target.scrollTop > 300) ? this.backToTop.nativeElement.style.display = 'flex' : this.backToTop.nativeElement.style.display = 'none';
+  }
+
+  public scrollContainerTop3() {
+    console.log("this scrooll top of the button Pages", this.pss)
+    debugger
+    this.pss.forEach(ps => {
+      if (ps.elementRef.nativeElement.id == 'main') {
+        ps.scrollToTop(0, 250);
+      }
+    });
+  }
+
+
+
+  scrollContainerTop4() {
+    debugger
+    if (this.pss && this.pss.first) {
+      this.pss.first.scrollToTop(0, 500); // Scroll to top smoothly in 500ms
+    }
+  }
+
+
+  scrollContainerTop() {
+    debugger
+    if (this.ps) {
+      this.ps.scrollToTop(0, 200);
+    }
+  }
 
 
 

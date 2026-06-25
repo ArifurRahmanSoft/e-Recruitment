@@ -17,19 +17,19 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 export class DataService {
 
 
-          private oidSource = new BehaviorSubject<{ oid: string, masterDiv: boolean, applyForm: boolean } | null>(null);
-          oid$ = this.oidSource.asObservable();
-          
-          setOid(oid: string, masterDiv: boolean, applyForm: boolean) {
+     private oidSource = new BehaviorSubject<{ oid: string, masterDiv: boolean, applyForm: boolean } | null>(null);
+     oid$ = this.oidSource.asObservable();
+
+     setOid(oid: string, masterDiv: boolean, applyForm: boolean) {
           this.oidSource.next({ oid, masterDiv, applyForm });
-          }
+     }
 
-          private callProfileFunctionSource = new Subject<any>();
-          callProfileFunction$ = this.callProfileFunctionSource.asObservable();
+     private callProfileFunctionSource = new Subject<any>();
+     callProfileFunction$ = this.callProfileFunctionSource.asObservable();
 
-          callProfileFunction(data: any) {
+     callProfileFunction(data: any) {
           this.callProfileFunctionSource.next(data);
-          }
+     }
 
 
 
@@ -39,24 +39,24 @@ export class DataService {
      public _apiHost: any;
      public apiHost: string;
      public _conversion: any;
-     public _userId:any;
+     public _userId: any;
      private _domSanitizer: DomSanitizer;
      //imageAPI:string = 'http://localhost:49942/api/'
 
      constructor(private _http: HttpClient, @Inject(DOCUMENT) private document: any) {
-          this.appSettings=new AppSettings();
+          this.appSettings = new AppSettings();
           this._conversion = new Conversion(this.appSettings, this._domSanitizer);
           this._apiHost = new ApiConst();
           this.apiHost = this._apiHost.autohost(this.document.location);
-          
-          var loggedUser=JSON.parse(sessionStorage.getItem('loggedUser'));
-          this._userId=loggedUser != null ? loggedUser.userId : '0000';
+
+          var loggedUser = JSON.parse(sessionStorage.getItem('loggedUser'));
+          this._userId = loggedUser != null ? loggedUser.userId : '0000';
      }
 
      getall(_apiRout: string) {
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);
           return this._http.get(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
@@ -74,22 +74,22 @@ export class DataService {
      delete(_apiRout: string, id: string) {
           _apiRout = this.apiHost + _apiRout + '?id=' + id
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.delete(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
      }
 
- deleteById(_apiRout: string, id: string) {
-  const url = this.apiHost + _apiRout + '?id=' + id;
-  let _headers = new HttpHeaders()
-    .set('Content-Type', 'application/json; charset=utf-8')
-    .append('userId', this._userId);
+     deleteById(_apiRout: string, id: string) {
+          const url = this.apiHost + _apiRout + '?id=' + id;
+          let _headers = new HttpHeaders()
+               .set('Content-Type', 'application/json; charset=utf-8')
+               .append('userId', this._userId);
 
-  return this._http.put(url, {}, { headers: _headers }) // <-- Use PUT with empty body
-    .pipe(map((res: any) => res))
-    .pipe(catchError(this.handleError));
-}
+          return this._http.put(url, {}, { headers: _headers }) // <-- Use PUT with empty body
+               .pipe(map((res: any) => res))
+               .pipe(catchError(this.handleError));
+     }
 
 
 
@@ -97,7 +97,7 @@ export class DataService {
           let qString = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout + '?param=' + qString;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.get(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
@@ -108,27 +108,27 @@ export class DataService {
           let body = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.post(_apiRout, body, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
      }
 
-     postMultipleModelForm(_apiRout: string, model: any, formModel:any) {
+     postMultipleModelForm(_apiRout: string, model: any, formModel: any) {
           let body = this._conversion.JsonStringify(model);
-          formModel.append('data', body);          
+          formModel.append('data', body);
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('userId',this._userId);
+          _headers = _headers.set('userId', this._userId);
           return this._http.post(_apiRout, formModel, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
      }
 
-     postForm(_apiRout: string, formModel:any) {
+     postForm(_apiRout: string, formModel: any) {
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('userId',this._userId);
+          _headers = _headers.set('userId', this._userId);
           return this._http.post(_apiRout, formModel, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
@@ -138,7 +138,7 @@ export class DataService {
           let qString = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout + '?param=' + qString;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.delete(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
@@ -148,7 +148,7 @@ export class DataService {
           let qString = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout + '?param=' + qString;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.get(_apiRout, { headers: _headers, responseType: 'blob' })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError));
@@ -158,7 +158,7 @@ export class DataService {
      getall_Sync(_apiRout: string) {
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.get(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
@@ -167,7 +167,7 @@ export class DataService {
      getbyid_Sync(_apiRout: string, id: string) {
           _apiRout = this.apiHost + _apiRout + '?id=' + id;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.get(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
@@ -176,7 +176,7 @@ export class DataService {
      delete_Sync(_apiRout: string, id: string) {
           _apiRout = this.apiHost + _apiRout + '?id=' + id
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.delete(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
@@ -186,18 +186,18 @@ export class DataService {
           let qString = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout + '?param=' + qString;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.get(_apiRout, { headers: _headers })
-               .pipe(map((res: any) => { return res;}))
+               .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
-               
+
      }
 
      postMultipleModel_Sync(_apiRout: string, model: any) {
           let body = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.post(_apiRout, body, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
@@ -207,7 +207,7 @@ export class DataService {
           let qString = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout + '?param=' + qString;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.delete(_apiRout, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
@@ -217,27 +217,28 @@ export class DataService {
           let qString = this._conversion.JsonStringify(model);
           _apiRout = this.apiHost + _apiRout + '?param=' + qString;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId',this._userId);;
+          _headers = _headers.set('Content-Type', 'application/json; charset=utf-8').append('userId', this._userId);;
           return this._http.get(_apiRout, { headers: _headers, responseType: 'blob' })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
      }
 
-     postMultipleModelForm_Sync(_apiRout: string, model: any, formModel:any) {
+     postMultipleModelForm_Sync(_apiRout: string, model: any, formModel: any) {
+          debugger
           let body = this._conversion.JsonStringify(model);
-          formModel.append('data', body);          
+          formModel.append('data', body);
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('userId',this._userId);
+          _headers = _headers.set('userId', this._userId);
           return this._http.post(_apiRout, formModel, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
      }
 
-     postForm_Sync(_apiRout: string, formModel:any) {
+     postForm_Sync(_apiRout: string, formModel: any) {
           _apiRout = this.apiHost + _apiRout;
           let _headers = new HttpHeaders();
-          _headers = _headers.set('userId',this._userId);
+          _headers = _headers.set('userId', this._userId);
           return this._http.post(_apiRout, formModel, { headers: _headers })
                .pipe(map((res: any) => { return res; }))
                .pipe(catchError(this.handleError)).toPromise();
@@ -249,60 +250,133 @@ export class DataService {
 
 
 
-     uploadFile(fileCollection: FileList,url:any): Observable<any> {
+     uploadFile(fileCollection: FileList, url: any): Observable<any> {
           const formData = new FormData();
           //var url="reqform/dbsinleuploadfile"
           for (let i = 0; i < fileCollection.length; i++) {
-          formData.append('fileCollection', fileCollection[i], fileCollection[i].name);
+               formData.append('fileCollection', fileCollection[i], fileCollection[i].name);
           }
           //return this._http.post<any>(`${this.apiHost}reqform/dbsinleuploadfile`, formData);
           return this._http.post<any>(`${this.apiHost}${url}`, formData);
-        }
+     }
 
- 
 
-          updateFile( documentId: number,fileCollection: FileList, url: string): Observable<any> {
-               const formData = new FormData();
 
-               for (let i = 0; i < fileCollection.length; i++) {
+     updateFile(documentId: number, fileCollection: FileList, url: string): Observable<any> {
+          const formData = new FormData();
+
+          for (let i = 0; i < fileCollection.length; i++) {
                formData.append('fileCollection', fileCollection[i], fileCollection[i].name);
-               }
+          }
 
-               const fullUrl = `${this.apiHost}${url}/${documentId}`;
-               return this._http.post<any>(fullUrl, formData);
-               }
-
-
+          const fullUrl = `${this.apiHost}${url}/${documentId}`;
+          return this._http.post<any>(fullUrl, formData);
+     }
 
 
-        getImage(documentPath: string,_imgUrl:string): Observable<Blob> {
+
+
+
+
+     getImage(documentPath: string, _imgUrl: string): Observable<Blob> {
           debugger
           return this._http.get(`${this.apiHost}${_imgUrl}/${documentPath}`, { responseType: 'blob' });
-        }
+     }
 
-          //start share data
-          private storageKey = 'masterListId';
-          setMasterListId(id: string) {
+     //start share data
+     private storageKey = 'masterListId';
+     setMasterListId(id: string) {
           localStorage.setItem(this.storageKey, id);
-          }
-          getMasterListId(): string {
+     }
+     getMasterListId(): string {
           return localStorage.getItem(this.storageKey);
-          }
-          clearMasterListId() {
+     }
+     clearMasterListId() {
           localStorage.removeItem(this.storageKey);
-          }
+     }
 
-            downloadFile(apiRout: string,filePath: string) {
-                 apiRout = this.apiHost + apiRout;
-           const url = `${apiRout}/${encodeURIComponent(filePath)}`;
+     downloadFile(apiRout: string, filePath: string) {
+          apiRout = this.apiHost + apiRout;
+          const url = `${apiRout}/${encodeURIComponent(filePath)}`;
           return this._http.get(url, {
                responseType: 'blob', // important for file
                observe: 'response'   // to extract filename
           });
-          }
+     }
 
-          //SHARE SERVICE START HERE 
-        
+     //SHARED SERVICE 
+     private email: string = '';
+     private otp: string = '';
+
+     setEmail(email: string) {
+          this.email = email;
+     }
+
+     setOTP(otp: string) {
+          this.otp = otp;
+     }
+
+     getEmail(): string {
+          return this.email;
+     }
+
+     getOTP(): string {
+          return this.otp;
+     }
+
+     //last one
+
+   
+
+   
+
+       uploadAllFile(files: any[], url: string, referenceId: string): Observable<any> {
+          debugger
+          const formData = new FormData();
+          files.forEach((item, index) => {
+               formData.append('fileCollection', item.attachedfile);
+               formData.append(`docId[${index}]`, item.docId);
+               formData.append(`fileType[${index}]`, item.fileType); 
+          });
+
+          formData.append('referenceId', referenceId);
+
+          return this._http.post<any>(`${this.apiHost}${url}`, formData);
+     }
+
+           uploadAllFilez(files: any[], url: string, referenceId: string,type:string): Observable<any> {
+          debugger
+          const formData = new FormData();
+          files.forEach((item, index) => {
+               formData.append('fileCollection', item.attachedfile);
+               formData.append(`docId[${index}]`, item.docId);
+               formData.append(`fileType[${index}]`, item.fileType); 
+          });
+
+          formData.append('referenceId', referenceId);
+          formData.append('type', type);
+
+          return this._http.post<any>(`${this.apiHost}${url}`, formData);
+     }
+
+
+
+
+
+     
+   //TEST CASE FOR ANGULAR
+insertUser(model: any,apiUrl:string): Observable<any> {
+     debugger
+     var _apiRout = this.apiHost + apiUrl;
+         let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+ 
+
+  return this._http.post<any>(_apiRout, model,{headers});
+}
+
+
 
 
 

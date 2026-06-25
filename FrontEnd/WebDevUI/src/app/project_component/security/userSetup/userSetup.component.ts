@@ -23,7 +23,7 @@ export class UserSetupComponent implements OnInit {
    //Pagination
    public pageNumber: number = 0;
    public pageSize: number = 10;
-   public totalRows: number = 0;
+   public totalRows: number = 0; 
    public pageStart: number = 0;
    public pageEnd: number = 0;
    public totalRowsInList: number = 0;
@@ -115,7 +115,7 @@ export class UserSetupComponent implements OnInit {
                response => {
                    this.res = response;
                    this.userList=this.res
-               
+                   
                    if (this.res.resdata.listUser.length > 0) {
                        this.userList = JSON.parse(this.res.resdata.listUser);
                      

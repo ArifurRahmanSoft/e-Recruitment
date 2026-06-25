@@ -97,6 +97,13 @@ import { ApplicantFormsComponent } from './project_component/applicantforms/appl
 import { candidateComponent } from './project_component/candidate/candidate.component';
 import { ProfileComponent } from './project_component/profile/profile.component';
 import { ApplicationComponent } from './project_component/ApplicationInfo/application.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ApplicanttrackerComponent } from './project_component/Applicanttracker/applicanttracker.component';
+import { BusinessTypeComponent } from './project_component/businesstype/businesstype.component';
+import { ApprovalRoleComponent } from './project_component/security/approval-roleSetup/approval-role.component';
+import { ExaminerSetupComponent } from './project_component/examinerSetup/examinerSetup.component';
+import { ApprovalprocessComponent } from './project_component/Approvalprocess/approvalprocess.component'; 
+
 
 //import { ApplicantFormsComponent } from './project_component/applicant/applicant/applicantforms.component';
 
@@ -138,6 +145,8 @@ import { ApplicationComponent } from './project_component/ApplicationInfo/applic
     ,NgxUiLoaderModule
     ,NgxSpinnerModule
     ,ChartsModule
+
+    
   ],
   schemas:[
     CUSTOM_ELEMENTS_SCHEMA
@@ -163,8 +172,9 @@ import { ApplicationComponent } from './project_component/ApplicationInfo/applic
     DashboardComponent,
     RoleComponent,
     MenuComponent,
-    UserRoleComponent
-    
+    UserRoleComponent,
+    ApprovalRoleComponent
+   
 //,ApplicantFormsComponent
 
     ,ReportViewer
@@ -188,11 +198,15 @@ import { ApplicationComponent } from './project_component/ApplicationInfo/applic
     ,ClientComponent
     ,WorkOrderComponent
     ,JobPostComponent
+    ,BusinessTypeComponent
     ,candidateComponent
     ,ApplyComponent
     ,ProfileComponent
     ,ApplicantFormsComponent
     ,ApplicationComponent
+    ,ApplicanttrackerComponent
+    ,ApprovalprocessComponent
+    ,ExaminerSetupComponent
 
 
    
@@ -203,6 +217,7 @@ import { ApplicationComponent } from './project_component/ApplicationInfo/applic
     
   ],
   entryComponents: [
+    CmnDocModal,
     VerticalMenuComponent,
     ConfirmModal//,
     // ModalJournal,

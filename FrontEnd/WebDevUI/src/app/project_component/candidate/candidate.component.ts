@@ -45,7 +45,7 @@ export class candidateComponent implements OnInit {
   public options: Options;
   private userID = sessionStorage.getItem("userID");
   public loggedUserId: string = sessionStorage.getItem("userID");
-  public RoleUser:string
+  public RoleUser: string
   public cmnEntity: any = {};
   public isToggleMaster: boolean = true;
   public res: any;
@@ -55,54 +55,55 @@ export class candidateComponent implements OnInit {
   public company: string;
   public department: string;
   public post: string;
-   page:number=1
- // public startDate:Date;
-  public eDate:Date;
-  public sDate:Date;
+  page: number = 1
+  // public startDate:Date;
+  public eDate: Date;
+  public sDate: Date;
   candidateForm: FormGroup;
-  public applicantFormList : any;
-  public masterList:any;
-  public accQlfList:any;
-  public wrkExpList:any;
-  public proCirtificateList:any;
-  public jobTitle:any;
+  public applicantFormList: any;
+  public masterList: any;
+  public accQlfList: any;
+  public wrkExpList: any;
+  public proCirtificateList: any;
+  public jobTitle: any;
   public showModal: boolean = false;
   public selectedOid: string = '';
   public inputField: string = '';
-  public  commentText: string = '';
+  public commentText: string = '';
+  public Role: string;
   commentRows = 6;
- commentCols = 50;
+  commentCols = 50;
 
-  constructor(public appSettings:AppSettings, 
+  constructor(public appSettings: AppSettings,
     private datePipe: DatePipe,
-    
+
     private _pathValidation: pathValidation,
     private formBuilder: FormBuilder,
-    public fb: FormBuilder, 
+    public fb: FormBuilder,
     private _conversion: Conversion,
     //private _conversion: Conversion,
-    public router:Router, 
-    public _apiService : ApiService, 
+    public router: Router,
+    public _apiService: ApiService,
     private toastr: ToastrService,
-    private _dataservice:DataService, 
+    private _dataservice: DataService,
     @Inject(DOCUMENT) private document: any
-    ){
-     
-      //this.options = this._pathValidation.ngSelect2Option();
-     this.settings = this.appSettings.settings;
-     this._pathValidation.validate(this.document.location);
-     this.cmnEntity = this._pathValidation.rowEntities();
-     console.log("this.cmnEntity",this.cmnEntity)
-     
+  ) {
 
- 
+    //this.options = this._pathValidation.ngSelect2Option();
+    this.settings = this.appSettings.settings;
+    this._pathValidation.validate(this.document.location);
+    this.cmnEntity = this._pathValidation.rowEntities();
+    console.log("this.cmnEntity", this.cmnEntity)
+
+
+
   }
 
- 
+
 
 
   ngOnInit() {
-     this.getUserInfoByuserID(this.loggedUserId)
+    this.getUserInfoByuserID(this.loggedUserId)
     this.getCompanyList();
     this.getDepartmentList();
     this.getPostList();
@@ -110,34 +111,35 @@ export class candidateComponent implements OnInit {
     this.getJobPostList()
     this.updateTextareaSize();
     window.addEventListener('resize', this.updateTextareaSize.bind(this));
-   // this.getCandidateList();
+    // this.getCandidateList();
 
- 
+
 
 
 
 
   }
 
-updateTextareaSize() {
-  if (window.innerWidth <= 767) {
-    this.commentRows = 6;
-    this.commentCols = 40;
-  } else {
-    this.commentRows = 6;
-    this.commentCols = 50;
+  updateTextareaSize() {
+    if (window.innerWidth <= 767) {
+      this.commentRows = 6;
+      this.commentCols = 40;
+    } else {
+      this.commentRows = 6;
+      this.commentCols = 50;
+    }
   }
-}
 
-  createForm(){  this.candidateForm = new FormGroup({
-    jobTitle :new FormControl(null),
-    company:new FormControl(null),
-    department:new FormControl(null),
-    post:new FormControl(null),
-    startDate: new FormControl(null), // Form control for startDate
-    endDate:new FormControl(null),
-  });
-}
+  createForm() {
+    this.candidateForm = new FormGroup({
+      jobTitle: new FormControl(null),
+      company: new FormControl(null),
+      department: new FormControl(null),
+      post: new FormControl(null),
+      startDate: new FormControl(null), // Form control for startDate
+      endDate: new FormControl(null),
+    });
+  }
 
   cmnbtnAction(evmodel) {
     debugger
@@ -147,8 +149,8 @@ updateTextareaSize() {
   showHide() {
     debugger;
     this.cmnEntity.isShow ? this.reset() : this.getListByPage(this.pageSize);
-    console.log("this.cmnEntity Show Hide ",this.cmnEntity)
-}
+    console.log("this.cmnEntity Show Hide ", this.cmnEntity)
+  }
 
   setToggling(divName) {
     debugger;
@@ -160,24 +162,27 @@ updateTextareaSize() {
   }
 
 
-//GET user role,des 
-public _getUserInUrl: string = 'ereqdropdown/getaUserInfoById';
-getUserInfoByuserID(id:string) {
-  debugger
+  //GET user role,des 
+  public _getUserInUrl: string = 'ereqdropdown/getaUserInfoById';
+  getUserInfoByuserID(id: string) {
+    debugger
     var list: Array<{ id, text }> = [{ id: 0, text: "Please Select" }];
     var apiUrl = this._getUserInUrl;
-    var param=id;
-    this._dataservice.getbyid(apiUrl,param)
-        .subscribe(
-            response => {
-                this.res = response;
-                this.RoleUser=this.res.resdata.listuserInfo[0].userRole
-                this.getCandidateList();
+    var param = id;
+    this._dataservice.getbyid(apiUrl, param)
+      .subscribe(
+        response => {
+          this.res = response;
+          this.RoleUser = this.res.resdata.listuserInfo[0].userRole
+            this.Role = this.res.resdata.listuserInfo[0].userRole
+             this.getListByPage(this.pageSize)
+          this.getCandidateList();
 
-            }, error => {
-                console.log(error);
-            });
-}
+
+        }, error => {
+          console.log(error);
+        });
+  }
 
 
 
@@ -203,10 +208,10 @@ getUserInfoByuserID(id:string) {
         });
   }
 
-  getCompany(event:any){
+  getCompany(event: any) {
     debugger
-   this.company=event.target.value;
-   console.log(" this.company", this.company)
+    this.company = event.target.value;
+    console.log(" this.company", this.company)
   }
 
   public departmentList: any;
@@ -225,7 +230,7 @@ getUserInfoByuserID(id:string) {
               list.push(item.department);
             });
             this.departmentList = list;
-           
+
 
           }
         }, error => {
@@ -233,15 +238,15 @@ getUserInfoByuserID(id:string) {
         });
   }
 
-  getDepartment(event:any){
+  getDepartment(event: any) {
     debugger
-   this.department=event.target.value;
-   console.log("this.department",this.department)
+    this.department = event.target.value;
+    console.log("this.department", this.department)
   }
 
 
   //get job title
-    public jobPostList: any;
+  public jobPostList: any;
   public _jobPostUrl: string = 'ereqdropdown/getalljobtitle';
   getJobPostList() {
     var list: Array<any> = ["Please Select"];
@@ -250,12 +255,12 @@ getUserInfoByuserID(id:string) {
       .subscribe(
         response => {
           this.res = response;
-           console.log("total job ttile is ", this.res)
+          console.log("total job ttile is ", this.res)
           if (this.res.resdata.listJob.length > 0) {
             var itemList = this.res.resdata.listJob;
             itemList.forEach(item => {
               const formattedDate = this.datePipe.transform(item.jobEndDate, 'dd-MM-yyyy') ?? '';
-               list.push({ id: item.jobID, text: item.jobTitle + "-"+ "Closing("+ formattedDate +")"});
+              list.push({ id: item.jobID, text: item.jobTitle + "-" + "Closing(" + formattedDate + ")" });
             });
             this.jobPostList = list;
             console.log("total job ttile is ", this.jobPostList)
@@ -289,54 +294,54 @@ getUserInfoByuserID(id:string) {
         });
   }
 
-  getPost(event:any){
+  getPost(event: any) {
     debugger
-   this.post=event.target.value;
-   console.log(" this.post", this.post)
+    this.post = event.target.value;
+    console.log(" this.post", this.post)
   }
 
 
-  
+
   public _canListUrl: string = 'candidateinfo/getbypages';
 
   getCandidateList() {
-     this.applicantFormList=[];
+    this.applicantFormList = [];
     debugger
-    this.jobTitle=this.candidateForm.get('jobTitle')?.value;
-    this.company=this.candidateForm.get('company')?.value;
-    this.department=this.candidateForm.get('department')?.value;
-    this.post=this.candidateForm.get('post')?.value;
+    this.jobTitle = this.candidateForm.get('jobTitle')?.value;
+    this.company = this.candidateForm.get('company')?.value;
+    this.department = this.candidateForm.get('department')?.value;
+    this.post = this.candidateForm.get('post')?.value;
     this.sDate = this.candidateForm.get('startDate')?.value;
     this.eDate = this.candidateForm.get('endDate')?.value;
-    console.log("company department post",this.company,this.department,this.post,this.sDate,this.eDate)
+    console.log("company department post", this.company, this.department, this.post, this.sDate, this.eDate)
     //this.getListByPage(this.pageSize)
     let model = [{
       JobTitle: this.jobTitle || null,
       Company: this.company || null,
       Department: this.department || null,
       Post: this.post || null,
-      Role:this.RoleUser,
-      UserID:this.loggedUserId
+      Role: this.RoleUser,
+      UserID: this.loggedUserId
       //StartDate:this.sDate,
       //EndDate:this.eDate
     }];
 
-    console.log("Parameter Is",model)
+    console.log("Parameter Is", model)
     var apiUrl = this._canListUrl;
-    this._dataservice.getWithMultipleModel(apiUrl,model)
+    this._dataservice.getWithMultipleModel(apiUrl, model)
       .subscribe(
         response => {
           this.res = response;
           if (this.res.resdata.listJobPost.length > 0) {
             const list = JSON.parse(this.res.resdata.listJobPost);
-            this.applicantFormList=list
+            this.applicantFormList = list
 
             console.log(" this.departmentList--", this.applicantFormList)
           }
         }, error => {
           console.log(error);
         });
-  
+
 
   }
 
@@ -357,21 +362,23 @@ getUserInfoByuserID(id:string) {
   //   console.log("this.archiveList",this.archiveList)
   // }
 
-  public responseTag: string = 'listJobPost';
-public jobPostLists: any = [];
-public _listByPageUrl: string = 'candidateinfo/getbypages';
-getListByPage(pageSize) {
-  debugger
-  setTimeout(() => {
-    this._pg.getListByPage(1, true, pageSize, '');
+
+
+  public responseTag: string = 'listProfile';
+  public jobProfileLists: any = [];
+  public _listByPageUrl: string = 'candidateinfo/getprofilelistbypages';
+  getListByPage(pageSize) {
+    debugger
+    setTimeout(() => {
+      this._pg.getListByPage(1, true, pageSize, '');
       setTimeout(() => {
       }, 300);
-  }, 0);
-}
-sendToList(ev) {
-  this.jobPostLists = ev;
-  console.log("this.jobPostLists",this.jobPostLists)
-}
+    }, 0);
+  }
+  sendToList(ev) {
+    this.jobProfileLists = ev;
+    console.log("this.jobPostLists==>", this.jobProfileLists)
+  }
 
 
 
@@ -379,86 +386,94 @@ sendToList(ev) {
 
 
 
-reset(){
-  
-}
+  reset() {
 
+  }
 
+  docPhotoVPath: any;
+  docsignatureVPath: any;
+  docNidFntVPath: any;
+  docNidBckVPath: any;
+  docTinVPath: any;
+  docCVVPath: any;
 
-//GET DATA BY ID FOR REPORT 
-public _getcanDeIdUrl: string = 'reqform/getcandidatedetailsbyid';
-getcandidateDetail(modelEvnt) {
+  //GET DATA BY ID FOR REPORT 
+  public _getcanDeIdUrl: string = 'reqform/getcandidatedetailsbyid';
+  getcandidateDetail(modelEvnt) {
     debugger;
-    console.log("modelEvnt",modelEvnt)
+    console.log("modelEvnt", modelEvnt)
     var param = { strId: modelEvnt };
     var apiUrl = this._getcanDeIdUrl
     this._dataservice.getWithMultipleModel(apiUrl, param)
-        .subscribe(response => {
-            this.res = response;
-             console.log("Detalis master ", this.res)
-            this.masterList=JSON.parse(this.res.resdata.regApplicantMaster)
-            this.downloadFile(this.masterList[0].CvNo,this.masterList[0].name,this.masterList[0].job_title)
-            if(this.res.resdata.accQlfDetail){
-              this.accQlfList=JSON.parse(this.res.resdata.accQlfDetail)
-            }
-            if(this.res.resdata.wrkExperience){
-              this.wrkExpList=JSON.parse(this.res.resdata.wrkExperience)
-            }
-            if(this.res.resdata.profCertificate){
-              this.proCirtificateList=JSON.parse(this.res.resdata.profCertificate)
-            }
-            console.log("Detalis master ", this.masterList)
-            console.log("Detalis accQlfList", this.accQlfList)
-            console.log("Detalis wrkExpList", this.wrkExpList)
-            console.log("Detalis proCirtificateList", this.proCirtificateList)
-           
-            //this.loadImages( this.masterListDetails.imagePath)
-            //this.loadImages( this.masterListDetails.signaturePath)
-           
-        }, error => {
-            console.log(error);
-        });
-}
+      .subscribe(response => {
+        this.res = response;
+        console.log("Detalis master ", this.res)
+        this.masterList = JSON.parse(this.res.resdata.regApplicantMaster)
+        if (this.masterList) {
+          this.docCVVPath = this.masterList[0].docCvVPath
+        }
+        this.downloadFile(this.masterList[0].CvNo, this.masterList[0].name, this.masterList[0].job_title)
+        if (this.res.resdata.accQlfDetail) {
+          this.accQlfList = JSON.parse(this.res.resdata.accQlfDetail)
+        }
+        if (this.res.resdata.wrkExperience) {
+          this.wrkExpList = JSON.parse(this.res.resdata.wrkExperience)
+        }
+        if (this.res.resdata.profCertificate) {
+          this.proCirtificateList = JSON.parse(this.res.resdata.profCertificate)
+        }
+        console.log("Detalis master==> ", this.masterList)
+        console.log("Detalis accQlfList", this.accQlfList)
+        console.log("Detalis wrkExpList", this.wrkExpList)
+        console.log("Detalis proCirtificateList", this.proCirtificateList)
 
+        //this.loadImages( this.masterListDetails.imagePath)
+        //this.loadImages( this.masterListDetails.signaturePath)
 
-
-
-
-    public _getReportUrl: string = 'reqform/getregularreport';
-    loadReports(model) {
-        debugger
-         var repFile = 'rptApplicantProfileCV'  + '.rdlc';
-         var rmodel = { reportPath: '/reportfile/business/applicant/' + repFile, reportName: 'CV' };
-        this._rptViewer.rptModel = new ReportModel(rmodel.reportPath, rmodel.reportName, 580);
-        var param = { strId: model };
-        var repParam = [{ PrintDate: this._conversion.Today() }];
-        var ModelsArray = [repParam, param];
-        this._rptViewer.reportOutPage(this._getReportUrl, ModelsArray);
-    }
-
-
-//DOWNLOAD FILE FROM PATH
-public _fileUrl:string='reqform/getImage'
-public cvDetails:any;
- downloadFile(imgPath: string,name:string,jobTitle:string) {
-  this.cvDetails=imgPath;
-  debugger
-  if(!imgPath){
- this.toastr.error("No file Found")
-        console.error('No file content received.');
-        return;
+      }, error => {
+        console.log(error);
+      });
   }
-      this._dataservice.downloadFile(this._fileUrl,imgPath).subscribe(response => {
+
+
+
+
+
+  public _getReportUrl: string = 'reqform/getregularreport';
+  loadReports(model) {
+    debugger
+    var repFile = 'rptApplicantProfileCV' + '.rdlc';
+    var rmodel = { reportPath: '/reportfile/business/applicant/' + repFile, reportName: 'CV' };
+    this._rptViewer.rptModel = new ReportModel(rmodel.reportPath, rmodel.reportName, 580);
+    var param = { strId: model };
+    var repParam = [{ PrintDate: this._conversion.Today() }];
+    var ModelsArray = [repParam, param];
+    this._rptViewer.reportOutPage(this._getReportUrl, ModelsArray);
+  }
+
+
+  //DOWNLOAD FILE FROM PATH
+  public _fileUrl: string = 'reqform/getImage'
+  public cvDetails: any;
+  downloadFile(imgPath: string, name: string, jobTitle: string) {
+    this.cvDetails = imgPath;
+    debugger
+    if (!imgPath) {
+      this.toastr.error("No file Found")
+      console.error('No file content received.');
+      return;
+    }
+    this._dataservice.downloadFile(this._fileUrl, imgPath).subscribe(response => {
       const blob = response.body;
-  if (!blob) {
+      if (!blob) {
         this.toastr.error("No file Found")
         console.error('No file content received.');
         return;
       }
-    
+
 
       const contentDisposition = response.headers.get('Content-Disposition');
-      let fileName = name+"-"+jobTitle+".pdf";
+      let fileName = name + "-" + jobTitle + ".pdf";
 
       if (contentDisposition) {
         const matches = /filename="?([^"]+)"?/.exec(contentDisposition);
@@ -482,35 +497,35 @@ public cvDetails:any;
 
 
 
-edit(id:string){
- this._dataservice.setOid(id,false,true);
-  this.router.navigate(['/apply']);
-}
+  edit(id: string) {
+    this._dataservice.setOid(id, false, true);
+    this.router.navigate(['/apply']);
+  }
 
 
-convertOracleDateToInput(dateString: string): string {
-  if (!dateString) return '';
+  convertOracleDateToInput(dateString: string): string {
+    if (!dateString) return '';
 
-  const parts = dateString.split('-'); // ["08", "MAY", "25"]
-  const day = +parts[0];
-  const month = parts[1].toUpperCase();
-  const shortYear = +parts[2];
+    const parts = dateString.split('-'); // ["08", "MAY", "25"]
+    const day = +parts[0];
+    const month = parts[1].toUpperCase();
+    const shortYear = +parts[2];
 
-  const monthMap: any = {
-    JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
-    JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11
-  };
+    const monthMap: any = {
+      JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
+      JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11
+    };
 
-  const fullYear = shortYear < 50 ? 2000 + shortYear : 1900 + shortYear;
-  const jsDate = new Date(fullYear, monthMap[month], day);
+    const fullYear = shortYear < 50 ? 2000 + shortYear : 1900 + shortYear;
+    const jsDate = new Date(fullYear, monthMap[month], day);
 
-  return formatDate(jsDate, 'yyyy-MM-dd', 'en-US');
-}
-
-
+    return formatDate(jsDate, 'yyyy-MM-dd', 'en-US');
+  }
 
 
-public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
+
+
+  public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
 
   selectionProcess(oid: string): void {
     this.selectedOid = oid;
@@ -524,36 +539,36 @@ public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
   }
 
   submitModal(): void {
-    const param = { 
-    loggedUserId: this.userID
-  };
-   const msgDetails = {
+    const param = {
+      loggedUserId: this.userID
+    };
+    const msgDetails = {
       oid: this.selectedOid,
       inputField: this.inputField,
       message: this.commentText
     };
 
-  const ModelsArray = [param,msgDetails ];
+    const ModelsArray = [param, msgDetails];
     debugger
-  
+
     this._dataservice.postMultipleModel(this._setUpMsgUrl, ModelsArray)
       .subscribe(
         response => {
-          this.res=response;
-          console.log("this.response message ",this.res)
-          this.resmessage=this.res.resdata.resstate;
-          if( this.resmessage){
-          this.toastr.success('Save Successfully');
-          this.closeModal(); // Close modal
-          window.location.reload(); // Reload page if needed 
+          this.res = response;
+          console.log("this.response message ", this.res)
+          this.resmessage = this.res.resdata.resstate;
+          if (this.resmessage) {
+            this.toastr.success('Save Successfully');
+            this.closeModal(); // Close modal
+            window.location.reload(); // Reload page if needed 
           }
-          else{
-             this.toastr.error('Sata Not save');
-          this.closeModal(); // Close modal
-          window.location.reload(); // Reload page if needed 
+          else {
+            this.toastr.error('Sata Not save');
+            this.closeModal(); // Close modal
+            window.location.reload(); // Reload page if needed 
           }
 
-          
+
         },
         error => {
           console.error(error);
@@ -563,26 +578,26 @@ public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
 
 
 
-public OfficialMsg:string;
-updateModal(oid) {
-   this.selectedOid = oid;
+  public OfficialMsg: string;
+  updateModal(oid) {
+    this.selectedOid = oid;
     this.showModal = true;
     debugger;
-    console.log("modelEvnt",oid)
+    console.log("modelEvnt", oid)
     var param = { strId: oid };
     var apiUrl = this._getcanDeIdUrl
     this._dataservice.getWithMultipleModel(apiUrl, param)
-        .subscribe(response => {
-            this.res = response;
-             
-            var masterList=JSON.parse(this.res.resdata.regApplicantMaster)
-            this.OfficialMsg=masterList[0].offcMessage;
-            this.commentText= this.OfficialMsg;
-            console.log("Detalis master data for modal ",  this.commentText)
-        }, error => {
-            console.log(error);
-        });
-}
+      .subscribe(response => {
+        this.res = response;
+
+        var masterList = JSON.parse(this.res.resdata.regApplicantMaster)
+        this.OfficialMsg = masterList[0].offcMessage;
+        this.commentText = this.OfficialMsg;
+        console.log("Detalis master data for modal ", this.commentText)
+      }, error => {
+        console.log(error);
+      });
+  }
 
 
 

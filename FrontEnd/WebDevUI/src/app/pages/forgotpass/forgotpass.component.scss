@@ -46,3 +46,29 @@
 }
 
 
+ @media (max-width: 767px) { 
+    .contentBody {
+      margin-left: 2%;
+      margin-right: 2%;
+
+    }
+    .formInput{
+     width: 95%;
+    }
+    .inputField{
+      margin-left: 2%;
+    }
+  }
+  
+  @media (min-width: 768px) { 
+   .contentBody {
+      margin-left: 25%;
+      margin-right: 25%;
+    }
+    .formInput{
+    width: 75%;
+    }
+     .inputField{
+      margin-left: 16.5%;
+    }
+  }

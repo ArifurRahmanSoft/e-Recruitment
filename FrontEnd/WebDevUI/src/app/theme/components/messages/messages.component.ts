@@ -50,7 +50,35 @@ export class MessagesComponent implements OnInit {
   public notiCount:number=0;
   public aprvMessages: any = [];
   public dclnMessages: any = [];
-  public notificationUrl: string = 'ProcessFlow/getapprovalcommentsbyloggeduser';
+  // public notificationUrl: string = 'ProcessFlow/getapprovalcommentsbyloggeduser';
+  // getNotification() {
+  //   var param = { LoggedUserId: this.LoggedUserId };
+  //   var apiUrl = this.notificationUrl;
+  //   this._dataservice.getWithMultipleModel(apiUrl, param)
+  //     .subscribe(
+  //       response => {
+  //         var res = response;
+  //         debugger;
+  //         if (res.resdata.commentsList.length > 0) {
+  //           var messageList = JSON.parse(res.resdata.commentsList);
+  //           messageList.forEach(element => {
+  //             element.isApproved=element.isApproved=='1'?true:false;
+  //             element.isDeclined=element.isDeclined=='1'?true:false;
+  //             element.name=element.fromUser;
+  //             element.text=element.comment;
+  //             element.time='1 min ago';
+  //           })
+  //           ;
+  //           this.notiCount=messageList.length;
+  //           this.aprvMessages = messageList.filter(x => x.isApproved == true);
+  //           this.dclnMessages = messageList.filter(x => x.isDeclined == true);
+  //         }
+  //       }, error => {
+  //         console.log(error);
+  //       });
+  // }
+
+    public notificationUrl: string = 'candidateinfo/getnotificationbyid';
   getNotification() {
     var param = { LoggedUserId: this.LoggedUserId };
     var apiUrl = this.notificationUrl;
@@ -58,19 +86,23 @@ export class MessagesComponent implements OnInit {
       .subscribe(
         response => {
           var res = response;
+          console.log("notificaton list is ",res)
           debugger;
-          if (res.resdata.commentsList.length > 0) {
-            var messageList = JSON.parse(res.resdata.commentsList);
+          if (res.resdata.notificationList.length > 0) {
+            var messageList = JSON.parse(res.resdata.notificationList);
             messageList.forEach(element => {
-              element.isApproved=element.isApproved=='1'?true:false;
-              element.isDeclined=element.isDeclined=='1'?true:false;
-              element.name=element.fromUser;
-              element.text=element.comment;
+              element.officialMessage=element.officialMessage
+              element.isWritten=element.isWritten=='1'?true:false;
+              element.isViva=element.isViva=='1'?true:false;
+              element.isSelected=element.isSelected=='1'?true:false;
+              element.name=element.email;
+              element.text=element.officialMessage;
               element.time='1 min ago';
             })
-            ;this.notiCount=messageList.length;
-            this.aprvMessages = messageList.filter(x => x.isApproved == true);
-            this.dclnMessages = messageList.filter(x => x.isDeclined == true);
+            ;
+            this.notiCount=messageList.length;
+            // this.aprvMessages = messageList.filter(x => x.isApproved == true);
+            // this.dclnMessages = messageList.filter(x => x.isDeclined == true);
           }
         }, error => {
           console.log(error);

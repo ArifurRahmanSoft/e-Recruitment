@@ -65,15 +65,15 @@
     position: absolute;
 }
 
-.ps__thumb-y {
-    background-color: #aaa;
-    border-radius: 6px;
-    transition: background-color .2s linear, width .2s ease-in-out;
-    -webkit-transition: background-color .2s linear, width .2s ease-in-out;
-    width: 4px;
-    right: 1px;
-    position: absolute;
-}
+// .ps__thumb-y {
+//     background-color: #aaa;
+//     border-radius: 6px;
+//     transition: background-color .2s linear, width .2s ease-in-out;
+//     -webkit-transition: background-color .2s linear, width .2s ease-in-out;
+//     width: 4px;
+//     right: 1px;
+//     position: absolute;
+// }
 
 .ps__rail-x:hover > .ps__thumb-x,
 .ps__rail-x:focus > .ps__thumb-x {

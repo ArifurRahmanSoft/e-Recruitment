@@ -26,8 +26,10 @@ import { DataService } from '../../api/api.dataservice.service';
 import { ApiService } from '../../api/api.service';
 import { ReportModel } from '../reportviewer/reportmodel';
 import { toDate } from 'date-fns';
+import { forkJoin } from 'rxjs';
 
 declare var $: any;
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-application',
@@ -45,7 +47,8 @@ export class ApplicationComponent implements OnInit {
   public options: Options;
   private userID = sessionStorage.getItem("userID");
   public loggedUserId: string = sessionStorage.getItem("userID");
-  public RoleUser:string
+  public RoleUser: string
+  public Role: string;
   public cmnEntity: any = {};
   public isToggleMaster: boolean = true;
   public res: any;
@@ -55,90 +58,129 @@ export class ApplicationComponent implements OnInit {
   public company: string;
   public department: string;
   public post: string;
-   page:number=1
- // public startDate:Date;
-  public eDate:Date;
-  public sDate:Date;
+  page: number = 1
+  // public startDate:Date;
+  public eDate: Date;
+  public sDate: Date;
+  public fromNumber:any;
+  public toNumber:any;
   candidateForm: FormGroup;
-  public applicantFormList : any;
-  public masterList:any;
-  public accQlfList:any;
-  public wrkExpList:any;
-  public proCirtificateList:any;
-  public jobTitle:any;
+  mailForm: FormGroup;
+  public applicantFormList: any;
+  public loading: boolean = false
+  public masterList: any;
+  public accQlfList: any;
+  public wrkExpList: any;
+  public proCirtificateList: any;
+  public jobTitle: any;
   public showModal: boolean = false;
   public selectedOid: string = '';
   public inputField: string = '';
-  public  commentText: string = '';
+  public commentText: string = '';
+  public JobTitle: string;
   commentRows = 6;
- commentCols = 50;
+  commentCols = 50;
+  public loadings: boolean = false;
+  emailTypeList: string[] = ['Written', 'Viva', 'Written & Viva', 'Offer Latter'];
+  emailTypeLists: Array<{ value: string, label: string }> = [
+    { value: '1', label: 'Written' },
+    { value: '2', label: 'Viva' },
+    { value: '3', label: 'Written & Viva' },
+    { value: '4', label: 'Offer Latter' },
+  ]
+  QuotationStatus: Array<{ value: string, label: string }> = [
+    { value: '1', label: 'Estimate InComing' },
+    { value: '0', label: 'Estimate OutGoing' },
+  ];
 
-  constructor(public appSettings:AppSettings, 
+
+  constructor(public appSettings: AppSettings,
     private datePipe: DatePipe,
-    
+
     private _pathValidation: pathValidation,
     private formBuilder: FormBuilder,
-    public fb: FormBuilder, 
+    public fb: FormBuilder,
     private _conversion: Conversion,
     //private _conversion: Conversion,
-    public router:Router, 
-    public _apiService : ApiService, 
+    public router: Router,
+    public _apiService: ApiService,
     private toastr: ToastrService,
-    private _dataservice:DataService, 
+    private _dataservice: DataService,
     @Inject(DOCUMENT) private document: any
-    ){
-     
-      //this.options = this._pathValidation.ngSelect2Option();
-     this.settings = this.appSettings.settings;
-     this._pathValidation.validate(this.document.location);
-     this.cmnEntity = this._pathValidation.rowEntities();
-     console.log("this.cmnEntity",this.cmnEntity)
-     
+  ) {
 
- 
+    //this.options = this._pathValidation.ngSelect2Option();
+    this.settings = this.appSettings.settings;
+    this._pathValidation.validate(this.document.location);
+    this.cmnEntity = this._pathValidation.rowEntities();
+    console.log("this.cmnEntity", this.cmnEntity)
+
+
+
   }
 
- 
+
 
 
   ngOnInit() {
-     this.getUserInfoByuserID(this.loggedUserId)
-     //this.getUserInfoByuserIDs(this.loggedUserId)
+    this.getUserInfoByuserID(this.loggedUserId)
+    //this.getUserInfoByuserIDs(this.loggedUserId)
     this.getCompanyList();
     this.getDepartmentList();
     this.getPostList();
     this.createForm();
+    this.createMailForm()
     this.getJobPostList()
     this.updateTextareaSize();
     window.addEventListener('resize', this.updateTextareaSize.bind(this));
-   // this.getCandidateList();
+        this.getCompanyJob();
+    this.getDepartmentJob();
+    this.getDesignationJob();
 
- 
+    // this.getCandidateList();
+
+
 
 
 
 
   }
 
-updateTextareaSize() {
-  if (window.innerWidth <= 767) {
-    this.commentRows = 6;
-    this.commentCols = 40;
-  } else {
-    this.commentRows = 6;
-    this.commentCols = 50;
+  updateTextareaSize() {
+    if (window.innerWidth <= 767) {
+      this.commentRows = 6;
+      this.commentCols = 40;
+    } else {
+      this.commentRows = 6;
+      this.commentCols = 50;
+    }
   }
-}
 
-  createForm(){  this.candidateForm = new FormGroup({
-    jobTitle :new FormControl(null),
-    company:new FormControl(null),
-    department:new FormControl(null),
-    post:new FormControl(null),
-    startDate: new FormControl(null), // Form control for startDate
-    endDate:new FormControl(null),
-  });
-}
+  createForm() {
+    this.candidateForm = new FormGroup({
+      jobTitle: new FormControl(null),
+      company: new FormControl(null),
+      department: new FormControl(null),
+      post: new FormControl(null),
+      startDate: new FormControl(null), // Form control for startDate
+      endDate: new FormControl(null),
+      mailType: new FormControl(null),
+      mailDate: new FormControl(null),
+      examTime: new FormControl(null),
+      fromExperience:new FormControl(null),
+      toExperience:new FormControl(null)
+    });
+  }
+
+  createMailForm() {
+    this.mailForm = new FormGroup({
+      toEmail: new FormControl(null),
+      subject: new FormControl(null),
+      body: new FormControl(null),
+
+
+    });
+  }
 
   cmnbtnAction(evmodel) {
     debugger
@@ -148,8 +190,8 @@ updateTextareaSize() {
   showHide() {
     debugger;
     this.cmnEntity.isShow ? this.reset() : this.getListByPage(this.pageSize);
-    console.log("this.cmnEntity Show Hide ",this.cmnEntity)
-}
+    console.log("this.cmnEntity Show Hide ", this.cmnEntity)
+  }
 
   setToggling(divName) {
     debugger;
@@ -161,45 +203,47 @@ updateTextareaSize() {
   }
 
 
-//GET user role,des 
-public _getUserInUrl: string = 'ereqdropdown/getaUserInfoById';
-getUserInfoByuserID(id:string) {
-  debugger
-    var list: Array<{ id, text }> = [{ id: 0, text: "Please Select" }];
+  //GET user role,des 
+  public _getUserInUrl: string = 'ereqdropdown/getaUserInfoById';
+  getUserInfoByuserID(id: string) {
+    debugger
+    var list: Array<{ id:any, text:any }> = [{ id: 0, text: "Please Select" }];
     var apiUrl = this._getUserInUrl;
-    var param=id;
-    this._dataservice.getbyid(apiUrl,param)
-        .subscribe(
-            response => {
-                this.res = response;
-                this.RoleUser=this.res.resdata.listuserInfo[0].userRole
-                console.log(" this.RoleUser", this.RoleUser)
-                this.getApplicationList();
+    var param = id;
+    this._dataservice.getbyid(apiUrl, param)
+      .subscribe(
+        response => {
+          this.res = response;
+          this.RoleUser = this.res.resdata.listuserInfo[0].userRole
+          this.Role = this.res.resdata.listuserInfo[0].userRole
+          console.log(" this.RoleUser one", this.RoleUser)
+          this.getApplicationList();
+          this.getListByPage(this.pageSize)
 
-            }, error => {
-                console.log(error);
-            });
-}
+        }, error => {
+          console.log(error);
+        });
+  }
 
-//when role is id then use it
-public _getUserInUrls: string = 'ereqdropdown/getaUserInfoByRoleId';
-getUserInfoByuserIDs(id:string) {
-  debugger
+  //when role is id then use it
+  public _getUserInUrls: string = 'ereqdropdown/getaUserInfoByRoleId';
+  getUserInfoByuserIDs(id: string) {
+    debugger
     var list: Array<{ id, text }> = [{ id: 0, text: "Please Select" }];
     var apiUrl = this._getUserInUrls;
-    var param=id;
-    this._dataservice.getbyid(apiUrl,param)
-        .subscribe(
-            response => {
-                this.res = response;
-                this.RoleUser=this.res.resdata.listuserInfo[0].userRole
-                console.log(" this.RoleUser final nmame is ", this.RoleUser)
-                this.getApplicationList();
+    var param = id;
+    this._dataservice.getbyid(apiUrl, param)
+      .subscribe(
+        response => {
+          this.res = response;
+          this.RoleUser = this.res.resdata.listuserInfo[0].userRole
+          console.log(" this.RoleUser final nmame is ", this.RoleUser)
+          this.getApplicationList();
 
-            }, error => {
-                console.log(error);
-            });
-}
+        }, error => {
+          console.log(error);
+        });
+  }
 
 
 
@@ -219,16 +263,17 @@ getUserInfoByuserIDs(id:string) {
               list.push(item.companyName);
             });
             this.companyList = list;
+            console.log("all company are added here",this.companyList)
           }
         }, error => {
           console.log(error);
         });
   }
 
-  getCompany(event:any){
+  getCompany(event: any) {
     debugger
-   this.company=event.target.value;
-   console.log(" this.company", this.company)
+    this.company = event.target.value;
+    console.log(" this.company", this.company)
   }
 
   public departmentList: any;
@@ -247,7 +292,7 @@ getUserInfoByuserIDs(id:string) {
               list.push(item.department);
             });
             this.departmentList = list;
-           
+
 
           }
         }, error => {
@@ -255,15 +300,15 @@ getUserInfoByuserIDs(id:string) {
         });
   }
 
-  getDepartment(event:any){
+  getDepartment(event: any) {
     debugger
-   this.department=event.target.value;
-   console.log("this.department",this.department)
+    this.department = event.target.value;
+    console.log("this.department", this.department)
   }
 
 
   //get job title
-    public jobPostList: any;
+  public jobPostList: any;
   public _jobPostUrl: string = 'ereqdropdown/getalljobtitle';
   getJobPostList() {
     var list: Array<any> = ["Please Select"];
@@ -272,12 +317,12 @@ getUserInfoByuserIDs(id:string) {
       .subscribe(
         response => {
           this.res = response;
-           console.log("total job ttile is ", this.res)
+          console.log("total job ttile is ", this.res)
           if (this.res.resdata.listJob.length > 0) {
             var itemList = this.res.resdata.listJob;
             itemList.forEach(item => {
               const formattedDate = this.datePipe.transform(item.jobEndDate, 'dd-MM-yyyy') ?? '';
-               list.push({ id: item.jobID, text: item.jobTitle + "-"+ "Closing Date("+ formattedDate +")"});
+              list.push({ id: item.jobID, text: item.jobTitle + "-" + "Closing Date(" + formattedDate + ")" });
             });
             this.jobPostList = list;
             console.log("total job ttile is ---", this.jobPostList)
@@ -311,70 +356,56 @@ getUserInfoByuserIDs(id:string) {
         });
   }
 
-  getPost(event:any){
+  getPost(event: any) {
     debugger
-   this.post=event.target.value;
-   console.log(" this.post", this.post)
+    this.post = event.target.value;
+    console.log(" this.post", this.post)
   }
 
-public jobId:string='';
-onJobTitleChanged(event: any) {
-  debugger
-if(event =='Please Select'){
-this.jobId='';
-}
 
-else{
-this.jobId= event
-}
-     
 
-  
-  this.getApplicationList(); 
-}
 
-  
   public _applicationListUrl: string = 'candidateinfo/getallapplication';
   getApplicationList() {
-     this.applicantFormList=[];
+    this.applicantFormList = [];
     debugger
-    this.jobTitle= this.jobId;
+    this.jobTitle = this.jobId;
     //this.jobTitle=this.candidateForm.get('jobTitle')?.value;
-    this.company=this.candidateForm.get('company')?.value;
-    this.department=this.candidateForm.get('department')?.value;
-    this.post=this.candidateForm.get('post')?.value;
+    this.company = this.candidateForm.get('company')?.value;
+    this.department = this.candidateForm.get('department')?.value;
+    this.post = this.candidateForm.get('post')?.value;
     this.sDate = this.candidateForm.get('startDate')?.value;
     this.eDate = this.candidateForm.get('endDate')?.value;
-    
+
     //this.getListByPage(this.pageSize)
     let model = [{
       JobTitle: this.jobTitle || null,
       Company: this.company || null,
       Department: this.department || null,
       Post: this.post || null,
-      Role:this.RoleUser,
-      UserID:this.loggedUserId
+      Role: this.RoleUser,
+      UserID: this.loggedUserId
 
     }];
 
-    console.log("Parameter Is",model)
+    console.log("Parameter Is", model)
     var apiUrl = this._applicationListUrl;
-    this._dataservice.getWithMultipleModel(apiUrl,model)
+    this._dataservice.getWithMultipleModel(apiUrl, model)
       .subscribe(
         response => {
           this.res = response;
-           
+
           if (this.res.resdata.listApplicant.length > 0) {
             const list = JSON.parse(this.res.resdata.listApplicant);
-            this.applicantFormList=list
-             console.log(" this.departmapplicantFormListentList", this.applicantFormList)
+            this.applicantFormList = list
+            console.log(" this.departmapplicantFormListentList", this.applicantFormList)
 
-          
+
           }
         }, error => {
           console.log(error);
         });
-  
+
 
   }
 
@@ -395,21 +426,46 @@ this.jobId= event
   //   console.log("this.archiveList",this.archiveList)
   // }
 
+
+   public jobId: string = '';
+  // onJobTitleChanged(event: any) {
+  //   debugger
+  //   if (event == 'Please Select') {
+  //     this.jobId = '';
+  //     this.JobTitle = ''
+  //   }
+  //   else {
+  //     this.jobId = event;
+  //     this.JobTitle = event;
+  //   }
+  //   this.getListByPage(this.pageSize)
+  // }
+
+  getApplicantListByExperience(){
+  this.fromNumber=this.candidateForm.get('fromExperience')?.value;
+  this.toNumber=this.candidateForm.get('toExperience')?.value;
+  this.JobTitle=this.candidateForm.get('jobTitle')?.value=='Please Select'?'':this.candidateForm.get('jobTitle')?.value;
+    debugger
+this.getListByPage(this.pageSize)
+  }
+
+
+
   public responseTag: string = 'listJobPost';
-public jobPostLists: any = [];
-public _listByPageUrl: string = 'candidateinfo/getbypages';
-getListByPage(pageSize) {
-  debugger
-  setTimeout(() => {
-    this._pg.getListByPage(1, true, pageSize, '');
+  public joApplicationLists: any = [];
+  public _listByPageUrl: string = 'candidateinfo/getapplicationlstbypages';
+  getListByPage(pageSize) {
+    debugger
+    setTimeout(() => {
+      this._pg.getListByPage(1, true, pageSize, '');
       setTimeout(() => {
       }, 300);
-  }, 0);
-}
-sendToList(ev) {
-  this.jobPostLists = ev;
-  console.log("this.jobPostLists",this.jobPostLists)
-}
+    }, 0);
+  }
+  sendToList(ev) {
+    this.joApplicationLists = ev;
+    console.log("this.jobPostLists==>", this.joApplicationLists)
+  }
 
 
 
@@ -417,86 +473,109 @@ sendToList(ev) {
 
 
 
-reset(){
-  
-}
+  reset() {
+
+  }
 
 
 
-//GET DATA BY ID FOR REPORT 
-public _getcanDeIdUrl: string = 'reqform/getapplicationdetailbyid';
-getcandidateDetail(modelEvnt) {
+  //GET DATA BY ID FOR REPORT 
+  public _getcanDeIdUrl: string = 'reqform/getapplicationdetailbyid';
+  getcandidateDetail(modelEvnt) {
     debugger;
-    console.log("modelEvnt",modelEvnt)
+    console.log("modelEvnt", modelEvnt)
     var param = { strId: modelEvnt };
     var apiUrl = this._getcanDeIdUrl
     this._dataservice.getWithMultipleModel(apiUrl, param)
-        .subscribe(response => {
-            this.res = response;
-             console.log("Detalis master ", this.res)
-            this.masterList=JSON.parse(this.res.resdata.regApplicantMaster)
-            this.downloadFile(this.masterList[0].CvNo,this.masterList[0].name,this.masterList[0].job_title)
-            if(this.res.resdata.accQlfDetail){
-              this.accQlfList=JSON.parse(this.res.resdata.accQlfDetail)
-            }
-            if(this.res.resdata.wrkExperience){
-              this.wrkExpList=JSON.parse(this.res.resdata.wrkExperience)
-            }
-            if(this.res.resdata.profCertificate){
-              this.proCirtificateList=JSON.parse(this.res.resdata.profCertificate)
-            }
-            console.log("Detalis master ", this.masterList)
-            console.log("Detalis accQlfList", this.accQlfList)
-            console.log("Detalis wrkExpList", this.wrkExpList)
-            console.log("Detalis proCirtificateList", this.proCirtificateList)
-           
-            //this.loadImages( this.masterListDetails.imagePath)
-            //this.loadImages( this.masterListDetails.signaturePath)
-           
-        }, error => {
-            console.log(error);
-        });
-}
+      .subscribe(response => {
+        this.res = response;
+        console.log("Detalis master ", this.res)
+        this.masterList = JSON.parse(this.res.resdata.regApplicantMaster)
+        this.downloadFile(this.masterList[0].CvNo, this.masterList[0].name, this.masterList[0].job_title)
+        if (this.res.resdata.accQlfDetail) {
+          this.accQlfList = JSON.parse(this.res.resdata.accQlfDetail)
+        }
+        if (this.res.resdata.wrkExperience) {
+          this.wrkExpList = JSON.parse(this.res.resdata.wrkExperience)
+        }
+        if (this.res.resdata.profCertificate) {
+          this.proCirtificateList = JSON.parse(this.res.resdata.profCertificate)
+        }
+        console.log("Detalis master change ", this.masterList)
+        console.log("Detalis accQlfList", this.accQlfList)
+        console.log("Detalis wrkExpList", this.wrkExpList)
+        console.log("Detalis proCirtificateList", this.proCirtificateList)
 
+        //this.loadImages( this.masterListDetails.imagePath)
+        //this.loadImages( this.masterListDetails.signaturePath)
 
-
-
-
-    public _getReportUrl: string = 'reqform/getapplicatntreport';
-    loadReports(model) {
-        debugger
-         var repFile = 'rptApplicantCV'  + '.rdlc';
-         var rmodel = { reportPath: '/reportfile/business/applicant/' + repFile, reportName: 'CV' };
-        this._rptViewer.rptModel = new ReportModel(rmodel.reportPath, rmodel.reportName, 580);
-        var param = { strId: model };
-        var repParam = [{ PrintDate: this._conversion.Today() }];
-        var ModelsArray = [repParam, param];
-        this._rptViewer.reportOutPage(this._getReportUrl, ModelsArray);
-    }
-
-
-//DOWNLOAD FILE FROM PATH
-public _fileUrl:string='reqform/getImage'
-public cvDetails:any;
- downloadFile(imgPath: string,name:string,jobTitle:string) {
-  this.cvDetails=imgPath;
-  debugger
-  if(!imgPath){
- this.toastr.error("No file Found")
-        console.error('No file content received.');
-        return;
+      }, error => {
+        console.log(error);
+      });
   }
-      this._dataservice.downloadFile(this._fileUrl,imgPath).subscribe(response => {
+
+
+
+
+
+  public _getReportUrl: string = 'reqform/getapplicatntreport';
+  loadReports(model) {
+    debugger
+    var repFile = 'rptApplicantCV' + '.rdlc';
+    var rmodel = { reportPath: '/reportfile/business/applicant/' + repFile, reportName: 'CV' };
+    this._rptViewer.rptModel = new ReportModel(rmodel.reportPath, rmodel.reportName, 580);
+    var param = { strId: model };
+    var repParam = [{ PrintDate: this._conversion.Today() }];
+    var ModelsArray = [repParam, param];
+    this._rptViewer.reportOutPage(this._getReportUrl, ModelsArray);
+  }
+
+
+  loadCandidateParticulars(model) {
+    debugger
+    var repFile = 'rptInterviewCandidatesParticulars' + '.rdlc';
+    var rmodel = { reportPath: '/reportfile/business/applicant/' + repFile, reportName: 'CV' };
+    this._rptViewer.rptModel = new ReportModel(rmodel.reportPath, rmodel.reportName, 580);
+    var param = { strId: model };
+    var repParam = [{ PrintDate: this._conversion.Today() }];
+    var ModelsArray = [repParam, param];
+    this._rptViewer.reportOutPage(this._getReportUrl, ModelsArray);
+  }
+
+  loadCandidatePersonalInfo(model) {
+    debugger
+    var repFile = 'rptPersonalInfo' + '.rdlc';
+    var rmodel = { reportPath: '/reportfile/business/applicant/' + repFile, reportName: 'CV' };
+    this._rptViewer.rptModel = new ReportModel(rmodel.reportPath, rmodel.reportName, 580);
+    var param = { strId: model };
+    var repParam = [{ PrintDate: this._conversion.Today() }];
+    var ModelsArray = [repParam, param];
+    this._rptViewer.reportOutPage(this._getReportUrl, ModelsArray);
+  }
+
+
+  //DOWNLOAD FILE FROM PATH
+  public _fileUrl: string = 'reqform/getImage'
+  public cvDetails: any;
+  downloadFile(imgPath: string, name: string, jobTitle: string) {
+    this.cvDetails = imgPath;
+    debugger
+    if (!imgPath) {
+      this.toastr.error("No file Found")
+      console.error('No file content received.');
+      return;
+    }
+    this._dataservice.downloadFile(this._fileUrl, imgPath).subscribe(response => {
       const blob = response.body;
-  if (!blob) {
+      if (!blob) {
         this.toastr.error("No file Found")
         console.error('No file content received.');
         return;
       }
-    
+
 
       const contentDisposition = response.headers.get('Content-Disposition');
-      let fileName = name+"-"+jobTitle+".pdf";
+      let fileName = name + "-" + jobTitle + ".pdf";
 
       if (contentDisposition) {
         const matches = /filename="?([^"]+)"?/.exec(contentDisposition);
@@ -520,35 +599,35 @@ public cvDetails:any;
 
 
 
-edit(id:string){
- this._dataservice.setOid(id,false,true);
-  this.router.navigate(['/apply']);
-}
+  edit(id: string) {
+    this._dataservice.setOid(id, false, true);
+    this.router.navigate(['/apply']);
+  }
 
 
-convertOracleDateToInput(dateString: string): string {
-  if (!dateString) return '';
+  convertOracleDateToInput(dateString: string): string {
+    if (!dateString) return '';
 
-  const parts = dateString.split('-'); // ["08", "MAY", "25"]
-  const day = +parts[0];
-  const month = parts[1].toUpperCase();
-  const shortYear = +parts[2];
+    const parts = dateString.split('-'); // ["08", "MAY", "25"]
+    const day = +parts[0];
+    const month = parts[1].toUpperCase();
+    const shortYear = +parts[2];
 
-  const monthMap: any = {
-    JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
-    JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11
-  };
+    const monthMap: any = {
+      JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
+      JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11
+    };
 
-  const fullYear = shortYear < 50 ? 2000 + shortYear : 1900 + shortYear;
-  const jsDate = new Date(fullYear, monthMap[month], day);
+    const fullYear = shortYear < 50 ? 2000 + shortYear : 1900 + shortYear;
+    const jsDate = new Date(fullYear, monthMap[month], day);
 
-  return formatDate(jsDate, 'yyyy-MM-dd', 'en-US');
-}
-
-
+    return formatDate(jsDate, 'yyyy-MM-dd', 'en-US');
+  }
 
 
-public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
+
+
+  public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
 
   selectionProcess(oid: string): void {
     this.selectedOid = oid;
@@ -562,36 +641,36 @@ public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
   }
 
   submitModal(): void {
-    const param = { 
-    loggedUserId: this.userID
-  };
-   const msgDetails = {
+    const param = {
+      loggedUserId: this.userID
+    };
+    const msgDetails = {
       oid: this.selectedOid,
       inputField: this.inputField,
       message: this.commentText
     };
 
-  const ModelsArray = [param,msgDetails ];
+    const ModelsArray = [param, msgDetails];
     debugger
-  
+
     this._dataservice.postMultipleModel(this._setUpMsgUrl, ModelsArray)
       .subscribe(
         response => {
-          this.res=response;
-          console.log("this.response message ",this.res)
-          this.resmessage=this.res.resdata.resstate;
-          if( this.resmessage){
-          this.toastr.success('Save Successfully');
-          this.closeModal(); // Close modal
-          window.location.reload(); // Reload page if needed 
+          this.res = response;
+          console.log("this.response message ", this.res)
+          this.resmessage = this.res.resdata.resstate;
+          if (this.resmessage) {
+            this.toastr.success('Save Successfully');
+            this.closeModal(); // Close modal
+            window.location.reload(); // Reload page if needed 
           }
-          else{
-             this.toastr.error('Sata Not save');
-          this.closeModal(); // Close modal
-          window.location.reload(); // Reload page if needed 
+          else {
+            this.toastr.error('Sata Not save');
+            this.closeModal(); // Close modal
+            window.location.reload(); // Reload page if needed 
           }
 
-          
+
         },
         error => {
           console.error(error);
@@ -601,35 +680,674 @@ public _setUpMsgUrl: string = 'reqform/SaveUpdateMessage';
 
 
 
-public OfficialMsg:string;
-updateModal(oid) {
-   this.selectedOid = oid;
+  public OfficialMsg: string;
+  updateModal(oid) {
+    this.selectedOid = oid;
     this.showModal = true;
     debugger;
-    console.log("modelEvnt",oid)
+    console.log("modelEvnt", oid)
     var param = { strId: oid };
     var apiUrl = this._getcanDeIdUrl
     this._dataservice.getWithMultipleModel(apiUrl, param)
-        .subscribe(response => {
+      .subscribe(response => {
+        this.res = response;
+
+        var masterList = JSON.parse(this.res.resdata.regApplicantMaster)
+        this.OfficialMsg = masterList[0].offcMessage;
+        this.commentText = this.OfficialMsg;
+        console.log("Detalis master data for modal ", this.commentText)
+      }, error => {
+        console.log(error);
+      });
+  }
+
+
+
+
+
+  public emailModal: any;
+  public modalType: string;
+  public applicantOid: string = "";
+  public subject: any;
+  openMailModal(details: any, type: string) {
+    this.subject = '';
+    debugger
+    this.modalType = type;
+
+    const company = details.company;
+    this.applicantOid = details.applicantOid;
+    const toEmail = details.email;
+    const position = details.appliedPost;
+    const name = details.name;
+    if (this.modalType == 'written') {
+      this.subject = `written Exam`;
+    }
+    if (this.modalType == 'viva') {
+      this.subject = `Viva Exam`;
+    }
+    if (this.modalType == 'OfferLater') {
+      this.subject = `Offer Letter`;
+    }
+
+
+    const body = `
+Dear ${name},
+
+Greetings from ${company}!!
+
+Congratulations on being selected as ${position} of ${company}.
+Your target date of joining is on July 24, 2025 and your job location will be UK-Bangla Cement Ltd., Hosendi Economic Zone, Gazaria, Munshiganj.
+Wishing you a great career ahead with ${company}.
+Your target date of joining is on July 24, 2025 and your job location will be UK-Bangla Cement Ltd., Hosendi Economic Zone, Gazaria, Munshiganj. 
+
+In order to complete your joining formalities, you need to report to Group HR and Admin Department (𝐌𝐫. 𝐊𝐚𝐦𝐫𝐮𝐳𝐳𝐚𝐦𝐚𝐧, 𝐀𝐬𝐬𝐢𝐬𝐭𝐚𝐧𝐭 𝐌𝐚𝐧𝐚𝐠𝐞𝐫), 𝐌𝐨𝐛𝐢𝐥𝐞: 01799994411 (at 10:00 am, House:9B, Road:51, Gulshan-2) on your day of joining.
+
+You will get your Appointment letter on your date of joining with full details of your Remuneration as per our discussion. 
+
+Please bring the following documents to ensure smooth onboarding:
+
+•	Candidate NID card (2 photocopy and main copy) 
+•	Bank Nominee NID card (2 photocopy)
+•	E- TIN Certificate
+•	Candidate Passport Size Photo (4 copies-Lab print)
+•	Bank Nominee Passport Size photo (2 copies-Lab print)
+•	Salary Certificate
+•	Resignation Acceptance letter/Release letter (Current organization) (if applicable)
+•	Experience letter (Previous organization) (if applicable)
+•	Academic certificates (Original + Photocopy)
+•	Utility Bill
+•	Union Parishod/ Pouroshova Certificate
+
+All original documents are only required for verification purpose on your date of joining.
+
+Wishing you a great career ahead with City Group. 
+
+For any queries, please contact us. 
+
+Please reply to the mail if you accept our offer.
+
+
+Please reply to the mail if you accept our offer.
+`;
+
+    this.mailForm.patchValue({
+      toEmail,
+      subject: this.subject,
+      body
+    });
+
+    const modalElement = document.getElementById('emailModal');
+    this.emailModal = new bootstrap.Modal(modalElement, {
+      backdrop: false,
+      keyboard: true
+    });
+    this.emailModal.show();
+  }
+
+  closeMailModal() {
+    if (this.emailModal) {
+      this.emailModal.hide();
+    }
+  }
+
+
+  public sendmail: string = 'otp/sendmail';
+  sendOfferEmail() {
+    const details = this.mailForm.value;
+    var body = details.body;
+    var subject = details.subject;
+    var toEmail = details.toEmail
+    var mailType = 'offerLatter'
+    var applicationOID = this.applicantOid
+    var values = { body: body, subject: subject, toEmail: toEmail, mailType: mailType, applicationOID: applicationOID };
+    console.log("details of the here ", values, details)
+    var apiUrl = this.sendmail;
+    if (this.mailForm.valid) {
+      this.loading = true;
+      this._dataservice.postMultipleModel(apiUrl, values)
+        .subscribe({
+          next: (response) => {
             this.res = response;
-             
-            var masterList=JSON.parse(this.res.resdata.regApplicantMaster)
-            this.OfficialMsg=masterList[0].offcMessage;
-            this.commentText= this.OfficialMsg;
-            console.log("Detalis master data for modal ",  this.commentText)
-        }, error => {
-            console.log(error);
+            var resMessage = this.res.message;
+            if (this.res.data) {
+              this.toastr.success(resMessage, 'success')
+              this.closeMailModal();
+            }
+            else {
+              this.toastr.error(resMessage, 'OPPS!');
+            }
+          },
+          error: (error) => {
+            this.toastr.error("Something went wrong!", "Error");
+          },
+          complete: () => {
+            this.loading = false; // Stop spinner
+          }
+        })
+
+    }
+  }
+
+
+  sendWrittenExamEmail() {
+    const details = this.mailForm.value;
+    var body = details.body;
+    var subject = details.subject;
+    var toEmail = details.toEmail
+    var mailType = 'isWritten'
+    var applicationOID = this.applicantOid
+    var values = { body: body, subject: subject, toEmail: toEmail, mailType: mailType, applicationOID: applicationOID };
+    console.log("details of the here ", values, details)
+    var apiUrl = this.sendmail;
+    if (this.mailForm.valid) {
+      this.loading = true;
+      this._dataservice.postMultipleModel(apiUrl, values)
+        .subscribe({
+          next: (response) => {
+            this.res = response;
+            var resMessage = this.res.message;
+            if (this.res.data) {
+              this.toastr.success(resMessage, 'success')
+              this.closeMailModal();
+            }
+            else {
+              this.toastr.error(resMessage, 'OPPS!');
+            }
+          },
+          error: (error) => {
+            this.toastr.error("Something went wrong!", "Error");
+          },
+          complete: () => {
+            this.loading = false; // Stop spinner
+          }
+        })
+
+    }
+  }
+
+
+  sendVivaExamEmail() {
+    const details = this.mailForm.value;
+    var body = details.body;
+    var subject = details.subject;
+    var toEmail = details.toEmail
+    var mailType = 'isViva'
+    var applicationOID = this.applicantOid
+    var values = { body: body, subject: subject, toEmail: toEmail, mailType: mailType, applicationOID: applicationOID };
+    console.log("details of the here ", values, details)
+    var apiUrl = this.sendmail;
+    if (this.mailForm.valid) {
+      this.loading = true;
+      this._dataservice.postMultipleModel(apiUrl, values)
+        .subscribe({
+          next: (response) => {
+            this.res = response;
+            var resMessage = this.res.message;
+            if (this.res.data) {
+              this.toastr.success(resMessage, 'success')
+              this.closeMailModal();
+            }
+            else {
+              this.toastr.error(resMessage, 'OPPS!');
+            }
+          },
+          error: (error) => {
+            this.toastr.error("Something went wrong!", "Error");
+          },
+          complete: () => {
+            this.loading = false; // Stop spinner
+          }
+        })
+
+    }
+  }
+
+
+
+
+  public mailDate: Date;
+  getMAilDate(event: any) {
+    debugger
+    this.mailDate = event.target.value;
+  }
+
+  public examTime: string;
+  public meridiem: string
+  public examHour: string;
+  getMAilTime(event: any) {
+    const time = event.target.value;
+    const [hour, minute] = time.split(':').map(Number);
+    if (hour > 12) {
+      var tempTime = hour - 12;
+      this.examTime = tempTime.toString().padStart(2, '0') + ":" + minute.toString().padStart(2, '0');
+    }
+    else {
+      this.examTime = hour.toString().padStart(2, '0') + ":" + minute.toString().padStart(2, '0')
+    }
+    this.meridiem = hour >= 12 ? 'PM' : 'AM';
+    this.examHour = this.examTime + "-" + this.meridiem
+    console.log("exam time  selected:", this.examHour);
+  }
+
+  mailType: string;
+  mailTypeList: string;
+  getMailType(event: any) {
+    debugger
+    this.mailType = event;
+    console.log("mailType  selected:", this.mailType);
+
+  }
+  public checkApplicationList: any = [];
+  setDateByRow(event: any, index: number, list: any) {
+    debugger
+    if (event.target.checked && this.mailDate) {
+      this.joApplicationLists[index].checked = true;
+      if (this.mailType == '1') {
+        this.mailTypeList = 'written'
+        this.joApplicationLists[index].writtenDate = this.mailDate;
+        this.checkApplicationList.push(this.joApplicationLists[index])
+      }
+      if (this.mailType == '2') {
+        this.mailTypeList = 'viva'
+        this.joApplicationLists[index].vivaDate = this.mailDate;
+        this.checkApplicationList.push(this.joApplicationLists[index])
+      }
+      if (this.mailType == '3') {
+        this.mailTypeList = 'writtenViva'
+        this.joApplicationLists[index].writtenDate = this.mailDate;
+        this.joApplicationLists[index].vivaDate = this.mailDate;
+        this.checkApplicationList.push(this.joApplicationLists[index])
+      }
+      if (this.mailType == '4') {
+        this.mailTypeList = 'OfferLater'
+        this.joApplicationLists[index].selectedDate = this.mailDate;
+        this.checkApplicationList.push(this.joApplicationLists[index])
+      }
+
+    } else {
+      this.joApplicationLists[index].checked = false;
+      if (this.mailType == '1') {
+        //this.mailTypeList=''
+        this.joApplicationLists[index].writtenDate = null;
+        this.checkApplicationList = this.checkApplicationList.filter(item => item.applicantOid !== this.joApplicationLists[index].applicantOid)
+      }
+      if (this.mailType == '2') {
+        //this.mailTypeList=''
+        this.joApplicationLists[index].vivaDate = null;
+        this.checkApplicationList = this.checkApplicationList.filter(item => item.applicantOid !== this.joApplicationLists[index].applicantOid)
+      }
+      if (this.mailType == '3') {
+        //this.mailTypeList=''
+        this.joApplicationLists[index].writtenDate = null;
+        this.joApplicationLists[index].vivaDate = null;
+        this.checkApplicationList = this.checkApplicationList.filter(item => item.applicantOid !== this.joApplicationLists[index].applicantOid)
+      }
+      if (this.mailType == '4') {
+        //this.mailTypeList=''
+        this.joApplicationLists[index].selectedDate = null;
+        this.checkApplicationList = this.checkApplicationList.filter(item => item.applicantOid !== this.joApplicationLists[index].applicantOid)
+      }
+    }
+    this.isAllChecked = this.joApplicationLists.every(item => item.checked);
+    console.log("push all data is  this.checkApplicationList", this.isAllChecked)
+  }
+
+
+  isAllChecked: boolean = false;
+  setDateAllRow(event: any) {
+    debugger
+    this.isAllChecked = event.target.checked;
+
+    if (this.isAllChecked && this.mailDate) {
+      if (this.mailType == '1') {
+        this.mailTypeList = 'written'
+        this.joApplicationLists.forEach(item => {
+          item.checked = true;
+          item.writtenDate = this.mailDate;
         });
+        this.checkApplicationList = [...this.joApplicationLists];
+      }
+      if (this.mailType == '2') {
+        this.mailTypeList = 'viva'
+        this.joApplicationLists.forEach(item => {
+          item.checked = true;
+          item.vivaDate = this.mailDate;
+        });
+        this.checkApplicationList = [...this.joApplicationLists];
+      }
+      if (this.mailType == '3') {
+        this.mailTypeList = 'writtenViva'
+        this.joApplicationLists.forEach(item => {
+          item.checked = true;
+          item.writtenDate = this.mailDate;
+          item.vivaDate = this.mailDate;
+        });
+        this.checkApplicationList = [...this.joApplicationLists];
+      }
+      if (this.mailType == '4') {
+        this.mailTypeList = 'OfferLater'
+        this.joApplicationLists.forEach(item => {
+          item.checked = true;
+          item.selectedDate = this.mailDate;
+        });
+        this.checkApplicationList = [...this.joApplicationLists];
+
+      }
+
+
+    } else {
+      if (this.mailType == '1') {
+        this.mailTypeList = ''
+        this.joApplicationLists.forEach(item => {
+          item.checked = false;
+          item.writtenDate = null;
+        });
+        this.checkApplicationList = [];
+      }
+      if (this.mailType == '2') {
+        this.mailTypeList = ''
+        this.joApplicationLists.forEach(item => {
+          item.checked = false;
+          item.vivaDate = null;
+        });
+        this.checkApplicationList = [];
+      }
+      if (this.mailType == '3') {
+        this.mailTypeList = ''
+        this.joApplicationLists.forEach(item => {
+          item.checked = false;
+          item.writtenDate = null;
+          item.vivaDate = null;
+        });
+        this.checkApplicationList = [];
+      }
+      if (this.mailType == '4') {
+        this.mailTypeList = ''
+        this.joApplicationLists.forEach(item => {
+          item.checked = false;
+          item.selectedDate = null;
+        });
+        this.checkApplicationList = [];
+      }
+    }
+    console.log(" this.checkApplicationList All Select", this.checkApplicationList)
+
+  }
+
+  SendAllMailx() {
+    debugger
+    if (!this.mailTypeList || !this.mailDate) {
+      this.toastr.error("Mail Date & Mail Type are Required")
+      return
+    }
+    if (this.mailTypeList == 'written' || this.mailTypeList == 'viva' || this.mailTypeList == 'writtenViva') {
+      if (!this.examHour) {
+        this.toastr.error("Exam hour is  Required");
+        return;
+      }
+    }
+    if (this.checkApplicationList.length < 1) {
+      this.toastr.error("You Don't Select Any Data")
+      return
+    }
+    const DataList = this.checkApplicationList
+    console.log("mail send list is ", DataList)
+    for (let i = 0; i < DataList.length; i++) {
+      this.sendMail(DataList[i], this.mailTypeList, 0)
+    }
+  }
+
+
+
+  // async SendAllMail(): Promise<void> {
+  //   if (!this.mailTypeList || !this.mailDate) {
+  //     this.toastr.error("Mail Date & Mail Type are required");
+  //     return;
+  //   }
+  //   if (!this.checkApplicationList?.length) {
+  //     this.toastr.error("You haven't selected any data");
+  //     return;
+  //   }
+  //   await Promise.all(
+  //     this.checkApplicationList.map(item => this.sendMail(item, this.mailTypeList, 0))
+  //   );
+  //   this.toastr.success("All mails sent successfully!");
+  // }
+
+
+
+  public _mailUrl: string = 'candidateinfo/SendServiceRequestMail';
+  sendMail(details: any, type: string, index: number): void {
+    debugger;
+    if (type == 'written' || type == 'viva' || type == 'writtenViva') {
+      if (!this.examHour) {
+        this.toastr.error("Exam hour is  Required");
+        return;
+      }
+    }
+    const mailData: { [key: string]: keyof typeof details } = {
+      written: 'writtenDate',
+      viva: 'vivaDate',
+      writtenViva: 'writtenDate',
+      OfferLater: 'selectedDate'
+    };
+
+    const mailDate = details[mailData[type]];
+    if (!mailDate || !this.mailType) {
+      this.toastr.error("date and mail type required");
+      return;
+    }
+
+    const param = {
+      loggedUserId: this.userID,
+      profileId: details.profileId,
+      applicantId: details.applicantOid,
+      jobId: details.jobId,
+      name: details.name,
+      toEmail: details.email,
+      jobTitle: details.jobTitle,
+      mailType: type,
+      examDate: mailDate,
+      examHour: this.examHour,
+      CompanyName: details.companyName,
+      department: details.departmentName,
+      post: details.appliedPostName
+    };
+
+    const ModelsArray = [param];
+    this.loading = true;
+    this._dataservice.postMultipleModel(this._mailUrl, [ModelsArray])
+      .subscribe({
+        next: (response) => {
+          this.res = response;
+          console.log("this mail res is ", this.res)
+          this.resmessage = this.res.message;
+          if (this.res.resstate) {
+            this.toastr.success(this.resmessage);
+            window.location.reload();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error("Failed to send mail");
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
+  }
+
+
+
+
+  SendAllMail() {
+    debugger
+    if (!this.mailTypeList || !this.mailDate) {
+      this.toastr.error("Mail Date & Mail Type are Required")
+      return
+    }
+    if (this.mailTypeList == 'written' || this.mailTypeList == 'viva' || this.mailTypeList == 'writtenViva') {
+      if (!this.examHour) {
+        this.toastr.error("Exam hour is  Required");
+        return;
+      }
+    }
+    if (this.checkApplicationList.length < 1) {
+      this.toastr.error("You Don't Select Any Data")
+      return
+    }
+    const ModelsArray: any[] = [];
+    const DataList = this.checkApplicationList
+    console.log("mail send list is ", DataList)
+    DataList.forEach(item => {
+      const param = {
+        loggedUserId: this.userID,
+        profileId: item.profileId,
+        applicantId: item.applicantOid,
+        jobId: item.jobId,
+        name: item.name,
+        toEmail: item.email,
+        jobTitle: item.jobTitle,
+        mailType: this.mailTypeList,
+        examDate: this.mailDate,
+        examHour: this.examHour,
+        CompanyName: item.companyName,
+        department: item.departmentName,
+        post: item.appliedPostName
+      };
+      ModelsArray.push(param);
+    });
+    this.loading = true;
+    this._dataservice.postMultipleModel(this._mailUrl, [ModelsArray])
+      .subscribe({
+        next: (response) => {
+          this.res = response;
+          console.log("this mail res is ", this.res)
+          this.resmessage = this.res.message;
+          if (this.res.resstate) {
+            this.toastr.success(this.resmessage);
+            window.location.reload();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error("Failed to send mail");
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
+  }
+
+
+
+//GET ALL COMPANY DEPARTMENT AND DESIGANTION FROM JOB POST AND ALL ARE UNIQUE
+public _getjobCompany: string = 'jobPost/getallcompantfromjob';
+  public jobCompanyList: any;
+  getCompanyJob() {
+    var list: Array<{ id: string, text: string }> = [
+      { id: '0', text: "Please Select" }
+    ];
+    var apiUrl = this._getjobCompany;
+    var param = this.loggedUserId;
+    this._dataservice.getall(apiUrl)
+      .subscribe(
+        response => {
+          this.res = response;
+          let jsonString = this.res.resdata.listCompany;
+          let data = JSON.parse(jsonString);
+          data.forEach(item => {
+            if (item.oid && item.name) {
+              list.push({
+                id: item.oid,
+                text: item.name
+              });
+            }
+          });
+          this.jobCompanyList = list;
+        },
+        error => {
+          console.log(error);
+        });
+  }
+
+
+  public _getjobdepartment: string = 'jobPost/getallDepartmentFromJob';
+  public jobdepartmentList: any;
+  getDepartmentJob() {
+    debugger
+    var list: Array<{ id: string, text: string }> = [
+      { id: '0', text: "Please Select" }
+    ];
+    var apiUrl = this._getjobdepartment;
+    var param = this.loggedUserId;
+    this._dataservice.getall(apiUrl)
+      .subscribe(
+        response => {
+          this.res = response;
+          let jsonString = this.res.resdata.listDepartment;
+          let data = JSON.parse(jsonString);
+          data.forEach(item => {
+            if (item.oid && item.name) {
+              list.push({
+                id: item.oid,
+                text: item.name
+              });
+            }
+          });
+          this.jobdepartmentList = list;        
+        },
+        error => {
+          console.log(error);
+        });
+  }
+
+
+    public _getjobDesignation: string = 'jobPost/getallDesignationFromJob';
+  public jobdesignationsList: any;
+  getDesignationJob() {
+    var list: Array<{ id: string, text: string }> = [
+      { id: '0', text: "Please Select" }
+    ];
+    var apiUrl = this._getjobDesignation;
+    var param = this.loggedUserId;
+    this._dataservice.getall(apiUrl)
+      .subscribe(
+        response => {
+          this.res = response;
+          let jsonString = this.res.resdata.listDesignation;
+          let data = JSON.parse(jsonString);
+          console.log("Parsed Data:", data);
+          data.forEach(item => {
+            if (item.oid && item.name) {
+              list.push({
+                id: item.oid,
+                text: item.name
+              });
+            }
+          });
+          this.jobdesignationsList = list; 
+
+        },
+        error => {
+          console.log(error);
+        });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
 
-
-
-
-
-
-
-
-
-}

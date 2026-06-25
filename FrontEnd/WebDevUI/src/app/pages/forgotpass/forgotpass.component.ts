@@ -42,8 +42,13 @@ export class ForgotPassComponent {
   public usrPlaceMsgs:string='Employee';
   public form: FormGroup;
   public settings: Settings;
+  public otp:string='';
+  public loading: boolean = false;
+  userModel = {
+    otp: ''
+  };
 
-  userModel = new User('', '');
+  //userModel = new User('', '');
 
   constructor(public appSettings: AppSettings,
     public fb: FormBuilder,
@@ -53,6 +58,7 @@ export class ForgotPassComponent {
     public _apiService: ApiService,
     private toastr: ToastrService,
     private _dataservice: DataService,
+    
   ) {
     debugger;
     var host=window.location.origin;
@@ -68,71 +74,98 @@ export class ForgotPassComponent {
 
     this.settings = this.appSettings.settings;
     this.form = this.fb.group({
-      'password': [null, Validators.compose([Validators.required, Validators.minLength(4)])],
-      'userid': [null, Validators.compose([Validators.required, Validators.minLength(5)])],
+      'email': [null, Validators.compose([Validators.required, Validators.minLength(5)])],
       'rememberMe': false
-    });
-
-    //  // 'email': [null, Validators.compose([Validators.required, emailValidator])],
+    }//add it later wirth , 
+  );
+ 
   }
 
   ngOnInit() {
-    this.onRedirect();
+    //this.onRedirect();
   }
 
-  onRedirect() {
-    debugger;
-    var rdModels: any = this.acrout.queryParams;
-    var values = rdModels._value;
-    this._location.replaceState("/login");
-    if (values != undefined) {
-      // console.log('redirect', JSON.stringify(values));
-      var value = { userid: values.userid, password: '     ', isredirect: values.isredirect }
-      this.form.controls.userid.setValue(value.userid);
-      this.form.controls.password.setValue(value.password);
-      this.onSubmit(value);
-    }
-  }
 
-  onLogin() {
-    var values = { userid: this.form.value.userid, password: this.form.value.password, isredirect: '0' }
-    this.onSubmit(values);
-  }
+ userEmail:any;
+ public verifymail: string = 'otp/sendotp';
+  public onSubmit(): void {
+  debugger;
+  var values = { email: this.form.value.email };
+  this.userEmail = this.form.value.email;
 
-  public login: string = 'jobusers/login';
-  public onSubmit(values: any): void {
-    sessionStorage.clear();
-    if (this.form.valid) {
-      this.userID = values.userid;
-      this.userPassword = values.password;
-      this.user = {
-        "EmpID": this.userID,
-        "UserPassw": this.userPassword,
-        "IsRedirect": values.isredirect
-      }
+  if (this.form.valid) {
+    this.loading = true; // Start spinner
+    this.userID = values;
+    var apiUrl = this.verifymail;
 
-      var apiUrl = this.login;
-      this._dataservice.postMultipleModel(apiUrl, this.user)
-        .subscribe(response => {
-          debugger;
+    this._dataservice.postMultipleModel(apiUrl, this.userID)
+      .subscribe({
+        next: (response) => {
           this.res = response;
-          console.log(" this.res", this.res)
-          var resMessage = this.res.resdata.message;
-          if (this.res.resdata.resstate) {
-            sessionStorage.clear();
-            sessionStorage.setItem('isLoggedIn', 'true');
-            sessionStorage.setItem('loggedUser', JSON.stringify(this.res.resdata.loggeduser));
-            sessionStorage.setItem('userID', this.userID);
-            sessionStorage.setItem('password', this.userPassword);
-            this.toastr.success(resMessage, 'Success!');
-            //this.router.navigate(['/requirement']);    
-            this.router.navigate(['/home']);
+          console.log("this.res", this.res);
+          var resMessage = this.res.message;
+
+          if (this.res.otp) {
+            this.toastr.success(resMessage, 'Success');
+            this._dataservice.setEmail(this.form.value.email);
+            this.router.navigate(['/verifyotp']);
+            this.otp = this.res.otp;
           } else {
             this.toastr.error(resMessage, 'OPPS!');
           }
-        });
-    }
+        },
+        error: (error) => {
+          this.toastr.error("Something went wrong!", "Error");
+        },
+        complete: () => {
+          this.loading = false; // Stop spinner
+        }
+      });
   }
+}
+
+
+
+
+  // public onSubmit(): void {
+  //   debugger
+  //   var values = { email: this.form.value.email }
+  //   this.userEmail=this.form.value.email;
+  //   if (this.form.valid) {
+  //      this.loading = true;
+  //     this.userID = values
+  //     var apiUrl = this.verifymail;
+  //     this._dataservice.postMultipleModel(apiUrl, this.userID)
+  //       .subscribe(response => {
+  //         debugger;
+  //         this.res = response;
+  //         console.log(" this.res", this.res)
+  //     var resMessage=this.res.message
+  //         if (this.res.otp) {
+  //            this.toastr.success(resMessage, 'Success');
+  //            this._dataservice.setEmail(this.form.value.email);
+  //           this.router.navigate(['/verifyotp']);
+  //           this.otp=this.res.otp
+  //         } else {
+  //           this.toastr.error(resMessage, 'OPPS!');
+  //         }
+  //       });
+  //   }
+  // }
+
+
+
+
+
+
+
+ 
+            
+
+
+
+
+
 
   ngAfterViewInit() {
     setTimeout(() => {

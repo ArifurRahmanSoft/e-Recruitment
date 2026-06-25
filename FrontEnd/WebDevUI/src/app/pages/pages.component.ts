@@ -34,6 +34,7 @@ export class PagesComponent implements OnInit {
   my_menu_list : MyMenu[];
 
   constructor(public appSettings:AppSettings, public router:Router, private menuService: MenuService, public _apiService : ApiService){
+  
 
     if(sessionStorage.getItem('isLoggedIn') == 'true'){
 
@@ -66,7 +67,9 @@ export class PagesComponent implements OnInit {
     this.defaultMenu = this.settings.menu;
   }
 
-  ngAfterViewInit(){    
+  ngAfterViewInit(){   
+    debugger
+    console.log("scroll controller of pageComponent.ts ",this.pss)  
     setTimeout(() => { 
       this.settings.loadingSpinner = false; 
      
@@ -98,14 +101,17 @@ export class PagesComponent implements OnInit {
   }
 
   public chooseMenuType(){
+        debugger
     this.settings.menuType = this.menuTypeOption;
   }
 
   public changeTheme(theme){
+        debugger
     this.settings.theme = theme;       
   }
   
   public closeInfoContent(showInfoContent){
+    debugger
     this.showInfoContent = !showInfoContent;
   }
 
@@ -127,10 +133,13 @@ export class PagesComponent implements OnInit {
   }
 
   public onPsScrollY(event){   
+
     (event.target.scrollTop > 300) ? this.backToTop.nativeElement.style.display = 'flex' : this.backToTop.nativeElement.style.display = 'none';
   }
 
   public scrollToTop() {
+    console.log("this scrooll top of the button Pages",this.pss)
+    debugger
     this.pss.forEach(ps => {
       if(ps.elementRef.nativeElement.id == 'main'){
         ps.scrollToTop(0,250);

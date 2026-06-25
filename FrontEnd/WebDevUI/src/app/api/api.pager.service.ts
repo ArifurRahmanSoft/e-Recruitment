@@ -1,7 +1,8 @@
 export class PagerService {
   getPager(totalItems: number, currentPage: number = 1, pageSize: number = 10) {
       // calculate total pages
-      pageSize = pageSize.toString() === 'All' ? totalItems : pageSize;
+      //pageSize = pageSize.toString() === 'All' ? totalItems : pageSize;
+       pageSize = pageSize.toString() === 'NaN' ? totalItems : pageSize;
 
       let totalPages = Math.ceil(totalItems / pageSize);
 
