@@ -25,5 +25,8 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? Deleteby { get; set; }
         public DateTime? Deleteon { get; set; }
         public string? ApplicantOid { get; set; }
+        public string? Degreetype { get; set; }
+        public string? Docname { get; set; }
+        public string? IslastDegree { get; set; }
     }
 }

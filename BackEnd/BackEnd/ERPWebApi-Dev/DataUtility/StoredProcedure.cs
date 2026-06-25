@@ -425,6 +425,7 @@
         public const string Ora_SpGet_Menu_By_RoleID = "MENUSETUP.Get_Menu_By_RoleID";
         public const string Ora_SpGET_CmnMenu = "MENUSETUP.Get_CmnMenu";
         public const string Ora_SpGet_UserRoleByPage = "USERROLESETUP.Get_UserRoleByPage";
+        public const string Ora_SpGet_ApprovalRoleByPage = "USERROLESETUP.Get_ApprovalRoleByPage";
         //public const string Ora_SpGet_UserRoleById = "USERROLESETUP.Get_UserRoleById";
         #endregion Menu
         #region seperate side menu
@@ -591,7 +592,9 @@
         public const string Ora_SpSet_ApplicantFormMaster = "PKG_APPLICANT_REQUIREMENT.Set_APPLICANT_MASTAR";
         public const string Ora_SpSet_ApplicantFormAcademicQlf = "PKG_APPLICANT_REQUIREMENT.Set_APPLICANT_ACC_QLF";
         public const string Ora_SpSet_ApplicantFormWorkExp = "PKG_APPLICANT_REQUIREMENT.Set_APPLICANT_WRK_EXP"; 
-        public const string Ora_SpSet_ApplicantProfCirtifacate = "PKG_APPLICANT_REQUIREMENT.Set_APPLICANT_PROF_CIRTIFICATE"; 
+        public const string Ora_SpSet_ApplicantProfCirtifacate = "PKG_APPLICANT_REQUIREMENT.Set_APPLICANT_PROF_CIRTIFICATE"; //Set_APPLICANT_TRAINING
+        public const string Ora_SpSet_ApplicantTraining = "PKG_APPLICANT_REQUIREMENT.Set_APPLICANT_TRAINING"; //
+        public const string Ora_SpSet_ApplicantReference = "PKG_APPLICANT_REQUIREMENT.Set_APPLICANT_REFERENCE"; //
         public const string Ora_SpGet_LoggedUserDetails = "PKG_APPLICANT_REQUIREMENT.Get_LogeduserDetailsById";
         public const string Ora_SpGet_ApplicantProfileDetails = "PKG_APPLICANT_REQUIREMENT.Get_ApplicantProfileById";
         public const string Ora_SpGet_AlldataByPageById = "PKG_APPLICANT_REQUIREMENT.Get_APPLICANT_BY_PAGE";
@@ -603,6 +606,11 @@
         public const string Ora_SpGet_CandidatAccQualificatonById = "PKG_APPLICANT_REQUIREMENT.Get_AccQulificationById";
         public const string Ora_SpGet_CandidateDeWorkExperienceById = "PKG_APPLICANT_REQUIREMENT.Get_WorkExperienceById";
         public const string Ora_SpGet_CandidateProfCirtificateById = "PKG_APPLICANT_REQUIREMENT.Get_ProfCirtificateById";
+        public const string Ora_SpGet_CandidateTrainingById= "PKG_APPLICANT_REQUIREMENT.Get_TrainingById";
+        public const string Ora_SpGet_CandidateReferenceById = "PKG_APPLICANT_REQUIREMENT.Get_ReferenceById";
+
+        public const string Ora_SpGet_CandidateAprvlChckMstrById = "PKG_APPLICANT_REQUIREMENT.Get_ApprovalChecklistById";
+        public const string Ora_SpGet_CandidateAprvlXmById = "PKG_APPLICANT_REQUIREMENT.Get_Approval_ExamById";
 
         public const string Ora_SpGet_ApplicationDetailsById = "PKG_APPLICANT_REQUIREMENT.Get_ApplicantMstrById";
 
@@ -610,12 +618,32 @@
         public const string Ora_SpGet_candidateInfoByPage = "PKG_APPLICANT_REQUIREMENT.Get_CANDIDATE_LIST_BY_PARAM";
         public const string Ora_SpGet_FindJobIdFrmMasterData = "PKG_APPLICANT_REQUIREMENT.Get_findJobIdFrmAppMaster";
         public const string Ora_SpGet_ApplicantListByParam = "PKG_APPLICANT_REQUIREMENT.Get_APPLICANT_APPLY_LIST_BY_PARAM";
+        public const string Ora_SpGet_ApplicationListByPage = "PKG_APPLICANT_REQUIREMENT.Get_ApplicationListByPage";
 
+        public const string Ora_SpGet_ApplicantProfileListByPage = "PKG_APPLICANT_REQUIREMENT.Get_ProfileListByPage";
+
+        public const string Ora_SpGet_NotificationById = "PKG_APPLICANT_REQUIREMENT.Get_NotificatonById";
+
+        #endregion
+
+
+        #region ApplicantToEmployee
+        public const string Ora_SpSetEmployeeFromApplicant = "PKG_APPLICANT_TO_EMPLOYEE.Set_EmployeeFromApplicant";
+        public const string Ora_SpSetApprovalCheckLstMstr = "PKG_APPLICANT_TO_EMPLOYEE.Set_Approval_Checklist_Master";
+        public const string Ora_SpSetApprovalCheckLstExam = "PKG_APPLICANT_TO_EMPLOYEE.Set_Approval_Checklist_Exam";
         #endregion
 
         #region RegApplicant
         public const string Ora_SpGetApplicantDetailByMobNum = "PKG_REG_APPLICANT.Get_ApplicantDetailByMobNum";
-      
+
+        #endregion
+
+
+        #region Dropdown
+        public const string Ora_SpGetJobPostCompany = "COMMON_DROPDOWN.Get_Company";
+        public const string Ora_SpGetJobPostDepartment = "COMMON_DROPDOWN.Get_Department";
+        public const string Ora_SpGetJobPostDesignation = "COMMON_DROPDOWN.Get_Designation";
+
         #endregion
 
         #region Address
@@ -662,12 +690,29 @@
         public const string Ora_SpGet_JobOtherRequirementById ="JOBPOSTSETUP.Get_JobOtherRequirementById";
         public const string Ora_SpGet_JobBenifitById ="JOBPOSTSETUP.Get_JobBenifitById";
 
+        
+        public const string Ora_SpSet_Business = "JOBPOSTSETUP.Set_Business";
+        public const string Ora_SpGet_BusinessByPage = "JOBPOSTSETUP.Get_BusinessByPage";
+        public const string Get_BusinessById = "JOBPOSTSETUP.Get_BusinessById";
+
+        public const string Ora_SpGet_RequisitionByPage = "JOBPOSTSETUP.Get_Requisition_BY_PAGE";
+        public const string Get_RequisitionById = "JOBPOSTSETUP.Get_RequisitionById";
+
+        public const string Ora_SpGet_LocationList = "JOBPOSTSETUP.Get_AllLocation";
+
+
+        #endregion
+
+        #region Examinar
+        public const string Ora_SpGet_ExaminarByPage = "PKG_EXAMINAR.Get_ExaminarByPage";
+        public const string Ora_SpGet_AllExaminarDrpdwn = "PKG_EXAMINAR.Get_AllExaminar";
+        public const string Ora_SpGet_AllEmployeeDrpdwn = "PKG_EXAMINAR.Get_AllEmployee";
 
         #endregion
 
         #region
         //public const string Ora_SpGet_candidateInfoByPage = "Circular_Pkg.Get_CandidateListByPage"; 
-            // public const string Ora_SpGet_candidateInfoByPage = "Circular_Pkg.Get_CANDIDATE_LIST_BY_PARAM"; 
+        // public const string Ora_SpGet_candidateInfoByPage = "Circular_Pkg.Get_CANDIDATE_LIST_BY_PARAM"; 
         #endregion
 
         #region Common Package

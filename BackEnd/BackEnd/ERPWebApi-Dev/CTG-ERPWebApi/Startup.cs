@@ -16,6 +16,8 @@ using System.IO;
 using DataModel.EntityModels.OraModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using DataFactories.BaseFactory;
+using DataFactories.DBService;
 
 namespace CTG_ERPWebApi
 {
@@ -31,6 +33,10 @@ namespace CTG_ERPWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //add arif
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddControllers();
+            //end arif 
             services.AddControllers();
             services.AddCors(options =>
             {
@@ -74,6 +80,9 @@ namespace CTG_ERPWebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //add by arif
+           
+            //end by arif 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

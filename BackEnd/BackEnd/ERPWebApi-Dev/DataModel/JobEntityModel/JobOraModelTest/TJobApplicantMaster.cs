@@ -43,7 +43,7 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? ParAddPostOffice { get; set; }
         public string? ParAddVillage { get; set; }
         public string? ExpectedSelery { get; set; }
-        public string? AppliedBy { get; set; }
+        public string? SourceFrom { get; set; }
         public string? Department { get; set; }
         public DateTime? ApplyDate { get; set; }
         public string? CompanyName { get; set; }
@@ -63,5 +63,17 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? NidPath { get; set; }
         public string? OfficialMsg { get; set; }
         public string? Isconfirm { get; set; }
+        public string? NidBackPath { get; set; }
+        public string? BnName { get; set; }
+        public string? BnFatherName { get; set; }
+        public string? BnMotherName { get; set; }
+        public string? BnSpouseName { get; set; }
+        public decimal? GrandtotalDays { get; set; }
+        public DateTime? JoiningDate { get; set; }
+        public string? SetSalary { get; set; }
+        public string? Isjoining { get; set; }
+        public string? EmpOid { get; set; }
+        public string? Isrelative { get; set; }
+        public string? Specifyrelative { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public decimal? Result { get; set; }
         public decimal? Passingyear { get; set; }
         public decimal? ApplicantOid { get; set; }
+        public string? Degreetype { get; set; }
 
         public virtual TJobAppApplicantForm? ApplicantO { get; set; }
     }

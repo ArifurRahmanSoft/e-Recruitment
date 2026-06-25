@@ -141,7 +141,7 @@ namespace DataFactories.Infrastructure.common.dropdown
                                          where tct.AcmpActv == "Y"
                                          select new
                                          {
-                                             oId = tct.AcmpText,
+                                             oId = tct.Oid,
                                              divName = tct.AcmpName
                                          }
                                       ).ToListAsync();
@@ -170,7 +170,7 @@ namespace DataFactories.Infrastructure.common.dropdown
                                          where tct.DeptActv == "Y"
                                          select new
                                          {
-                                             oId = tct.DeptText,
+                                             oId = tct.Oid,
                                              deptName = tct.DeptName
                                          }
                                       ).ToListAsync();
@@ -199,7 +199,7 @@ namespace DataFactories.Infrastructure.common.dropdown
                                         where tct.DsigActv == "Y"
                                         select new
                                         {
-                                            oId = tct.DsigText,
+                                            oId = tct.Oid,
                                             dsigName = tct.DsigName
                                         }
                                       ).ToListAsync();
@@ -216,7 +216,8 @@ namespace DataFactories.Infrastructure.common.dropdown
             };
         }
 
-   
+
+ 
         //-----------------------------------End-------------------------------------------------
         //GET ALL BRAND
 

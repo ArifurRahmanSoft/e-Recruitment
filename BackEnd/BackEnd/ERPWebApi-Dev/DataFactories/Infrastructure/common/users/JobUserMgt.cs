@@ -229,7 +229,7 @@ namespace DataFactories.Infrastructure.common.users
                                 }
                                 else
                                 {
-                                    message = MessageConstants.LoginFailed;
+                                    message = MessageConstants.InvalidUserPass;
                                     resstate = MessageConstants.ErrorState;
                                 }
                             }
@@ -247,6 +247,10 @@ namespace DataFactories.Infrastructure.common.users
 
             return result;
         }
+
+
+       
+
 
         public async Task<object> LoggedUserDetails(vmCmnParameter param)
         {

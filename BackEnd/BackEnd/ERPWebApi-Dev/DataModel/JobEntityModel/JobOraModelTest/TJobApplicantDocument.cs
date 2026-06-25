@@ -6,7 +6,7 @@ namespace DataModel.JobEntityModel.JobOraModelTest
     public partial class TJobApplicantDocument
     {
         public decimal Documentid { get; set; }
-        public decimal? Referenceid { get; set; }
+        public string? Referenceid { get; set; }
         public byte[]? File { get; set; }
         public string? Documentname { get; set; }
         public string? Documenttype { get; set; }
@@ -27,5 +27,8 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public DateTime? Deleteon { get; set; }
         public string? Deletepc { get; set; }
         public string? Originaldocname { get; set; }
+        public string? Filename { get; set; }
+        public string? Tabletype { get; set; }
+        public string? RefRowid { get; set; }
     }
 }

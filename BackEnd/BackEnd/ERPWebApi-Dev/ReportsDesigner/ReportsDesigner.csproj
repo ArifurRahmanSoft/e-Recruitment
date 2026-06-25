@@ -12,12 +12,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>HrJobApplication.xsd</DependentUpon>
     </Compile>
+    <Compile Update="testReport.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>testReport.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="reportfile\HrJobApplication.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>HrJobApplication.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="testReport.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>testReport.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

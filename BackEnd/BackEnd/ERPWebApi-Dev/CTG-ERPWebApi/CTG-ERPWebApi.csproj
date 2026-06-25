@@ -56,12 +56,13 @@
 
 	<ItemGroup>
 		<Content Remove="wwwroot\reportfile\business\applicant\rptApplicantCV.rdlc" />
-		<Content Remove="wwwroot\reportfile\business\applicant\rptApplicantCV000.rdlc" />
-		<Content Remove="wwwroot\reportfile\business\applicant\rptApplicantCV01.rdlc" />
-		<Content Remove="wwwroot\reportfile\business\applicant\rptApplicantCV1.rdlc" />
-		<Content Remove="wwwroot\reportfile\business\applicant\rptApplicantCVx1.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\applicant\rptApplicantProfileCV.rdlc" />
-		<Content Remove="wwwroot\reportfile\business\applicant\rptApplicantProfileCVx1.rdlc" />
+		<Content Remove="wwwroot\reportfile\business\applicant\rptIdentyCard.rdlc" />
+		<Content Remove="wwwroot\reportfile\business\applicant\rptIdentyCard1.rdlc" />
+		<Content Remove="wwwroot\reportfile\business\applicant\rptInterviewCandidatesParticulars.rdlc" />
+		<Content Remove="wwwroot\reportfile\business\applicant\rptPersonalInfo.rdlc" />
+		<Content Remove="wwwroot\reportfile\business\applicant\rptRAC - Copy.rdlc" />
+		<Content Remove="wwwroot\reportfile\business\applicant\rptRAC.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\quotations\rptQuotation_P_R_CAT000001.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\quotations\rptQuotation_P_R_CAT000002.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\quotations\rptQuotation_P_R_CAT000003.rdlc" />
@@ -84,6 +85,7 @@
 		<Content Remove="wwwroot\reportfile\business\quotation\rptQuotation_P_S_CAT000006.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\quotation\rptQuotation_P_S_CAT000007.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\quotation\rptQuotation_P_S_CAT000008.rdlc" />
+		<Content Remove="wwwroot\reportfile\business\test\testReport.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\workorder\rptWorkOrder_P_R_CAT000001.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\workorder\rptWorkOrder_P_R_CAT000002.rdlc" />
 		<Content Remove="wwwroot\reportfile\business\workorder\rptWorkOrder_P_R_CAT000003.rdlc" />
@@ -101,12 +103,13 @@
 
 	<ItemGroup>
 		<None Include="wwwroot\reportfile\business\applicant\rptApplicantCV.rdlc" />
-		<None Include="wwwroot\reportfile\business\applicant\rptApplicantProfileCVx1.rdlc" />
-		<None Include="wwwroot\reportfile\business\applicant\rptApplicantCV000.rdlc" />
-		<None Include="wwwroot\reportfile\business\applicant\rptApplicantCVx1.rdlc" />
-		<None Include="wwwroot\reportfile\business\applicant\rptApplicantCV01.rdlc" />
-		<None Include="wwwroot\reportfile\business\applicant\rptApplicantCV1.rdlc" />
 		<None Include="wwwroot\reportfile\business\applicant\rptApplicantProfileCV.rdlc" />
+		<None Include="wwwroot\reportfile\business\applicant\rptIdentyCard.rdlc" />
+		<None Include="wwwroot\reportfile\business\applicant\rptIdentyCard1.rdlc" />
+		<None Include="wwwroot\reportfile\business\applicant\rptRAC - Copy.rdlc" />
+		<None Include="wwwroot\reportfile\business\applicant\rptRAC.rdlc" />
+		<None Include="wwwroot\reportfile\business\applicant\rptInterviewCandidatesParticulars.rdlc" />
+		<None Include="wwwroot\reportfile\business\applicant\rptPersonalInfo.rdlc" />
 		<None Include="wwwroot\reportfile\business\quotations\rptQuotation_P_R_CAT000004.rdlc" />
 		<None Include="wwwroot\reportfile\business\quotations\rptQuotation_P_R_CAT000006.rdlc" />
 		<None Include="wwwroot\reportfile\business\quotations\rptQuotation_P_R_CAT000007.rdlc" />
@@ -129,6 +132,7 @@
 		<None Include="wwwroot\reportfile\business\quotation\rptQuotation_P_S_CAT000006.rdlc" />
 		<None Include="wwwroot\reportfile\business\quotation\rptQuotation_P_S_CAT000007.rdlc" />
 		<None Include="wwwroot\reportfile\business\quotation\rptQuotation_P_S_CAT000008.rdlc" />
+		<None Include="wwwroot\reportfile\business\test\testReport.rdlc" />
 		<None Include="wwwroot\reportfile\business\workorder\rptWorkOrder_P_R_CAT000001.rdlc" />
 		<None Include="wwwroot\reportfile\business\workorder\rptWorkOrder_P_R_CAT000002.rdlc" />
 		<None Include="wwwroot\reportfile\business\workorder\rptWorkOrder_P_R_CAT000003.rdlc" />
@@ -197,6 +201,13 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\DataFactories\DataFactories.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="wwwroot\emailTemplates\CityOTP.html">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>

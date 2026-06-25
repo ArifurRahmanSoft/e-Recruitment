@@ -27,5 +27,10 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? ApplicantOid { get; set; }
         public string? Designation { get; set; }
         public string? Location { get; set; }
+        public string? Isrunning { get; set; }
+        public string? Salary { get; set; }
+        public string? Docname { get; set; }
+        public decimal? Totaldaycount { get; set; }
+        public string? IslastExperience { get; set; }
     }
 }

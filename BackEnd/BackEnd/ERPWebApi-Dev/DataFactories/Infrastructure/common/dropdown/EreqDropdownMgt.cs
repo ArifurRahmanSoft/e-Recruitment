@@ -1,4 +1,6 @@
 ﻿using DataFactories.BaseFactory;
+
+
 //using DataModels.EntityModels.ERPModel;
 //using DataModel.EntityModels.OraModel;
 using DataModel.JobEntityModel.JobOraModelTest;
@@ -9,6 +11,8 @@ using DataModel.ViewModels;
 //using DataModels.ViewModels.ERPViewModel.SalesMarketing;
 using DataUtility;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections;
@@ -16,6 +20,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataFactories.Infrastructure.common.dropdown
@@ -27,6 +32,7 @@ namespace DataFactories.Infrastructure.common.dropdown
         //dbRGLERPContext _ctx = null;
         //ModelContext _ctxOr = null;
         ModelContext _ctxOr = null;
+    
         
         //radiusContext _ctxRad = null;
         //private IGenericFactory<vmCmnParameters> Generic_vmCmnParameters = null;
@@ -279,7 +285,32 @@ namespace DataFactories.Infrastructure.common.dropdown
             };
         }
 
-
+        public async Task<object> getAllAcqlfList()
+        {
+            object listAccQlf = null;object result = null;
+          try
+            {
+                using (_ctxOr = new ModelContext())
+                {
+                    listAccQlf = await (from rs in _ctxOr.TAcqlves
+                                        select new
+                                        {
+                                            Oid = rs.Oid,
+                                            degree = rs.DegreeName
+                                        })
+                             .Distinct()
+                             .ToListAsync();
+                }
+            }
+            catch(Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listAccQlf
+            };
+        }
 
         public async Task<object> getalljobtitle()
         {
@@ -411,13 +442,12 @@ namespace DataFactories.Infrastructure.common.dropdown
             {
                 using (_ctxOr = new ModelContext())
                 {
-                    listuserInfo = await (from tct in _ctxOr.TJobApplicantMainMasters
+                    listuserInfo = await (from tct in _ctxOr.TJobApplicantMasters
                                           where tct.Email == id
                                           select new
                                           {
                                               oid = tct.Oid,
-                                              JobOid = tct.Jobid,
-                                              profileOid= tct.Profileoid,
+                                              //JobOid = tct.Jobid,
                                               email=tct.Email
                                           }
                                       ).ToListAsync();
@@ -517,8 +547,133 @@ namespace DataFactories.Infrastructure.common.dropdown
 
         //End
 
+        public async Task<object> GetAllBusinessType()
+        {
+            object listAllBusiness = null; object result = null;
+            try
+            {
+                using (_ctxOr = new ModelContext())
+                {
+
+                  
+                    listAllBusiness = await (from bsns in _ctxOr.TAdminApplicantBusinesses
+
+                                             select new
+                                             {
+                                                 name = bsns.Name,
+                                                 id = bsns.Oid
+                                             }
+                                             ).ToListAsync(); 
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listAllBusiness
+            };
+        }
 
 
+        public async Task<object> GetBusinessTypeById(string id)
+        {
+            object result = null;object businessType = null;
+            try {
+
+                using (_ctxOr = new ModelContext())
+                {
+                    businessType = await (from x in _ctxOr.TAdminApplicantBusinesses
+                                          where x.Oid == id
+                                          select new
+                                          {
+                                              businessOid=x.Oid,
+                                              name=x.Name,
+                                              details=x.Details
+                                          }
+                                        ).ToListAsync();
+                }
+            }
+            catch(Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                businessType
+            };
+        }
+
+
+
+        public async Task<object> saveExaminar(object[] data)
+        {
+           vmCmnParameter param= JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+            string json_data = data[1].ToString();
+            JArray arr = JArray.Parse(json_data);
+            var firstArr = arr[0];
+            string aempOid = firstArr["empOId"]?.ToString();
+            string empId=firstArr["empId"]?.ToString();
+            try
+            {
+                using (_ctxOr = new ModelContext())
+                {
+
+                    var existUser = await _ctxOr.TJobRecruitmentExaminers.FirstOrDefaultAsync(x => x.AempOid == aempOid);
+                    if (existUser != null)
+                    {
+                        return new
+                        {
+                            status = "error",
+                            message = "Employee already exists!"
+                        };
+                    }
+
+                    var maxId = await _ctxOr.TJobRecruitmentExaminers.MaxAsync(x => (int?)Convert.ToInt32(x.Oid)) ?? 0;
+                    var newOid = maxId + 1;
+
+
+                    if (existUser == null)
+                    {
+                        var newExaminar = new TJobRecruitmentExaminer
+                        {
+                            Oid = newOid.ToString(),
+                            AempOid = aempOid,
+                            EmpId = empId,
+                            Createby = param.LoggedUserId,
+                            Createon = DateTime.Today,
+                            Createpc = Extension.Createpc()
+
+                        };
+                        _ctxOr.TJobRecruitmentExaminers.Add(newExaminar);
+                        await _ctxOr.SaveChangesAsync();
+
+                    }
+                }
+
+                return new
+                {
+                    status = "success",
+                    message = "Examiner saved successfully"
+                };
+
+
+            }
+
+            catch(Exception ex)
+            {
+                return new
+                {
+                    status = "error",
+                    message = ex.Message
+                };
+            }
+
+        }
+
+
+    
 
         #endregion
 

@@ -9,11 +9,17 @@
       </DataSource>
     </xs:appinfo>
   </xs:annotation>
-  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="DataSet1" msprop:Generator_DataSetName="DataSet1">
+  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="DataSet1" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSet1">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="DataTable1" msprop:Generator_RowEvHandlerName="DataTable1RowChangeEventHandler" msprop:Generator_RowDeletedName="DataTable1RowDeleted" msprop:Generator_RowDeletingName="DataTable1RowDeleting" msprop:Generator_RowEvArgName="DataTable1RowChangeEvent" msprop:Generator_TablePropName="DataTable1" msprop:Generator_RowChangedName="DataTable1RowChanged" msprop:Generator_RowChangingName="DataTable1RowChanging" msprop:Generator_TableClassName="DataTable1DataTable" msprop:Generator_RowClassName="DataTable1Row" msprop:Generator_TableVarName="tableDataTable1" msprop:Generator_UserTableName="DataTable1">
+        <xs:element name="jobPost" msprop:Generator_RowClassName="jobPostRow" msprop:Generator_RowEvHandlerName="jobPostRowChangeEventHandler" msprop:Generator_RowDeletedName="jobPostRowDeleted" msprop:Generator_RowDeletingName="jobPostRowDeleting" msprop:Generator_RowEvArgName="jobPostRowChangeEvent" msprop:Generator_TablePropName="jobPost" msprop:Generator_RowChangedName="jobPostRowChanged" msprop:Generator_UserTableName="jobPost" msprop:Generator_RowChangingName="jobPostRowChanging" msprop:Generator_TableClassName="jobPostDataTable" msprop:Generator_TableVarName="tablejobPost">
           <xs:complexType>
+            <xs:sequence>
+              <xs:element name="OID" msprop:Generator_ColumnPropNameInRow="OID" msprop:Generator_ColumnPropNameInTable="OIDColumn" msprop:Generator_ColumnVarNameInTable="columnOID" msprop:Generator_UserColumnName="OID" type="xs:string" minOccurs="0" />
+              <xs:element name="JOB_TITLE" msprop:Generator_ColumnPropNameInRow="JOB_TITLE" msprop:Generator_ColumnPropNameInTable="JOB_TITLEColumn" msprop:Generator_ColumnVarNameInTable="columnJOB_TITLE" msprop:Generator_UserColumnName="JOB_TITLE" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPANY" msprop:Generator_ColumnPropNameInRow="COMPANY" msprop:Generator_ColumnPropNameInTable="COMPANYColumn" msprop:Generator_ColumnVarNameInTable="columnCOMPANY" msprop:Generator_UserColumnName="COMPANY" type="xs:string" minOccurs="0" />
+              <xs:element name="DEPARTMENT" msprop:Generator_ColumnPropNameInRow="DEPARTMENT" msprop:Generator_ColumnPropNameInTable="DEPARTMENTColumn" msprop:Generator_ColumnVarNameInTable="columnDEPARTMENT" msprop:Generator_UserColumnName="DEPARTMENT" type="xs:string" minOccurs="0" />
+            </xs:sequence>
           </xs:complexType>
         </xs:element>
       </xs:choice>

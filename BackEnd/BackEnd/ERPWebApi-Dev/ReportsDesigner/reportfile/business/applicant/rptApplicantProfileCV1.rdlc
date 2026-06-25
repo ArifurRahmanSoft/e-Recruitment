@@ -6,13 +6,13 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>2.97533in</Width>
+              <Width>2.73185in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.66142in</Width>
+              <Width>2.45047in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.02345in</Width>
+              <Width>1.83337in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -64,182 +64,6 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="job_title">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value>Job Title</Value>
-                              <Style>
-                                <FontSize>9pt</FontSize>
-                              </Style>
-                            </TextRun>
-                            <TextRun>
-                              <Value>=Fields!job_title.Value</Value>
-                              <Style>
-                                <FontSize>9pt</FontSize>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style />
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>job_title</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Style>Solid</Style>
-                        </Border>
-                        <TopBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </TopBorder>
-                        <BottomBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </BottomBorder>
-                        <LeftBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </LeftBorder>
-                        <RightBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </RightBorder>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
-                <TablixCell>
-                  <CellContents>
-                    <Textbox Name="company_name">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value>Company : </Value>
-                              <Style>
-                                <FontSize>9pt</FontSize>
-                              </Style>
-                            </TextRun>
-                            <TextRun>
-                              <Value>=Fields!company_name.Value</Value>
-                              <Style>
-                                <FontSize>9pt</FontSize>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style />
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>company_name</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Style>Solid</Style>
-                        </Border>
-                        <TopBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </TopBorder>
-                        <BottomBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </BottomBorder>
-                        <LeftBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </LeftBorder>
-                        <RightBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </RightBorder>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
-                <TablixCell>
-                  <CellContents>
-                    <Textbox Name="department">
-                      <CanGrow>true</CanGrow>
-                      <KeepTogether>true</KeepTogether>
-                      <Paragraphs>
-                        <Paragraph>
-                          <TextRuns>
-                            <TextRun>
-                              <Value>Department :  </Value>
-                              <Style>
-                                <FontSize>9pt</FontSize>
-                              </Style>
-                            </TextRun>
-                            <TextRun>
-                              <Value>=Fields!department.Value</Value>
-                              <Style>
-                                <FontSize>9pt</FontSize>
-                              </Style>
-                            </TextRun>
-                          </TextRuns>
-                          <Style />
-                        </Paragraph>
-                      </Paragraphs>
-                      <rd:DefaultName>department</rd:DefaultName>
-                      <Style>
-                        <Border>
-                          <Style>Solid</Style>
-                        </Border>
-                        <TopBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </TopBorder>
-                        <BottomBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </BottomBorder>
-                        <LeftBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </LeftBorder>
-                        <RightBorder>
-                          <Color>Black</Color>
-                          <Style>Solid</Style>
-                          <Width>1pt</Width>
-                        </RightBorder>
-                        <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
-                        <PaddingTop>2pt</PaddingTop>
-                        <PaddingBottom>2pt</PaddingBottom>
-                      </Style>
-                    </Textbox>
-                  </CellContents>
-                </TablixCell>
-              </TablixCells>
-            </TablixRow>
-            <TablixRow>
-              <Height>0.25in</Height>
-              <TablixCells>
-                <TablixCell>
-                  <CellContents>
                     <Textbox Name="father_name">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
@@ -247,13 +71,13 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Applied Post:  </Value>
+                              <Value>Name:  </Value>
                               <Style>
                                 <FontSize>9pt</FontSize>
                               </Style>
                             </TextRun>
                             <TextRun>
-                              <Value>=Fields!post.Value</Value>
+                              <Value>=Fields!name.Value</Value>
                               <Style>
                                 <FontSize>9pt</FontSize>
                               </Style>
@@ -834,7 +658,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Apply Date: </Value>
+                              <Value>Last Update: </Value>
                               <Style>
                                 <FontSize>9pt</FontSize>
                                 <Format>dd-MMM-yy</Format>
@@ -954,34 +778,18 @@
         </TablixColumnHierarchy>
         <TablixRowHierarchy>
           <TablixMembers>
-            <TablixMember>
-              <KeepWithGroup>After</KeepWithGroup>
-            </TablixMember>
-            <TablixMember>
-              <Group Name="Details" />
-              <TablixMembers>
-                <TablixMember />
-              </TablixMembers>
-            </TablixMember>
-            <TablixMember>
-              <KeepWithGroup>Before</KeepWithGroup>
-            </TablixMember>
-            <TablixMember>
-              <KeepWithGroup>Before</KeepWithGroup>
-            </TablixMember>
-            <TablixMember>
-              <KeepWithGroup>Before</KeepWithGroup>
-            </TablixMember>
-            <TablixMember>
-              <KeepWithGroup>Before</KeepWithGroup>
-            </TablixMember>
+            <TablixMember />
+            <TablixMember />
+            <TablixMember />
+            <TablixMember />
+            <TablixMember />
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>1.38763in</Top>
+        <Top>1.81471in</Top>
         <Left>0.21751in</Left>
-        <Height>1.5in</Height>
-        <Width>7.6602in</Width>
+        <Height>1.25in</Height>
+        <Width>7.01569in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -992,13 +800,13 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>1.39715in</Width>
+              <Width>1.21881in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>0.9375in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.02863in</Width>
+              <Width>0.90493in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>0.89842in</Width>
@@ -1007,10 +815,10 @@
               <Width>0.94923in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.02995in</Width>
+              <Width>0.92578in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.43883in</Width>
+              <Width>1.20963in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -2181,10 +1989,10 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet1</DataSetName>
-        <Top>3.12847in</Top>
-        <Left>0.19799in</Left>
+        <Top>3.28472in</Top>
+        <Left>0.1889in</Left>
         <Height>1in</Height>
-        <Width>7.67971in</Width>
+        <Width>7.0443in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -2199,10 +2007,10 @@
               <Width>0.89189in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.82945in</Width>
+              <Width>1.5065in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.33338in</Width>
+              <Width>2.04562in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1in</Width>
@@ -2913,10 +2721,10 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet2</DataSetName>
-        <Top>4.52083in</Top>
-        <Left>0.21751in</Left>
+        <Top>4.53125in</Top>
+        <Left>0.16677in</Left>
         <Height>0.75in</Height>
-        <Width>7.67971in</Width>
+        <Width>7.069in</Width>
         <ZIndex>2</ZIndex>
         <Style>
           <Border>
@@ -2931,13 +2739,13 @@
               <Width>2.33465in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>3.14712in</Width>
+              <Width>2.63413in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>1.07294in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>1.125in</Width>
+              <Width>1.06504in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -3099,7 +2907,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Duration</Value>
+                              <Value>Start Date</Value>
                               <Style>
                                 <FontWeight>Bold</FontWeight>
                               </Style>
@@ -3301,14 +3109,14 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="duration">
+                    <Textbox Name="start_date">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!duration.Value</Value>
+                              <Value>=Fields!start_date.Value</Value>
                               <Style>
                                 <FontSize>9pt</FontSize>
                               </Style>
@@ -3317,7 +3125,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>duration</rd:DefaultName>
+                      <rd:DefaultName>start_date</rd:DefaultName>
                       <Style>
                         <Border>
                           <Style>Solid</Style>
@@ -3359,7 +3167,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!achievment_date.Value</Value>
+                              <Value>=Format(CDate(Fields!achievment_date.Value), "dd-MMM-yy")</Value>
                               <Style>
                                 <FontSize>9pt</FontSize>
                                 <Format>dd-MMM-yy</Format>
@@ -3417,10 +3225,10 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet4</DataSetName>
-        <Top>8.25848in</Top>
-        <Left>0.19799in</Left>
+        <Top>8.34182in</Top>
+        <Left>0.12901in</Left>
         <Height>0.75in</Height>
-        <Width>7.67971in</Width>
+        <Width>7.10676in</Width>
         <ZIndex>3</ZIndex>
         <Style>
           <Border>
@@ -3428,36 +3236,23 @@
           </Border>
         </Style>
       </Tablix>
-      <Rectangle Name="Rectangle3">
-        <KeepTogether>true</KeepTogether>
-        <Top>0.11333in</Top>
-        <Left>2.88811in</Left>
-        <Height>1.20486in</Height>
-        <Width>3.50001in</Width>
-        <ZIndex>4</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-        </Style>
-      </Rectangle>
       <Image Name="Image6">
         <Source>Database</Source>
-        <Value>=System.IO.File.ReadAllBytes(First(Fields!signaturePath.Value, "DataSet1"))</Value>
+        <Value>=System.IO.File.ReadAllBytes(First(Fields!docSignatureFullPath.Value, "DataSet1"))</Value>
         <MIMEType>=Switch(
-  LCase(First(Fields!signaturePath.Value, "DataSet1")).EndsWith(".jpg") Or LCase(First(Fields!signaturePath.Value, "DataSet1")).EndsWith(".jpeg"), "image/jpeg",
-  LCase(First(Fields!signaturePath.Value, "DataSet1")).EndsWith(".png"), "image/png",
-  LCase(First(Fields!signaturePath.Value, "DataSet1")).EndsWith(".bmp"), "image/bmp",
-  LCase(First(Fields!signaturePath.Value, "DataSet1")).EndsWith(".gif"), "image/gif",
+  LCase(First(Fields!docSignatureFullPath.Value, "DataSet1")).EndsWith(".jpg") Or LCase(First(Fields!docSignatureFullPath.Value, "DataSet1")).EndsWith(".jpeg"), "image/jpeg",
+  LCase(First(Fields!docSignatureFullPath.Value, "DataSet1")).EndsWith(".png"), "image/png",
+  LCase(First(Fields!docSignatureFullPath.Value, "DataSet1")).EndsWith(".bmp"), "image/bmp",
+  LCase(First(Fields!docSignatureFullPath.Value, "DataSet1")).EndsWith(".gif"), "image/gif",
   
   True, "image/jpeg"
 )</MIMEType>
         <Sizing>FitProportional</Sizing>
-        <Top>9.34181in</Top>
-        <Left>0.19799in</Left>
+        <Top>9.28973in</Top>
+        <Left>0.12901in</Left>
         <Height>0.5in</Height>
         <Width>1.35286in</Width>
-        <ZIndex>5</ZIndex>
+        <ZIndex>4</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -3487,11 +3282,11 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox7</rd:DefaultName>
-        <Top>9.91125in</Top>
-        <Left>0.19799in</Left>
+        <Top>10.21333in</Top>
+        <Left>0.12901in</Left>
         <Height>0.25in</Height>
         <Width>1.33334in</Width>
-        <ZIndex>6</ZIndex>
+        <ZIndex>5</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -3509,7 +3304,7 @@
               <Width>1.77085in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>5.90886in</Width>
+              <Width>5.29815in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -3525,11 +3320,18 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Work Experience</Value>
+                              <Value>Work Experience  </Value>
                               <Style>
                                 <FontSize>12pt</FontSize>
                                 <FontWeight>Bold</FontWeight>
                                 <Color>White</Color>
+                              </Style>
+                            </TextRun>
+                            <TextRun>
+                              <Value>=Int(First(Fields!grandTotalDays.Value, "DataSet1")/365) 
+ &amp; IIf((First(Fields!grandTotalDays.Value, "DataSet1") Mod 365) &gt; 0, "+", "")</Value>
+                              <Style>
+                                <FontSize>12pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -3849,6 +3651,111 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
+                    <Textbox Name="Textbox4">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>Salary</Value>
+                              <Style />
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Textbox4</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Style>Solid</Style>
+                        </Border>
+                        <TopBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </TopBorder>
+                        <BottomBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </BottomBorder>
+                        <LeftBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </LeftBorder>
+                        <RightBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </RightBorder>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
+                    <Textbox Name="salary">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!salary.Value</Value>
+                              <Style>
+                                <FontSize>9pt</FontSize>
+                              </Style>
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>salary</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Style>Solid</Style>
+                        </Border>
+                        <TopBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </TopBorder>
+                        <BottomBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </BottomBorder>
+                        <LeftBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </LeftBorder>
+                        <RightBorder>
+                          <Color>Black</Color>
+                          <Style>Solid</Style>
+                          <Width>1pt</Width>
+                        </RightBorder>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+              </TablixCells>
+            </TablixRow>
+            <TablixRow>
+              <Height>0.25in</Height>
+              <TablixCells>
+                <TablixCell>
+                  <CellContents>
                     <Textbox Name="Textbox23">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
@@ -3856,7 +3763,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Priod To Date</Value>
+                              <Value>Priod From Date</Value>
                               <Style />
                             </TextRun>
                           </TextRuns>
@@ -3898,14 +3805,14 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Textbox24">
+                    <Textbox Name="priod_from_date">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!priod_to_date.Value</Value>
+                              <Value>=Fields!priod_from_date.Value</Value>
                               <Style>
                                 <FontSize>9pt</FontSize>
                               </Style>
@@ -3914,7 +3821,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Textbox24</rd:DefaultName>
+                      <rd:DefaultName>priod_from_date</rd:DefaultName>
                       <Style>
                         <Border>
                           <Style>Solid</Style>
@@ -3961,7 +3868,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>Priod From Date</Value>
+                              <Value>Priod To Date</Value>
                               <Style />
                             </TextRun>
                           </TextRuns>
@@ -4010,7 +3917,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!priod_from_date.Value</Value>
+                              <Value>=IIf(IsNothing(Fields!isRunning.Value) OR Trim(Fields!isRunning.Value) = "", Fields!priod_to_date.Value, Fields!isRunning.Value)</Value>
                               <Style>
                                 <FontSize>9pt</FontSize>
                               </Style>
@@ -4428,16 +4335,21 @@
                     <Hidden>=First(Fields!company_name.Value)=nothing</Hidden>
                   </Visibility>
                 </TablixMember>
+                <TablixMember>
+                  <Visibility>
+                    <Hidden>=First(Fields!company_name.Value)=nothing</Hidden>
+                  </Visibility>
+                </TablixMember>
               </TablixMembers>
             </TablixMember>
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>DataSet3</DataSetName>
-        <Top>5.57167in</Top>
-        <Left>0.21751in</Left>
-        <Height>2.39583in</Height>
-        <Width>7.67971in</Width>
-        <ZIndex>7</ZIndex>
+        <Top>5.51959in</Top>
+        <Left>0.16677in</Left>
+        <Height>2.64583in</Height>
+        <Width>7.069in</Width>
+        <ZIndex>6</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -4532,11 +4444,11 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Textbox212</rd:DefaultName>
-        <Top>0.11333in</Top>
+        <Top>0.14111in</Top>
         <Left>1.45972in</Left>
-        <Height>1.02083in</Height>
+        <Height>1.3993in</Height>
         <Width>2.52083in</Width>
-        <ZIndex>8</ZIndex>
+        <ZIndex>7</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -4549,21 +4461,21 @@
       </Textbox>
       <Image Name="Image2">
         <Source>Database</Source>
-        <Value>=System.IO.File.ReadAllBytes(First(Fields!imagePath.Value, "DataSet1"))</Value>
+        <Value>=System.IO.File.ReadAllBytes(First(Fields!docPhotoFullPath.Value, "DataSet1"))</Value>
         <MIMEType>=Switch(
-  LCase(First(Fields!imagePath.Value, "DataSet1")).EndsWith(".jpg") Or LCase(First(Fields!imagePath.Value, "DataSet1")).EndsWith(".jpeg"), "image/jpeg",
-  LCase(First(Fields!imagePath.Value, "DataSet1")).EndsWith(".png"), "image/png",
-  LCase(First(Fields!imagePath.Value, "DataSet1")).EndsWith(".bmp"), "image/bmp",
-  LCase(First(Fields!imagePath.Value, "DataSet1")).EndsWith(".gif"), "image/gif",
+  LCase(First(Fields!docPhotoFullPath.Value, "DataSet1")).EndsWith(".jpg") Or LCase(First(Fields!docPhotoFullPath.Value, "DataSet1")).EndsWith(".jpeg"), "image/jpeg",
+  LCase(First(Fields!docPhotoFullPath.Value, "DataSet1")).EndsWith(".png"), "image/png",
+  LCase(First(Fields!docPhotoFullPath.Value, "DataSet1")).EndsWith(".bmp"), "image/bmp",
+  LCase(First(Fields!docPhotoFullPath.Value, "DataSet1")).EndsWith(".gif"), "image/gif",
   
   True, "image/jpeg"
 )</MIMEType>
         <Sizing>Fit</Sizing>
         <Top>0.14111in</Top>
-        <Left>6.42978in</Left>
-        <Height>1.17708in</Height>
+        <Left>5.85426in</Left>
+        <Height>1.51041in</Height>
         <Width>1.37894in</Width>
-        <ZIndex>9</ZIndex>
+        <ZIndex>8</ZIndex>
         <Style>
           <Border>
             <Style>Solid</Style>
@@ -4571,21 +4483,23 @@
         </Style>
       </Image>
     </ReportItems>
-    <Height>10.28375in</Height>
+    <Height>12.19in</Height>
     <Style>
       <Border>
         <Style>None</Style>
       </Border>
     </Style>
   </Body>
-  <Width>8.27in</Width>
+  <Width>7.23577in</Width>
   <Page>
     <PageHeight>11.69in</PageHeight>
     <PageWidth>8.27in</PageWidth>
     <InteractiveHeight>14.69in</InteractiveHeight>
     <InteractiveWidth>8.27in</InteractiveWidth>
-    <TopMargin>0.1in</TopMargin>
-    <BottomMargin>0.1in</BottomMargin>
+    <LeftMargin>0.5in</LeftMargin>
+    <RightMargin>0.5in</RightMargin>
+    <TopMargin>0.5in</TopMargin>
+    <BottomMargin>0.5in</BottomMargin>
     <Style />
   </Page>
   <AutoRefresh>0</AutoRefresh>
@@ -4805,10 +4719,78 @@
           <DataField>par_add_Thana_Text</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="BnName">
+          <DataField>BnName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BnFatherName">
+          <DataField>BnFatherName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BnMotherName">
+          <DataField>BnMotherName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BnSpouseName">
+          <DataField>BnSpouseName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="companyName">
+          <DataField>companyName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="departmentName">
+          <DataField>departmentName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="postName">
+          <DataField>postName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docPhotoVPath">
+          <DataField>docPhotoVPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docSignatureVPath">
+          <DataField>docSignatureVPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docNidFntVPath">
+          <DataField>docNidFntVPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docNidBckVPath">
+          <DataField>docNidBckVPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docTinVPath">
+          <DataField>docTinVPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docCvVPath">
+          <DataField>docCvVPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docPhotoFullPath">
+          <DataField>docPhotoFullPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="docSignatureFullPath">
+          <DataField>docSignatureFullPath</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="grandTotalDays">
+          <DataField>grandTotalDays</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="sourceFrom">
+          <DataField>sourceFrom</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>SpeechBubbleDataSet</rd:DataSetName>
-        <rd:SchemaPath>E:\Project-3\HR Job App\BackEnd\BackEnd\ERPWebApi-Dev\ReportsDesigner\SpeechBubbleDataSet.xsd</rd:SchemaPath>
+        <rd:SchemaPath>E:\Project-3\HR Job App V2\BackEnd\BackEnd\ERPWebApi-Dev\ReportsDesigner\SpeechBubbleDataSet.xsd</rd:SchemaPath>
         <rd:TableName>ApplicantMaster</rd:TableName>
         <rd:TableAdapterFillMethod />
         <rd:TableAdapterGetDataMethod />
@@ -4893,8 +4875,8 @@
           <DataField>institution</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="duration">
-          <DataField>duration</DataField>
+        <Field Name="start_date">
+          <DataField>start_date</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="achievment_date">
@@ -4912,7 +4894,7 @@
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>SpeechBubbleDataSet</rd:DataSetName>
-        <rd:SchemaPath>E:\Project-3\HR Job App\BackEnd\BackEnd\ERPWebApi-Dev\ReportsDesigner\SpeechBubbleDataSet.xsd</rd:SchemaPath>
+        <rd:SchemaPath>E:\Project-3\HR Job App V2\BackEnd\BackEnd\ERPWebApi-Dev\ReportsDesigner\SpeechBubbleDataSet.xsd</rd:SchemaPath>
         <rd:TableName>ApplicantPrfCirt</rd:TableName>
         <rd:TableAdapterFillMethod />
         <rd:TableAdapterGetDataMethod />
@@ -4973,6 +4955,10 @@
           <DataField>location</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="salary">
+          <DataField>salary</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="isRunning">
           <DataField>isRunning</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -4982,6 +4968,94 @@
         <rd:DataSetName>SpeechBubbleDataSet</rd:DataSetName>
         <rd:SchemaPath>E:\Project-3\HR Job App V2\BackEnd\BackEnd\ERPWebApi-Dev\ReportsDesigner\SpeechBubbleDataSet.xsd</rd:SchemaPath>
         <rd:TableName>ApplicantWrkExp</rd:TableName>
+        <rd:TableAdapterFillMethod />
+        <rd:TableAdapterGetDataMethod />
+        <rd:TableAdapterName />
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="DataSet5">
+      <Query>
+        <DataSourceName>SpeechBubbleDataSet</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="trainingOid">
+          <DataField>trainingOid</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="training_name">
+          <DataField>training_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="institution">
+          <DataField>institution</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="start_date">
+          <DataField>start_date</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="achievment_date">
+          <DataField>achievment_date</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>SpeechBubbleDataSet</rd:DataSetName>
+        <rd:SchemaPath>E:\Project-3\HR Job App V2\BackEnd\BackEnd\ERPWebApi-Dev\ReportsDesigner\SpeechBubbleDataSet.xsd</rd:SchemaPath>
+        <rd:TableName>ApplicantTraining</rd:TableName>
+        <rd:TableAdapterFillMethod />
+        <rd:TableAdapterGetDataMethod />
+        <rd:TableAdapterName />
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="DataSet6">
+      <Query>
+        <DataSourceName>SpeechBubbleDataSet</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="referenceOid">
+          <DataField>referenceOid</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="reference_name">
+          <DataField>reference_name</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="orgazination">
+          <DataField>orgazination</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="designation">
+          <DataField>designation</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="email">
+          <DataField>email</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="mobile">
+          <DataField>mobile</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="relation">
+          <DataField>relation</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="fatherNAme">
+          <DataField>fatherNAme</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="address">
+          <DataField>address</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>SpeechBubbleDataSet</rd:DataSetName>
+        <rd:SchemaPath>E:\Project-3\HR Job App V2\BackEnd\BackEnd\ERPWebApi-Dev\ReportsDesigner\SpeechBubbleDataSet.xsd</rd:SchemaPath>
+        <rd:TableName>Applicantreference</rd:TableName>
         <rd:TableAdapterFillMethod />
         <rd:TableAdapterGetDataMethod />
         <rd:TableAdapterName />

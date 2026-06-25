@@ -10,6 +10,95 @@ namespace DataUtility
 {
     public class EmailSender
     {
+
+        public async Task<int> GeneralMailx(vmEmailConfig emConfig, string emailFrom, string emailTo, string emailCC, string title, string subject, string emailBody)
+        {
+            int result = 0;
+            try
+            {
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.To.Add(new MailAddress(emailTo));
+                    if (!string.IsNullOrEmpty(emailCC))
+                    {
+                        mail.CC.Add(new MailAddress(emailCC));
+                    }
+
+                    mail.Subject = subject;
+                    mail.Body = emailBody;
+                    mail.IsBodyHtml = true;
+                    //MailAddress mailaddress = new MailAddress(emailFrom, title);
+                    MailAddress mailaddress = new MailAddress(emConfig.EmailSenderId, title);
+                    mail.From = mailaddress;
+
+                    using (SmtpClient smtp = new SmtpClient(emConfig.EmailSenderHost))
+                    {
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = new NetworkCredential(emConfig.EmailSenderId, emConfig.EmailSenderPassword);
+                        smtp.EnableSsl = Convert.ToBoolean(emConfig.EmailSenderEnableSsl);
+                        await smtp.SendMailAsync(mail);
+
+                        result = 1;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+                result = 0;
+            }
+            return result;
+        }
+
+
+        public async Task<int> GeneralMail(vmEmailConfig emConfig,string emailFrom, string emailTo, 
+            string emailCC, string title, string subject, string emailBody)
+        {
+            int result = 0;
+
+            try
+            {
+                using (var mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(emConfig.EmailSenderId, title);
+                    mail.To.Add(new MailAddress(emailTo));
+
+                    if (!string.IsNullOrEmpty(emailCC))
+                    {
+                        mail.CC.Add(new MailAddress(emailCC));
+                    }
+                    mail.Subject = subject;
+                    mail.Body = emailBody;
+                    mail.IsBodyHtml = true;
+                    using (var smtp = new SmtpClient(emConfig.EmailSenderHost, emConfig.EmailSenderPort))
+                    {
+                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = new NetworkCredential(emConfig.EmailSenderId, emConfig.EmailSenderPassword);
+                        smtp.EnableSsl = emConfig.EmailSenderEnableSsl;
+
+                       await smtp.SendMailAsync(mail);
+                        result = 1;
+                    }
+                }
+            }
+            catch (SmtpFailedRecipientException sfx)
+            {
+                // Log specific recipient issue
+                Logs.Bug(sfx);
+                result = 0;
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+                result = 0;
+            }
+
+            return result;
+        }
+
+
+
         public async Task<int> registrationemail(vmEmailConfig emConfig, string emailto, string title, string subject, string emailBody, int mailType, int platform)
         {
             int result = 0; string ccMail = string.Empty;

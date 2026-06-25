@@ -1105,77 +1105,83 @@ namespace DataFactories.BaseFactory
             return JsonString;
         }
 
-        private OracleParameter[] HashToOraParam(Hashtable ht)
-        {
-            OracleParameter[] orclParamList = new OracleParameter[ht.Keys.Count]; int lCount = 0;
+           private OracleParameter[] HashToOraParam(Hashtable ht)
+          {
+              OracleParameter[] orclParamList = new OracleParameter[ht.Keys.Count]; int lCount = 0;
 
-            //var orderKeys = ht.Cast<string>().OrderBy(c => c);
-            //var allKvp = from x in orderKeys select new { key = x, value = ht[x] };
-            foreach (DictionaryEntry obj in ht)
-            {
-                OracleParameter parameter = null;
-                //string str = Convert.ToString(obj);
-                //string val = ht[obj].ToString();
-                string str = obj.Key.ToString();
-                string val = obj.Value.ToString();
-                string[] oDbType = null;
-                string oVal = val.Replace("(", "").Trim().Replace(")", "").Trim().Replace(" ", "").Trim();
-                oDbType = oVal.Split(',');
+              //var orderKeys = ht.Cast<string>().OrderBy(c => c);
+              //var allKvp = from x in orderKeys select new { key = x, value = ht[x] };
+              foreach (DictionaryEntry obj in ht)
+              {
+                  OracleParameter parameter = null;
+                  //string str = Convert.ToString(obj);
+                  //string val = ht[obj].ToString();
+                  string str = obj.Key.ToString();
+                  string val = obj.Value.ToString();
+                  string[] oDbType = null;
+                  string oVal = val.Replace("(", "").Trim().Replace(")", "").Trim().Replace(" ", "").Trim();
+                  oDbType = oVal.Split(',');
 
-                if (oDbType.Length == 2)
-                {
-                    string dbType = string.Empty;
-                    foreach (string item in oDbTypes) { if (item == oDbType[1].ToString()) { dbType = item; break; } };
-                    if (string.IsNullOrEmpty(dbType.ToString()))
-                    {
-                        string oDbVal = oDbType[1].ToString();
-                        parameter = new OracleParameter(str, oDbVal.ToString());
-                    }
-                }
-                else if (oDbType.Length == 3)
-                {
-                    string dbType = string.Empty;
-                    foreach (string item in oDbTypes) { if (item == oDbType[1].ToString()) { dbType = item; break; } };
-                    if (!string.IsNullOrEmpty(dbType.ToString()))
-                    {
-                        OracleDbType orclDb;
-                        if (OracleDbType.TryParse(dbType.ToString(), out orclDb))
-                        {
-                            ParameterDirection prmdir;
-                            if (ParameterDirection.TryParse(oDbType[2].ToString(), out prmdir))
-                            {
-                                string oDbVal = oDbType[2].ToString();
-                                if (oDbVal == "Input" || oDbVal == "Output" || oDbVal == "InputOutput" || oDbVal == "ReturnValue")
-                                {
-                                    parameter = new OracleParameter(str, orclDb, prmdir);
-                                }
-                                else
-                                {
-                                    if (prmdir.ToString() == "Input" || prmdir.ToString() == "Output" || prmdir.ToString() == "InputOutput" || prmdir.ToString() == "ReturnValue")
-                                    {
-                                        parameter = new OracleParameter(str, orclDb, oDbVal.ToString(), prmdir);
-                                    }
-                                    else
-                                    {
-                                        parameter = new OracleParameter(str, orclDb, oDbVal, ParameterDirection.Input);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                string oDbVal = oDbType[2].ToString();
-                                parameter = new OracleParameter(str, orclDb, oDbVal, ParameterDirection.Input);
-                            }
-                        }
-                    }
-                }
+                  if (oDbType.Length == 2)
+                  {
+                      string dbType = string.Empty;
+                      foreach (string item in oDbTypes) { if (item == oDbType[1].ToString()) { dbType = item; break; } };
+                      if (string.IsNullOrEmpty(dbType.ToString()))
+                      {
+                          string oDbVal = oDbType[1].ToString();
+                          parameter = new OracleParameter(str, oDbVal.ToString());
+                      }
+                  }
+                  else if (oDbType.Length == 3)
+                  {
+                      string dbType = string.Empty;
+                      foreach (string item in oDbTypes) { if (item == oDbType[1].ToString()) { dbType = item; break; } };
+                      if (!string.IsNullOrEmpty(dbType.ToString()))
+                      {
+                          OracleDbType orclDb;
+                          if (OracleDbType.TryParse(dbType.ToString(), out orclDb))
+                          {
+                              ParameterDirection prmdir;
+                              if (ParameterDirection.TryParse(oDbType[2].ToString(), out prmdir))
+                              {
+                                  string oDbVal = oDbType[2].ToString();
+                                  if (oDbVal == "Input" || oDbVal == "Output" || oDbVal == "InputOutput" || oDbVal == "ReturnValue")
+                                  {
+                                      parameter = new OracleParameter(str, orclDb, prmdir);
+                                  }
+                                  else
+                                  {
+                                      if (prmdir.ToString() == "Input" || prmdir.ToString() == "Output" || prmdir.ToString() == "InputOutput" || prmdir.ToString() == "ReturnValue")
+                                      {
+                                          parameter = new OracleParameter(str, orclDb, oDbVal.ToString(), prmdir);
+                                      }
+                                      else
+                                      {
+                                          parameter = new OracleParameter(str, orclDb, oDbVal, ParameterDirection.Input);
+                                      }
+                                  }
+                              }
+                              else
+                              {
+                                  string oDbVal = oDbType[2].ToString();
+                                  parameter = new OracleParameter(str, orclDb, oDbVal, ParameterDirection.Input);
+                              }
+                          }
+                      }
+                  }
 
-                orclParamList[Convert.ToInt32(oDbType[0])] = parameter;
-                lCount++;
-            }
+                  orclParamList[Convert.ToInt32(oDbType[0])] = parameter;
+                  lCount++;
+              }
 
-            return orclParamList;
-        }
+              return orclParamList;
+          }
+  
+
+
+
+
+
 
         private string MapQueryParameter(string query, Hashtable ht)
         {

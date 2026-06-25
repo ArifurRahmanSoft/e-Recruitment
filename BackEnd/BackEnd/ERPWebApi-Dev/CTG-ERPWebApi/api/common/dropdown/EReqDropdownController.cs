@@ -144,6 +144,21 @@ namespace CTG_ERPWebApi.api.common.dropdown
             };
         }
 
+        [HttpGet("[action]")]
+        public async Task<object> getallaccqlf()
+        {
+            object reslut = null; object resdata = null;
+            try
+            {
+                resdata = await _manager.getAllAcqlfList();
+            }
+            catch (Exception) { }
+            return reslut = new
+            {
+                resdata
+            };
+        }
+
         //GET ALL JOB POST 
         [HttpGet("[action]")]//BasicAuthorization
         public async Task<object> getalljobtitle()
@@ -230,7 +245,56 @@ namespace CTG_ERPWebApi.api.common.dropdown
             }
         }
 
+        //GET: api/ereqdropdown/getallbusinesstype
+        [HttpGet("[action]")]
+        public async Task<object> getallbusinesstype()
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                resdata = await _manager.GetAllBusinessType();
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
 
+            };
+        }
+
+        //GET: api/ereqdropdown/getbusinesstypebyid
+        [HttpGet("[action]")]
+        public async Task<object> getbusinesstypebyid(string id)
+        {
+            object result = null; object resdata = null;
+            try {
+                resdata = await _manager.GetBusinessTypeById(id);
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+        [HttpPost("[action]")]//BasicAuthorization
+        public async Task<object> saveupdateexaminar([FromBody] object[] data)
+        {
+            object resdata = null;
+            try
+            {
+                if (!string.IsNullOrEmpty(data.ToString()))
+                {
+                    resdata = await _manager.saveExaminar(data);
+                }
+            }
+            catch (Exception) { }
+
+            return new
+            {
+                resdata
+            };
+        }
 
 
 

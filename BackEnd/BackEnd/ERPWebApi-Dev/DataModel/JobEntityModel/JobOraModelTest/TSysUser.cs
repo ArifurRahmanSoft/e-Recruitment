@@ -27,5 +27,7 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? Department { get; set; }
         public string? Issys { get; set; }
         public string? MobileNumber { get; set; }
+        public string? Otp { get; set; }
+        public DateTime? Expireotp { get; set; }
     }
 }

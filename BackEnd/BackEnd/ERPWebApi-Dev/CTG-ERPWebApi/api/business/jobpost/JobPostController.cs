@@ -47,14 +47,14 @@ public class JobPostController : ControllerBase
             object result = null; object resdata = null;
             try
             {
-                vmCmnParameter cparam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
-                string JsonData_Mstr = data[1].ToString();
-                string JsonData_Skill = data[2].ToString();
-                string JsonData_Resp = data[3].ToString();
-                string JsonData_Req = data[4].ToString();
-                string JsonData_Exp = data[5].ToString();
+                vmCmnParameter cparam  = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                string JsonData_Mstr   = data[1].ToString();
+                string JsonData_Skill  = data[2].ToString();
+                string JsonData_Resp   = data[3].ToString();
+                string JsonData_Req    = data[4].ToString();
+                string JsonData_Exp    = data[5].ToString();
                 string JsonData_Ot_Req = data[6].ToString();
-                string JsonData_Benf = data[7].ToString();
+                string JsonData_Benf   = data[7].ToString();
    
                 if (!string.IsNullOrEmpty(JsonData_Mstr) )
                 {
@@ -90,6 +90,47 @@ public class JobPostController : ControllerBase
                 resdata
             };
         }
+
+  /*      // GET: api/jobpost/getbypages
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getlocationlist()
+        {
+            object result = null; object resdata = null;
+            try
+            {
+               // dynamic data = JsonConvert.DeserializeObject(param);
+               // vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.GetLocationList();
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }*/
+
+        //Job Post  Get by id 
+        // GET: api/jobPost/getbyid
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getlocationlist([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+               // dynamic data = JsonConvert.DeserializeObject(param);
+               // vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.GetLocationList();
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+
+
+
 
         // GET: api/jobpost/getbypages
         [HttpGet("[action]")]//BasicAuthorization
@@ -130,8 +171,158 @@ public class JobPostController : ControllerBase
         }
 
 
+        // GET: api/jobpost/reqgetbypages
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> reqgetbypages([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.GetReqByPage(cmnParam);
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+        // GET: api/jobPost/getbyid
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> reqgetbyid([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.GetReqByID(cmnParam);
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
 
 
+
+
+
+        //------------------BUSINESS PART START FROM HERE-----------------------------------------
+
+        [HttpPost("[action]")]//BasicAuthorization
+        public async Task<object> businesstypesaveupdate([FromBody] object[] data)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                vmCmnParameter cparam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                string JsonData_Mstr = data[1].ToString();
+                if (!string.IsNullOrEmpty(JsonData_Mstr))
+                {
+                    resdata = await _manager.BusinessTypeSaveUpdate(JsonData_Mstr, cparam);
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+
+        // GET: api/jobpost/getbypages
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> businessgetbypages([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.BusinessGetWithPagination(cmnParam);
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+
+
+        // GET: api/jobPost/getbyid
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> businessgetbyid([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.BusinessGetByID(cmnParam);
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+        // GET: api/jobPost/getallcompantfronjob
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getallcompantfromjob([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                resdata = await _manager.getDistinctCompanyJob();
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+        // GET: api/jobPost/getallcompantfronjob
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getallDepartmentFromJob([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                resdata = await _manager.getDistinctDepartmentJob();
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+
+        // GET: api/jobPost/getallcompantfronjob
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getallDesignationFromJob([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                resdata = await _manager.getDistinctDesignationJob();
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
 
 
 

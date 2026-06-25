@@ -9,7 +9,7 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? Certificatecode { get; set; }
         public string? CourseName { get; set; }
         public string? Institution { get; set; }
-        public string? Duration { get; set; }
+        public string? StartDate { get; set; }
         public DateTime? AchievmentDate { get; set; }
         public string? Isactive { get; set; }
         public string? Isdelete { get; set; }
@@ -23,5 +23,6 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? Deleteby { get; set; }
         public DateTime? Deletion { get; set; }
         public string? ApplicantOid { get; set; }
+        public string? Docname { get; set; }
     }
 }

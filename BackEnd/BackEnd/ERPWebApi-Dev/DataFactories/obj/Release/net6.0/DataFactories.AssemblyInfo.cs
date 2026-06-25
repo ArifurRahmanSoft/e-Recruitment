@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DataFactories")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+574671d208cad8f7611d03ed6c24d0db234af6bd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd6b2630571f195db86f1837ebd252c30ea7bc21")]
 [assembly: System.Reflection.AssemblyProductAttribute("DataFactories")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DataFactories")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

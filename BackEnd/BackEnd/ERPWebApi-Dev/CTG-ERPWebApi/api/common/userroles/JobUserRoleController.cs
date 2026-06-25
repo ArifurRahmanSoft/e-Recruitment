@@ -44,6 +44,24 @@ namespace CTG_ERPWebApi.api.common.userroles
                 resdata
             };
         }
+
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getapprovalbypage([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.GetApprovalPagination(cmnParam);
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
         
         // GET: api/role/getbyid
         [HttpGet("[action]")]//BasicAuthorization
@@ -63,6 +81,26 @@ namespace CTG_ERPWebApi.api.common.userroles
             };
         }
 
+        // GET: api/role/getbyid
+        [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getapprovalbyid([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.GetApprovalByID(cmnParam);
+            }
+            catch (Exception) { }
+            return result = new
+            {
+                resdata
+            };
+        }
+
+        
+
         // POST: api/role/saveupdate
         [HttpPost("[action]")]//BasicAuthorization
         public async Task<object> saveupdate([FromBody]object[] data)
@@ -79,6 +117,50 @@ namespace CTG_ERPWebApi.api.common.userroles
             }
             catch (Exception) { }
 
+            return result = new
+            {
+                resdata
+            };
+        }
+
+
+        //POST: api/role/saveupdate
+        [HttpPost("[action]")]
+        public async Task<object> saveUpdateApproval([FromBody] object[] data)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                vmCmnParameter cparam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                vmRoles _UserRole = JsonConvert.DeserializeObject<vmRoles>(data[1].ToString());
+                if (_UserRole != null)
+                {
+                    resdata = await _manager.SaveUpdateApproval(_UserRole, cparam);
+                }
+
+            }
+            catch (Exception) { }
+
+            return result = new
+            {
+                resdata
+            };
+            
+        }
+
+
+        
+           [HttpGet("[action]")]//BasicAuthorization
+        public async Task<object> getapprovalbyuserid([FromQuery] string param)
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCmnParameter cmnParam = JsonConvert.DeserializeObject<vmCmnParameter>(data[0].ToString());
+                resdata = await _manager.GetApprovalByUserID(cmnParam);
+            }
+            catch (Exception) { }
             return result = new
             {
                 resdata

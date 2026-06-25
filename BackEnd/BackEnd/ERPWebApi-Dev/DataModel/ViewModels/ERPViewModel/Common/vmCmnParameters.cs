@@ -325,8 +325,11 @@ namespace DataModel.ViewModels
         public string mstrOid { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public int? fromNumber { get; set; }
+        public int? toNumber { get; set; }
 
         public bool IsSys { get; set; }
+        public string approvalProcess { get; set; }
     }
 
 }

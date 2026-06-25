@@ -134,7 +134,7 @@ namespace DataFactories.Infrastructure.business.jobpost
             message,
             resstate
         };
-    }
+    }///BusinessTypeSaveUpdate
 
 
         public async Task<object> GetWithList(vmCmnParameter param) //vmCmnParameters cmnParam
@@ -160,6 +160,60 @@ namespace DataFactories.Infrastructure.business.jobpost
             return result = new
             {
                 listJobPost
+            };
+        }
+
+
+   /*     public async Task<object> GetLocationList() //vmCmnParameters cmnParam
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string listLocation = string.Empty; string listLocations = string.Empty;
+            object result = null;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "qresult", (0, OracleDbType.RefCursor, ParameterDirection.Output) },
+
+                };
+
+
+                listLocation =  await OraGeneric_vmCmnParameter.ExecuteCommandString(StoredProcedure.Ora_SpGet_LocationList, ht, StaticInfos.conStringOracle.ToString());
+               
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listLocation = JsonConvert.DeserializeObject(listLocation)
+              
+            };
+        }*/
+
+
+
+        public async Task<object> GetLocationList()
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string listLocation = string.Empty;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "gresult", (0, OracleDbType.Clob, ParameterDirection.Output) }
+                
+                };
+                listLocation = await OraGeneric_vmCmnParameter.ExecuteNonQueryOutClob(StoredProcedure.Ora_SpGet_LocationList, ht, "gresult", StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return new
+            {
+                listLocation,
             };
         }
 
@@ -194,6 +248,8 @@ namespace DataFactories.Infrastructure.business.jobpost
         }
 
 
+       
+
 
         public async Task<object> GetByID(vmCmnParameter cparam)
         {
@@ -206,9 +262,8 @@ namespace DataFactories.Infrastructure.business.jobpost
                 ht = new Hashtable
                 {
                     { "gresult", (0, OracleDbType.Clob, ParameterDirection.Output) },
-                    { "gJobPostId", (1, OracleDbType.Varchar2, cparam.strId)}//
+                    { "gJobPostId", (1, OracleDbType.Varchar2, cparam.strId)}
                 };
-                //gQuotationId
                 jobPostMaster = await OraGeneric_vmCmnParameter.ExecuteNonQueryOutClob(StoredProcedure.Ora_SpGet_JobPostMasterById, ht, "gresult", StaticInfos.conStringOracle.ToString());
               if (!string.IsNullOrEmpty(jobPostMaster) )
 
@@ -221,11 +276,6 @@ namespace DataFactories.Infrastructure.business.jobpost
                     jobResponsibility = await OraGeneric_vmCmnParameter.ExecuteNonQueryOutClob(StoredProcedure.Ora_SpGet_JobResponsibilityById, ht, "gresult", StaticInfos.conStringOracle.ToString());
                 }
 
-
-
-
-
-            
 
 
             }
@@ -248,10 +298,228 @@ namespace DataFactories.Infrastructure.business.jobpost
 
 
 
+        //GET REQUSITION BY PAGES
+
+        public async Task<object> GetReqByPage(vmCmnParameter param) //vmCmnParameters cmnParam
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string listJobRequsition = string.Empty;
+            object result = null;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "qresult", (0, OracleDbType.RefCursor, ParameterDirection.Output) },
+                    { "PageNumber", (1, Convert.ToDecimal(param.pageNumber))},
+                    { "PageSize", (2, Convert.ToDecimal(param.pageSize)) },
+                    { "SearchVal", (3, param.SearchVal.Trim().ToLower()) },
+                    { "LoggedUserId", (4, param.LoggedUserId) }
+                };
+                listJobRequsition = await OraGeneric_vmCmnParameter.ExecuteCommandString(StoredProcedure.Ora_SpGet_RequisitionByPage, ht, StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listJobRequsition
+            };
+        }
+
+
+        public async Task<object> GetReqByID(vmCmnParameter cparam)
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string jobRequisition = string.Empty;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "gresult", (0, OracleDbType.Clob, ParameterDirection.Output) },
+                    { "gRequsitaionId", (1, OracleDbType.Varchar2, cparam.strId)}
+                };
+                jobRequisition = await OraGeneric_vmCmnParameter.ExecuteNonQueryOutClob(StoredProcedure.Get_RequisitionById, ht, "gresult", StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return new
+            {
+                jobRequisition,
+            };
+        }
+
+
+        public async Task<object> BusinessTypeSaveUpdate(string _mJsonData,  vmCmnParameter param)
+        {
+            object referenceId = 0; string message = string.Empty; bool resstate = false;
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string result = string.Empty, mstrRes = string.Empty;
+            try
+            {
+                ocmd = new OracleCommand();
+                ocmd.Parameters.Add("mresult", OracleDbType.Varchar2, 50).Direction = ParameterDirection.Output;
+                ocmd.Parameters.Add("JsonData_Mstr", OracleDbType.Clob).Value = _mJsonData;
+                ocmd.Parameters.Add("mCreateBy", OracleDbType.Varchar2).Value = param.LoggedUserId;
+                ocmd.Parameters.Add("mCreatePC", OracleDbType.Varchar2).Value = Extension.Createpc();
+
+                mstrRes = await OraGeneric_vmCmnParameter.ExecuteNonQueryOutString(StoredProcedure.Ora_SpSet_Business, ocmd, "mresult", StaticInfos.conStringOracle.ToString());
+                if (!string.IsNullOrEmpty(mstrRes) || mstrRes != "0" || mstrRes != "null")
+                {
+                    message = MessageConstants.Saved;
+                    resstate = MessageConstants.SuccessState;
+                }
+                else
+                {
+                    message = MessageConstants.SavedWarning;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return new
+            {
+                message,
+                resstate
+            };
+        }
+
+        public async Task<object> BusinessGetWithPagination(vmCmnParameter param) //vmCmnParameters cmnParam
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string listBusinessType = string.Empty;
+            object result = null;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "qresult", (0, OracleDbType.RefCursor, ParameterDirection.Output) },
+                    { "PageNumber", (1, Convert.ToDecimal(param.pageNumber))},
+                    { "PageSize", (2, Convert.ToDecimal(param.pageSize)) },
+                    { "SearchVal", (3, param.SearchVal.Trim().ToLower()) },
+                    { "LoggedUserId", (4, param.LoggedUserId) }
+                };
+
+                listBusinessType = await OraGeneric_vmCmnParameter.ExecuteCommandString(StoredProcedure.Ora_SpGet_BusinessByPage, ht, StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listBusinessType
+            };
+        }
+
+
+        
+
+
+   public async Task<object> BusinessGetByID(vmCmnParameter cparam)
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string businessMaster = string.Empty;
+            try
+            {
+
+                ht = new Hashtable
+                {
+                    { "gresult", (0, OracleDbType.Clob, ParameterDirection.Output) },
+                    { "gBusinessId", (1, OracleDbType.Varchar2, cparam.strId)}
+                };
+                businessMaster = await OraGeneric_vmCmnParameter.ExecuteNonQueryOutClob(StoredProcedure.Get_BusinessById, ht, "gresult", StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return new
+            {
+                businessMaster
+            };
+        }
 
 
 
+   
 
+        public async Task<object> getDistinctCompanyJob() //vmCmnParameters cmnParam
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string listCompany = string.Empty;
+            object result = null;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "qresult", (0, OracleDbType.RefCursor, ParameterDirection.Output) },
+                };
+
+                listCompany = await OraGeneric_vmCmnParameter.ExecuteCommandString(StoredProcedure.Ora_SpGetJobPostCompany, ht, StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listCompany
+            };
+        }
+
+
+        public async Task<object> getDistinctDepartmentJob() //vmCmnParameters cmnParam
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string listDepartment = string.Empty;
+            object result = null;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "qresult", (0, OracleDbType.RefCursor, ParameterDirection.Output) },
+                };
+
+                listDepartment = await OraGeneric_vmCmnParameter.ExecuteCommandString(StoredProcedure.Ora_SpGetJobPostDepartment, ht, StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listDepartment
+            };
+        }
+
+
+        public async Task<object> getDistinctDesignationJob() //vmCmnParameters cmnParam
+        {
+            OraGeneric_vmCmnParameter = new GenericFactoryOracle<vmCmnParameter>();
+            string listDesignation = string.Empty;
+            object result = null;
+            try
+            {
+                ht = new Hashtable
+                {
+                    { "qresult", (0, OracleDbType.RefCursor, ParameterDirection.Output) },
+                };
+
+                listDesignation = await OraGeneric_vmCmnParameter.ExecuteCommandString(StoredProcedure.Ora_SpGetJobPostDesignation, ht, StaticInfos.conStringOracle.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logs.Bug(ex);
+            }
+            return result = new
+            {
+                listDesignation
+            };
+        }
 
 
 

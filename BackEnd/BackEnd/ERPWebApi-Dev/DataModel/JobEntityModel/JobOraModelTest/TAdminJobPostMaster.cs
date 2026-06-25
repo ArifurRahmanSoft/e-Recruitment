@@ -33,5 +33,7 @@ namespace DataModel.JobEntityModel.JobOraModelTest
         public string? Cancelby { get; set; }
         public DateTime? Cancelon { get; set; }
         public string? Cancelpc { get; set; }
+        public string? JobDescription { get; set; }
+        public string? ReqOid { get; set; }
     }
 }

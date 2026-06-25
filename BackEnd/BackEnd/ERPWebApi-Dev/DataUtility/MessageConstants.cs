@@ -120,6 +120,7 @@ namespace DataUtility
         public const string TrialExtended = "Trial period is extended";
         public const string LoginSuccess = "Successfully logged in!!!";
         public const string LoginFailed = "Login failed!";
+        public const string InvalidUserPass = "Invalid Email or Password!";
 
         public static string[] UserCloudActivityLogType = new string[]
         {

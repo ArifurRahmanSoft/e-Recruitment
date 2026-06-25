@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DataModel.ViewModels.ERPViewModel.Common;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -47,5 +48,16 @@ namespace CTG_ERPWebApi
         //         .UseUrls("http://localhost:3000")
         //         .CaptureStartupErrors(true)
         //         .Build();
+
+
+        /* ForgotPasswordRequest extra */
+
+ 
+            
+
+
+
+
+
     }
 }
